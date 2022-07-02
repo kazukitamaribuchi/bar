@@ -1,0 +1,65 @@
+[
+  {
+    "model": "crm.mtax",
+    "pk": 1,
+    "fields": {
+      "tax_rate": 0
+    }
+  },
+  {
+    "model": "crm.mtax",
+    "pk": 2,
+    "fields": {
+      "tax_rate": 5
+    }
+  },
+  {
+    "model": "crm.mtax",
+    "pk": 3,
+    "fields": {
+      "tax_rate": 8
+    }
+  },
+  {
+    "model": "crm.mtax",
+    "pk": 4,
+    "fields": {
+      "tax_rate": 10
+    }
+  },
+  {
+    "model": "crm.mtax",
+    "pk": 5,
+    "fields": {
+      "tax_rate": 15
+    }
+  },
+  {
+    "model": "crm.mtax",
+    "pk": 6,
+    "fields": {
+      "tax_rate": 20
+    }
+  },
+  {
+    "model": "crm.mtax",
+    "pk": 7,
+    "fields": {
+      "tax_rate": 30
+    }
+  },
+  {
+    "model": "crm.mtax",
+    "pk": 8,
+    "fields": {
+      "tax_rate": 35
+    }
+  },
+  {
+    "model": "crm.mtax",
+    "pk": 9,
+    "fields": {
+      "tax_rate": 40
+    }
+  }
+]

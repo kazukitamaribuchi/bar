@@ -1,0 +1,42 @@
+[
+  {
+    "model": "crm.mrank",
+    "pk": 1,
+    "fields": {
+      "rank_id": 1,
+      "rank_name": "ノーマル"
+    }
+  },
+  {
+    "model": "crm.mrank",
+    "pk": 2,
+    "fields": {
+      "rank_id": 2,
+      "rank_name": "シルバー"
+    }
+  },
+  {
+    "model": "crm.mrank",
+    "pk": 3,
+    "fields": {
+      "rank_id": 3,
+      "rank_name": "ゴールド"
+    }
+  },
+  {
+    "model": "crm.mrank",
+    "pk": 4,
+    "fields": {
+      "rank_id": 4,
+      "rank_name": "プラチナ"
+    }
+  },
+  {
+    "model": "crm.mrank",
+    "pk": 5,
+    "fields": {
+      "rank_id": 5,
+      "rank_name": "ブラック"
+    }
+  }
+]

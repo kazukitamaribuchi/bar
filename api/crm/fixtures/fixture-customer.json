@@ -1,0 +1,159 @@
+[
+  {
+    "model": "crm.mcustomer",
+    "pk": 1,
+    "fields": {
+      "name": "斎藤一",
+      "name_kana": "サイトウハジメ",
+      "age": 55,
+      "address": "東京都千代田区紀尾井町1-3 東京ガーデンテラス紀尾井町 紀尾井タワー",
+      "job": "代表取締役",
+      "company": "株式会社ヤフー",
+      "rank": 1,
+      "card": 1,
+      "mail": "tinko@gmail.com",
+      "phone": "080-1234-5678"
+    }
+  },
+  {
+    "model": "crm.mcustomer",
+    "pk": 2,
+    "fields": {
+      "name": "斎藤一2",
+      "name_kana": "サイトウハジメ2",
+      "age": 56,
+      "address": "東京都千代田区紀尾井町1-3 東京ガーデンテラス紀尾井町 紀尾井タワー",
+      "job": "代表取締役",
+      "company": "株式会社ヤフー",
+      "rank": 3,
+      "card": 2
+    }
+  },
+  {
+    "model": "crm.mcustomer",
+    "pk": 3,
+    "fields": {
+      "name": "斎藤一3",
+      "name_kana": "サイトウハジメ",
+      "age": 57,
+      "address": "東京都千代田区紀尾井町1-3 東京ガーデンテラス紀尾井町 紀尾井タワー",
+      "job": "代表取締役",
+      "company": "株式会社ヤフー",
+      "rank": 2,
+      "card": 3
+    }
+  },
+  {
+    "model": "crm.mcustomer",
+    "pk": 4,
+    "fields": {
+      "name": "斎藤一4",
+      "name_kana": "サイトウハジメ",
+      "age": 58,
+      "address": "東京都千代田区紀尾井町1-3 東京ガーデンテラス紀尾井町 紀尾井タワー",
+      "job": "代表取締役",
+      "company": "株式会社ヤフー",
+      "rank": 1,
+      "card": 4,
+      "caution_flg": true
+    }
+  },
+  {
+    "model": "crm.mcustomer",
+    "pk": 5,
+    "fields": {
+      "name": "斎藤一5",
+      "name_kana": "サイトウハジメ5",
+      "age": 59,
+      "address": "東京都千代田区紀尾井町1-3 東京ガーデンテラス紀尾井町 紀尾井タワー",
+      "job": "代表取締役",
+      "company": "株式会社ヤフー",
+      "rank": 5,
+      "card": 5
+    }
+  },
+  {
+    "model": "crm.mcustomer",
+    "pk": 6,
+    "fields": {
+      "name": "斎藤一6",
+      "name_kana": "サイトウハジメ6",
+      "age": 40,
+      "address": "東京都千代田区紀尾井町1-3 東京ガーデンテラス紀尾井町 紀尾井タワー",
+      "job": "代表取締役",
+      "company": "株式会社ヤフー",
+      "rank": 2,
+      "card": 6
+    }
+  },
+  {
+    "model": "crm.mcustomer",
+    "pk": 7,
+    "fields": {
+      "name": "斎藤一7",
+      "name_kana": "サイトウハジメ7",
+      "age": 33,
+      "address": "東京都千代田区紀尾井町1-3 東京ガーデンテラス紀尾井町 紀尾井タワー",
+      "job": "代表取締役",
+      "company": "株式会社ヤフー",
+      "rank": 1,
+      "card": 7
+    }
+  },
+  {
+    "model": "crm.mcustomer",
+    "pk": 8,
+    "fields": {
+      "name": "斎藤一8",
+      "name_kana": "サイトウハジメ8",
+      "age": 71,
+      "address": "東京都千代田区紀尾井町1-3 東京ガーデンテラス紀尾井町 紀尾井タワー",
+      "job": "代表取締役",
+      "company": "株式会社ヤフー",
+      "rank": 4,
+      "card": 8
+    }
+  },
+  {
+    "model": "crm.mcustomer",
+    "pk": 9,
+    "fields": {
+      "name": "斎藤一9",
+      "name_kana": "サイトウハジメ",
+      "age": 44,
+      "address": "東京都千代田区紀尾井町1-3 東京ガーデンテラス紀尾井町 紀尾井タワー",
+      "job": "代表取締役",
+      "company": "株式会社ヤフー",
+      "rank": 2,
+      "card": 9
+    }
+  },
+  {
+    "model": "crm.mcustomer",
+    "pk": 10,
+    "fields": {
+      "name": "斎藤一10",
+      "name_kana": "サイトウハジメ10",
+      "age": 60,
+      "address": "東京都千代田区紀尾井町1-3 東京ガーデンテラス紀尾井町 紀尾井タワー",
+      "job": "代表取締役",
+      "company": "株式会社ヤフー",
+      "rank": 1,
+      "card": 10
+    }
+  },
+  {
+    "model": "crm.mcustomer",
+    "pk": 11,
+    "fields": {
+      "name": "斎藤一11",
+      "name_kana": "サイトウハジメ",
+      "age": 100,
+      "address": "東京都千代田区紀尾井町1-3 東京ガーデンテラス紀尾井町 紀尾井タワー",
+      "job": "代表取締役",
+      "company": "株式会社ヤフー",
+      "rank": 5,
+      "card": 11
+    }
+  }
+]

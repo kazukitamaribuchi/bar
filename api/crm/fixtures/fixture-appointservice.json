@@ -1,0 +1,42 @@
+[
+  {
+    "model": "crm.mappointservice",
+    "pk": 1,
+    "fields": {
+      "name": "指名料",
+      "price": 2000,
+      "tax": 6,
+      "tax_price": 2600
+    }
+  },
+  {
+    "model": "crm.mappointservice",
+    "pk": 2,
+    "fields": {
+      "name": "本指名料",
+      "price": 2000,
+      "tax": 6,
+      "tax_price": 2600
+    }
+  },
+  {
+    "model": "crm.mappointservice",
+    "pk": 3,
+    "fields": {
+      "name": "場内指名料",
+      "price": 2000,
+      "tax": 6,
+      "tax_price": 2600
+    }
+  },
+  {
+    "model": "crm.mappointservice",
+    "pk": 4,
+    "fields": {
+      "name": "同伴出勤",
+      "price": 4000,
+      "tax": 6,
+      "tax_price": 2600
+    }
+  }
+]

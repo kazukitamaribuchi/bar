@@ -1,0 +1,22 @@
+[
+  {
+    "model": "crm.mbasicservice",
+    "pk": 1,
+    "fields": {
+      "name": "基本料金",
+      "price": 2000,
+      "tax": 6,
+      "tax_price": 2600
+    }
+  },
+  {
+    "model": "crm.mbasicservice",
+    "pk": 2,
+    "fields": {
+      "name": "VIP料金",
+      "price": 5000,
+      "tax": 6,
+      "tax_price": 6500
+    }
+  }
+]

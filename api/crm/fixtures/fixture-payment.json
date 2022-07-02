@@ -1,0 +1,20 @@
+[
+  {
+    "model": "crm.mpayment",
+    "pk": 1,
+    "fields": {
+      "type": 0,
+      "type_name": "現金",
+      "tax": 8
+    }
+  },
+  {
+    "model": "crm.mpayment",
+    "pk": 2,
+    "fields": {
+      "type": 1,
+      "type_name": "クレジットカード払い",
+      "tax": 8
+    }
+  }
+]

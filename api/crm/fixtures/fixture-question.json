@@ -1,0 +1,23 @@
+[
+  {
+    "model": "crm.mquestion",
+    "pk": 1,
+    "fields": {
+      "question": "初体験は？w"
+    }
+  },
+  {
+    "model": "crm.mquestion",
+    "pk": 2,
+    "fields": {
+      "question": "3サイズは？w"
+    }
+  },
+  {
+    "model": "crm.mquestion",
+    "pk": 3,
+    "fields": {
+      "question": "性感帯は？w"
+    }
+  }
+]

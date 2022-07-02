@@ -1,0 +1,34 @@
+<template>
+    <v-card
+        id="new_visit_button_wrap"
+        @click="toNewVisit"
+    >
+        <p class="text-center py-4 mb-0">新規入店</p>
+    </v-card>
+</template>
+
+<script>
+
+export default {
+    name: 'NewVisitButtonItem',
+    data: () => ({
+    }),
+    components: {
+    },
+    computed: {
+    },
+    methods: {
+        toNewVisit () {
+            this.$router.push({
+                name: 'AccountNewVisit'
+            })
+        }
+    }
+}
+</script>
+
+<style lang="scss" scoped>
+    #new_visit_button_wrap {
+        cursor: pointer;
+    }
+</style>

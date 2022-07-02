@@ -1,0 +1,65 @@
+[
+  {
+    "model": "crm.mseat",
+    "pk": 1,
+    "fields": {
+      "seat_type": 0,
+      "seat_name": "C1",
+      "limit": 1
+    }
+  },
+  {
+    "model": "crm.mseat",
+    "pk": 2,
+    "fields": {
+      "seat_type": 0,
+      "seat_name": "C2",
+      "limit": 1
+    }
+  },
+  {
+    "model": "crm.mseat",
+    "pk": 3,
+    "fields": {
+      "seat_type": 0,
+      "seat_name": "C3",
+      "limit": 1
+    }
+  },
+  {
+    "model": "crm.mseat",
+    "pk": 4,
+    "fields": {
+      "seat_type": 0,
+      "seat_name": "C4",
+      "limit": 1
+    }
+  },
+  {
+    "model": "crm.mseat",
+    "pk": 5,
+    "fields": {
+      "seat_type": 1,
+      "seat_name": "T1",
+      "limit": 4
+    }
+  },
+  {
+    "model": "crm.mseat",
+    "pk": 6,
+    "fields": {
+      "seat_type": 1,
+      "seat_name": "T2",
+      "limit": 4
+    }
+  },
+  {
+    "model": "crm.mseat",
+    "pk": 7,
+    "fields": {
+      "seat_type": 1,
+      "seat_name": "T3",
+      "limit": 4
+    }
+  }
+]

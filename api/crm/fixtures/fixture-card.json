@@ -1,0 +1,79 @@
+[
+  {
+    "model": "crm.cardmanagement",
+    "pk": 1,
+    "fields": {
+      "customer_no": 1
+    }
+  },
+  {
+    "model": "crm.cardmanagement",
+    "pk": 2,
+    "fields": {
+      "customer_no": 2
+    }
+  },
+  {
+    "model": "crm.cardmanagement",
+    "pk": 3,
+    "fields": {
+      "customer_no": 3
+    }
+  },
+  {
+    "model": "crm.cardmanagement",
+    "pk": 4,
+    "fields": {
+      "customer_no": 4
+    }
+  },
+  {
+    "model": "crm.cardmanagement",
+    "pk": 5,
+    "fields": {
+      "customer_no": 5
+    }
+  },
+  {
+    "model": "crm.cardmanagement",
+    "pk": 6,
+    "fields": {
+      "customer_no": 6
+    }
+  },
+  {
+    "model": "crm.cardmanagement",
+    "pk": 7,
+    "fields": {
+      "customer_no": 7
+    }
+  },
+  {
+    "model": "crm.cardmanagement",
+    "pk": 8,
+    "fields": {
+      "customer_no": 8
+    }
+  },
+  {
+    "model": "crm.cardmanagement",
+    "pk": 9,
+    "fields": {
+      "customer_no": 9
+    }
+  },
+  {
+    "model": "crm.cardmanagement",
+    "pk": 10,
+    "fields": {
+      "customer_no": 10
+    }
+  },
+  {
+    "model": "crm.cardmanagement",
+    "pk": 11,
+    "fields": {
+      "customer_no": 11
+    }
+  }
+]
