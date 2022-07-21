@@ -146,11 +146,20 @@ class SalesHeader(AbstractBaseModel):
         blank=True,
     )
 
-
-    total_visitors = models.SmallIntegerField(
-        _('来店人数'),
-        default=1,
+    male_visitors = models.SmallIntegerField(
+        _('男性来店人数'),
+        default=0,
     )
+
+    female_visitors = models.SmallIntegerField(
+        _('女性来店人数'),
+        default=0,
+    )
+
+    # total_visitors = models.SmallIntegerField(
+    #     _('来店人数'),
+    #     default=1,
+    # )
 
     # 5/14 => 指名管理の中間テーブルに変更
     # on_delete要検討
@@ -174,23 +183,27 @@ class SalesHeader(AbstractBaseModel):
     #     default=False
     # )
 
-    account_date = models.DateTimeField()
+    # account_date = models.DateTimeField()
 
     visit_time = models.DateTimeField()
-    leave_time = models.DateTimeField()
+    leave_time = models.DateTimeField(
+        null=True,
+        blank=True,
+    )
 
     # move_time = models.DateTimeField(null=True, blank=True)
 
     payment = models.ForeignKey(
         'crm.MPayment',
         on_delete=models.CASCADE,
-        related_name='sales_header'
+        related_name='sales_header',
+        null=True,
     )
 
-    is_charterd = models.BooleanField(
-        _('貸し切りフラグ'),
-        default=False,
-    )
+    # is_charterd = models.BooleanField(
+    #     _('貸し切りフラグ'),
+    #     default=False,
+    # )
 
     # appoint = models.BooleanField(
     #     _('指名フラグ'),
@@ -208,9 +221,10 @@ class SalesHeader(AbstractBaseModel):
         default=False,
     )
 
-    basic_plan_type = models.SmallIntegerField(
-        _('基本料金タイプ'),
-        default=0,
+    basic_plan_type = models.ForeignKey(
+        'crm.MService',
+        on_delete=models.CASCADE,
+        related_name="sales_header_basic_plan_type"
     )
 
     stay_hour = models.SmallIntegerField(
@@ -296,20 +310,30 @@ class SalesServiceDetail(AbstractBaseModel):
     #     blank=True,
     # )
 
-    quantity = models.DecimalField(
-        _('数量'),
-        max_digits=10,
-        decimal_places=2,
-        default=1.00,
+    # quantity = models.DecimalField(
+    #     _('数量'),
+    #     max_digits=10,
+    #     decimal_places=2,
+    #     default=1.00,
+    # )
+
+    quantity = models.SmallIntegerField(
+        _('個数'),
+        default=1,
+    )
+
+    discount_flg = models.BooleanField(
+        _('値引きフラグ(女性は50%OFF)'),
+        default=False,
     )
 
     fixed_price = models.IntegerField(
         _('実価格（税抜）'),
     )
 
-    fixed_tax_price = models.IntegerField(
-        _('実価格（税込）'),
-    )
+    # fixed_tax_price = models.IntegerField(
+    #     _('実価格（税込）'),
+    # )
 
     tax_free_flg = models.BooleanField(
         _('非課税フラグ'),
@@ -321,13 +345,13 @@ class SalesServiceDetail(AbstractBaseModel):
         default=35,
     )
 
-    total_price = models.IntegerField(
-        _('総計')
-    )
+    # total_price = models.IntegerField(
+    #     _('総計')
+    # )
 
-    total_tax_price = models.IntegerField(
-        _('総計（税込）')
-    )
+    # total_tax_price = models.IntegerField(
+    #     _('総計（税込）')
+    # )
 
     def __str__(self):
         service = self.service.name
@@ -428,20 +452,26 @@ class SalesDetail(AbstractBaseModel):
         blank=True,
     )
 
-    quantity = models.DecimalField(
+    # quantity = models.DecimalField(
+    #     _('個数'),
+    #     max_digits=10,
+    #     decimal_places=2,
+    #     default=1.00,
+    # )
+
+    quantity = models.SmallIntegerField(
         _('個数'),
-        max_digits=10,
-        decimal_places=2,
-        default=1.00,
+        default=1,
     )
 
     fixed_price = models.IntegerField(
         _('実価格（税抜）'),
+        default=0,
     )
 
-    fixed_tax_price = models.IntegerField(
-        _('実価格（税込）'),
-    )
+    # fixed_tax_price = models.IntegerField(
+    #     _('実価格（税込）'),
+    # )
 
     tax_free_flg = models.BooleanField(
         _('非課税フラグ'),
@@ -453,12 +483,23 @@ class SalesDetail(AbstractBaseModel):
         default=35,
     )
 
-    total_price = models.IntegerField(
-        _('総計')
+    # total_price = models.IntegerField(
+    #     _('総計'),
+    #     default=0,
+    # )
+
+    # total_tax_price = models.IntegerField(
+    #     _('総計（税込）')
+    # )
+
+    end_flg = models.BooleanField(
+        # 作ったら更新 => 届けたら更新も必要？
+        _('締めフラグ'),
+        default=False,
     )
 
-    total_tax_price = models.IntegerField(
-        _('総計（税込）')
+    order_time = models.DateTimeField(
+        _('注文時間'),
     )
 
     def __str__(self):

@@ -3,374 +3,340 @@
     "model": "crm.mproduct",
     "pk": 1,
     "fields": {
-      "name": "クラウディー ベイ ソーヴィニヨン ブラン",
-      "price": 10000,
+      "name": "アルマン・ド ・ブリニャック(ロゼ)",
+      "price": 350000,
       "category": 1,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 2,
     "fields": {
-      "name": "オリヴィエ ルフレーヴ ムルソー",
-      "price": 10000,
+      "name": "アルマン・ド・ブリニャック グリーン マスターズエディション(グリーン)",
+      "price": 350000,
       "category": 1,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 3,
     "fields": {
-      "name": "パルメイヤー ジェイソン シャルドネ",
-      "price": 10000,
+      "name": "アルマン・ド・ブリニャック ドゥミ・セック(レッド)",
+      "price": 350000,
       "category": 1,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 4,
     "fields": {
-      "name": "ウィリアム フェーブル シャブリ グランクリュ レ プルーズ",
-      "price": 10000,
+      "name": "アルマン・ド・ブリニャック ブラン・ド・ノワール(ブラック)",
+      "price": 99999999,
       "category": 1,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 5,
     "fields": {
-      "name": "ヴーヴ・クリコ イエロー・ラベル・ブリュット",
-      "price": 25000,
+      "name": "アルマン・ド・ブリニャック ブラン・ド・ブラン(シルバー)",
+      "price": 99999999,
       "category": 1,
-      "tax": 6,
-      "tax_price": 33750
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 6,
     "fields": {
-      "name": "ヴーヴ・クリコ ホワイト・ラベル・ドゥミ・セック",
-      "price": 28000,
+      "name": "アルマン・ド・ブリニャック ブリュット(ゴールド)",
+      "price": 200000,
       "category": 1,
-      "tax": 6,
-      "tax_price": 37800
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 7,
     "fields": {
-      "name": "ヴーヴ・クリコ ローズ･ラベル",
-      "price": 35000,
+      "name": "ウィリアム フェーブル シャブリ グランクリュ レ プルーズ",
+      "price": 99999999,
       "category": 1,
-      "tax": 6,
-      "tax_price": 47250
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 8,
     "fields": {
-      "name": "モエ・エ・シャンドン モエ アンペリアル ",
+      "name": "ヴーヴ・クリコ イエロー・ラベル・ブリュット",
       "price": 25000,
       "category": 1,
-      "tax": 6,
-      "tax_price": 33750
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 9,
     "fields": {
-      "name": "モエ・エ・シャンドン モエ ロゼ アンペリアル",
-      "price": 30000,
+      "name": "ヴーヴ・クリコ ホワイト・ラベル・ドゥミ・セック",
+      "price": 28000,
       "category": 1,
-      "tax": 6,
-      "tax_price": 40500
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 10,
     "fields": {
-      "name": "モエ・エ・シャンドン ネクターアンペリアル",
-      "price": 40000,
+      "name": "ヴーヴ・クリコ ローズ･ラベル",
+      "price": 35000,
       "category": 1,
-      "tax": 6,
-      "tax_price": 54000
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 11,
     "fields": {
-      "name": "モエ エ　シャンドン　ネクター　アンぺリアル　ロゼ",
-      "price": 55000,
+      "name": "エンジェルシャンパン ドゥミセック",
+      "price": 330000,
       "category": 1,
-      "tax": 6,
-      "tax_price": 74250
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 12,
     "fields": {
-      "name": "モエ・エ・シャンドン アイス アンペリアル",
-      "price": 45000,
+      "name": "エンジェルシャンパンドゥミセックローズ",
+      "price": 330000,
       "category": 1,
-      "tax": 6,
-      "tax_price": 60750
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 13,
     "fields": {
-      "name": "モエ・エ・シャンドン アイス アンペリアル ロゼ",
-      "price": 60000,
+      "name": "オリヴィエ ルフレーヴ ムルソー",
+      "price": 99999999,
       "category": 1,
-      "tax": 6,
-      "tax_price": 81000
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 14,
     "fields": {
-      "name": "ペリエ・ジュエ グラン・ブリュット",
-      "price": 10000,
+      "name": "クラウディー ベイ ソーヴィニヨン ブラン",
+      "price": 99999999,
       "category": 1,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 15,
     "fields": {
-      "name": "ペリエ・ジュエ ベル・エポック・ブラン",
-      "price": 100000,
+      "name": "ソウメイ ブリュット",
+      "price": 85000,
       "category": 1,
-      "tax": 6,
-      "tax_price": 135000
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 16,
     "fields": {
-      "name": "ペリエ・ジュエ ベル・エポック・ロゼ",
-      "price": 200000,
+      "name": "ソウメイ ロゼ",
+      "price": 150000,
       "category": 1,
-      "tax": 6,
-      "tax_price": 270000
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 17,
     "fields": {
-      "name": "ペリエ・ジュエ ブラン・ド・ブラン",
-      "price": 10000,
+      "name": "ドンペリニヨン ヴィンテージ(ドンペリ白)",
+      "price": 90000,
       "category": 1,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 18,
     "fields": {
-      "name": "ペリエ・ジュエ ブラゾン・ロゼ",
-      "price": 10000,
-      "category": 1,
-      "tax": 6,
-      "tax_price": 13500
+      "name": "ドンぺリニヨン エノテーク(ドンペリ黒)",
+      "price": 99999999,
+      "category": 2,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 19,
     "fields": {
-      "name": "ドンペリニヨン　ヴィンテージ（ドンペリ白）",
-      "price": 90000,
-      "category": 1,
-      "tax": 6,
-      "tax_price": 121500
+      "name": "ドンペリニヨン レゼルヴ・ドゥ・ラ・ベイ(ドンペリゴールド)",
+      "price": 99999999,
+      "category": 2,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 20,
     "fields": {
-      "name": "ドンペリニヨン　ロゼ　ヴィンテージ（ピンドン）",
+      "name": "ドンペリニヨン ロゼ ヴィンテージ(ピンドン)",
       "price": 190000,
-      "category": 1,
-      "tax": 6,
-      "tax_price": 256500
+      "category": 2,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 21,
     "fields": {
-      "name": "ドンぺリニヨン　エノテーク（ドンペリ黒）",
-      "price": 10000,
-      "category": 1,
-      "tax": 6,
-      "tax_price": 13500
+      "name": "パルメイヤー ジェイソン シャルドネ",
+      "price": 99999999,
+      "category": 2,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 22,
     "fields": {
-      "name": "ドンペリニヨン　レゼルヴ・ドゥ・ラ・ベイ（ドンペリゴールド）",
-      "price": 10000,
-      "category": 1,
-      "tax": 6,
-      "tax_price": 13500
+      "name": "ペリエ・ジュエ グラン・ブリュット",
+      "price": 99999999,
+      "category": 2,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 23,
     "fields": {
-      "name": "ルイ・ロデレール クリスタル",
-      "price": 150000,
-      "category": 1,
-      "tax": 6,
-      "tax_price": 202500
+      "name": "ペリエ・ジュエ ブラゾン・ロゼ",
+      "price": 99999999,
+      "category": 2,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 24,
     "fields": {
-      "name": "ルイ・ロデレール クリスタル・ロゼ",
-      "price": 280000,
-      "category": 1,
-      "tax": 6,
-      "tax_price": 378000
+      "name": "ペリエ・ジュエ ブラン・ド・ブラン",
+      "price": 99999999,
+      "category": 2,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 25,
     "fields": {
-      "name": "アルマン・ド・ブリニャック ブリュット（ゴールド）",
-      "price": 200000,
-      "category": 1,
-      "tax": 6,
-      "tax_price": 270000
+      "name": "ペリエ・ジュエ ベル・エポック・ブラン",
+      "price": 100000,
+      "category": 2,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 26,
     "fields": {
-      "name": "アルマン・ド ・ブリニャック（ロゼ）",
-      "price": 350000,
-      "category": 1,
-      "tax": 6,
-      "tax_price": 472500
+      "name": "ペリエ・ジュエ ベル・エポック・ロゼ",
+      "price": 200000,
+      "category": 2,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 27,
     "fields": {
-      "name": "アルマン・ド・ブリニャック グリーン マスターズエディション（グリーン）",
-      "price": 350000,
-      "category": 1,
-      "tax": 6,
-      "tax_price": 472500
+      "name": "モエ エ シャンドン ネクター アンぺリアル ロゼ",
+      "price": 55000,
+      "category": 2,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 28,
     "fields": {
-      "name": "アルマン・ド・ブリニャック ドゥミ・セック（レッド）",
-      "price": 350000,
-      "category": 1,
-      "tax": 6,
-      "tax_price": 472500
+      "name": "モエ・エ・シャンドン アイス アンペリアル",
+      "price": 45000,
+      "category": 2,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 29,
     "fields": {
-      "name": "アルマン・ド・ブリニャック ブラン・ド・ブラン（シルバー）",
-      "price": 10000,
-      "category": 1,
-      "tax": 6,
-      "tax_price": 13500
+      "name": "モエ・エ・シャンドン アイス アンペリアル ロゼ",
+      "price": 60000,
+      "category": 2,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 30,
     "fields": {
-      "name": "アルマン・ド・ブリニャック ブラン・ド・ノワール（ブラック）",
-      "price": 10000,
-      "category": 1,
-      "tax": 6,
-      "tax_price": 13500
+      "name": "モエ・エ・シャンドン ネクターアンペリアル",
+      "price": 40000,
+      "category": 2,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 31,
     "fields": {
-      "name": "エンジェルシャンパン ドゥミセック",
-      "price": 330000,
-      "category": 1,
-      "tax": 6,
-      "tax_price": 445500
+      "name": "モエ・エ・シャンドン モエ アンペリアル",
+      "price": 25000,
+      "category": 2,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 32,
     "fields": {
-      "name": "エンジェルシャンパン ドゥミセックローズ",
-      "price": 330000,
-      "category": 1,
-      "tax": 6,
-      "tax_price": 445500
+      "name": "モエ・エ・シャンドン モエ ロゼ アンペリアル",
+      "price": 30000,
+      "category": 2,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 33,
     "fields": {
-      "name": "ソウメイ　ブリュット",
-      "price": 85000,
-      "category": 1,
-      "tax": 6,
-      "tax_price": 114750
+      "name": "ルイ・ロデレール クリスタル",
+      "price": 150000,
+      "category": 2,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 34,
     "fields": {
-      "name": "ソウメイ　ロゼ",
-      "price": 150000,
-      "category": 1,
-      "tax": 6,
-      "tax_price": 202500
+      "name": "ルイ・ロデレール クリスタル・ロゼ",
+      "price": 280000,
+      "category": 2,
+      "tax": 4
     }
   },
   {
@@ -379,9 +345,8 @@
     "fields": {
       "name": "角瓶",
       "price": 7000,
-      "category": 2,
-      "tax": 6,
-      "tax_price": 9450
+      "category": 3,
+      "tax": 4
     }
   },
   {
@@ -390,9 +355,8 @@
     "fields": {
       "name": "ジャック ダニエル",
       "price": 15000,
-      "category": 2,
-      "tax": 6,
-      "tax_price": 20250
+      "category": 3,
+      "tax": 4
     }
   },
   {
@@ -401,9 +365,8 @@
     "fields": {
       "name": "CHIVAS REGAL 12",
       "price": 15000,
-      "category": 2,
-      "tax": 6,
-      "tax_price": 20250
+      "category": 3,
+      "tax": 4
     }
   },
   {
@@ -412,9 +375,8 @@
     "fields": {
       "name": "山崎",
       "price": 50000,
-      "category": 2,
-      "tax": 6,
-      "tax_price": 67500
+      "category": 3,
+      "tax": 4
     }
   },
   {
@@ -423,9 +385,8 @@
     "fields": {
       "name": "山崎12年",
       "price": 100000,
-      "category": 2,
-      "tax": 6,
-      "tax_price": 135000
+      "category": 3,
+      "tax": 4
     }
   },
   {
@@ -434,9 +395,8 @@
     "fields": {
       "name": "山崎18年",
       "price": 10000,
-      "category": 2,
-      "tax": 6,
-      "tax_price": 13500
+      "category": 3,
+      "tax": 4
     }
   },
   {
@@ -445,9 +405,8 @@
     "fields": {
       "name": "響",
       "price": 60000,
-      "category": 2,
-      "tax": 6,
-      "tax_price": 81000
+      "category": 3,
+      "tax": 4
     }
   },
   {
@@ -455,10 +414,9 @@
     "pk": 42,
     "fields": {
       "name": "響21年",
-      "price": 10000,
-      "category": 2,
-      "tax": 6,
-      "tax_price": 13500
+      "price": 99999999,
+      "category": 3,
+      "tax": 4
     }
   },
   {
@@ -467,9 +425,8 @@
     "fields": {
       "name": "白州",
       "price": 35000,
-      "category": 2,
-      "tax": 6,
-      "tax_price": 47250
+      "category": 3,
+      "tax": 4
     }
   },
   {
@@ -477,10 +434,9 @@
     "pk": 44,
     "fields": {
       "name": "白州12年",
-      "price": 10000,
-      "category": 2,
-      "tax": 6,
-      "tax_price": 13500
+      "price": 99999999,
+      "category": 3,
+      "tax": 4
     }
   },
   {
@@ -489,9 +445,8 @@
     "fields": {
       "name": "ザ・マッカラン シェリーオーク",
       "price": 35000,
-      "category": 2,
-      "tax": 6,
-      "tax_price": 47250
+      "category": 3,
+      "tax": 4
     }
   },
   {
@@ -499,10 +454,9 @@
     "pk": 46,
     "fields": {
       "name": "ザ・マッカラン ダブルカスク",
-      "price": 10000,
-      "category": 2,
-      "tax": 6,
-      "tax_price": 13500
+      "price": 99999999,
+      "category": 3,
+      "tax": 4
     }
   },
   {
@@ -511,9 +465,8 @@
     "fields": {
       "name": "鏡月Green",
       "price": 6000,
-      "category": 3,
-      "tax": 6,
-      "tax_price": 8100
+      "category": 4,
+      "tax": 4
     }
   },
   {
@@ -522,9 +475,8 @@
     "fields": {
       "name": "鏡月プレミアム",
       "price": 7000,
-      "category": 3,
-      "tax": 6,
-      "tax_price": 9450
+      "category": 4,
+      "tax": 4
     }
   },
   {
@@ -533,9 +485,8 @@
     "fields": {
       "name": "JINRO",
       "price": 5000,
-      "category": 3,
-      "tax": 6,
-      "tax_price": 6750
+      "category": 4,
+      "tax": 4
     }
   },
   {
@@ -544,9 +495,8 @@
     "fields": {
       "name": "宮崎本店 キッコーミヤ焼酎",
       "price": 5000,
-      "category": 3,
-      "tax": 6,
-      "tax_price": 6750
+      "category": 4,
+      "tax": 4
     }
   },
   {
@@ -555,9 +505,8 @@
     "fields": {
       "name": "黒霧島",
       "price": 5000,
-      "category": 3,
-      "tax": 6,
-      "tax_price": 6750
+      "category": 4,
+      "tax": 4
     }
   },
   {
@@ -566,9 +515,8 @@
     "fields": {
       "name": "赤霧島",
       "price": 5000,
-      "category": 3,
-      "tax": 6,
-      "tax_price": 6750
+      "category": 4,
+      "tax": 4
     }
   },
   {
@@ -577,9 +525,8 @@
     "fields": {
       "name": "魔王",
       "price": 30000,
-      "category": 3,
-      "tax": 6,
-      "tax_price": 40500
+      "category": 4,
+      "tax": 4
     }
   },
   {
@@ -588,9 +535,8 @@
     "fields": {
       "name": "吉四六",
       "price": 10000,
-      "category": 3,
-      "tax": 6,
-      "tax_price": 13500
+      "category": 4,
+      "tax": 4
     }
   },
   {
@@ -599,9 +545,8 @@
     "fields": {
       "name": "神の河",
       "price": 7000,
-      "category": 3,
-      "tax": 6,
-      "tax_price": 9450
+      "category": 4,
+      "tax": 4
     }
   },
   {
@@ -609,10 +554,9 @@
     "pk": 55,
     "fields": {
       "name": "クロスデロスシエテ",
-      "price": 10000,
-      "category": 4,
-      "tax": 6,
-      "tax_price": 13500
+      "price": 99999999,
+      "category": 5,
+      "tax": 4
     }
   },
   {
@@ -620,10 +564,9 @@
     "pk": 56,
     "fields": {
       "name": "ルイラトゥールヴォーヌロマネ",
-      "price": 10000,
-      "category": 4,
-      "tax": 6,
-      "tax_price": 13500
+      "price": 99999999,
+      "category": 5,
+      "tax": 4
     }
   },
   {
@@ -631,10 +574,9 @@
     "pk": 57,
     "fields": {
       "name": "オーパスワン",
-      "price": 10000,
-      "category": 4,
-      "tax": 6,
-      "tax_price": 13500
+      "price": 99999999,
+      "category": 5,
+      "tax": 4
     }
   },
   {
@@ -642,10 +584,9 @@
     "pk": 58,
     "fields": {
       "name": "ダスティ",
-      "price": 10000,
+      "price": 99999999,
       "category": 5,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
@@ -653,10 +594,9 @@
     "pk": 59,
     "fields": {
       "name": "シャブリ",
-      "price": 10000,
+      "price": 99999999,
       "category": 5,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
@@ -666,8 +606,7 @@
       "name": "ショットドリンク（Sサイズ）",
       "price": 3000,
       "category": 6,
-      "tax": 6,
-      "tax_price": 4050
+      "tax": 4
     }
   },
   {
@@ -677,8 +616,7 @@
       "name": "ショットドリンク（Mサイズ）",
       "price": 4000,
       "category": 6,
-      "tax": 6,
-      "tax_price": 5400
+      "tax": 4
     }
   },
   {
@@ -688,8 +626,7 @@
       "name": "ピッチャー（割り物）Sサイズ",
       "price": 3000,
       "category": 6,
-      "tax": 6,
-      "tax_price": 4050
+      "tax": 4
     }
   },
   {
@@ -699,8 +636,7 @@
       "name": "ピッチャー（割り物）Mサイズ",
       "price": 4000,
       "category": 6,
-      "tax": 6,
-      "tax_price": 5400
+      "tax": 4
     }
   },
   {
@@ -710,8 +646,7 @@
       "name": "カットレモン",
       "price": 2000,
       "category": 6,
-      "tax": 6,
-      "tax_price": 2700
+      "tax": 4
     }
   },
   {
@@ -721,404 +656,317 @@
       "name": "梅干し",
       "price": 2000,
       "category": 6,
-      "tax": 6,
-      "tax_price": 2700
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 66,
     "fields": {
-      "name": "ドリンク（Sサイズ）",
-      "price": 2000,
-      "category": 7,
-      "tax": 6,
-      "tax_price": 2700
+      "name": "季節のお寿司",
+      "price": 99999999,
+      "category": 9,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 67,
     "fields": {
-      "name": "ドリンク（Mサイズ）",
-      "price": 3000,
-      "category": 7,
-      "tax": 6,
-      "tax_price": 4050
+      "name": "鮮魚の煮付け",
+      "price": 99999999,
+      "category": 9,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 68,
     "fields": {
-      "name": "ドリンク（Lサイズ）",
-      "price": 4000,
-      "category": 7,
-      "tax": 6,
-      "tax_price": 5400
+      "name": "とろける角煮",
+      "price": 99999999,
+      "category": 9,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 69,
     "fields": {
-      "name": "ショットドリンク（Sサイズ）",
-      "price": 3000,
-      "category": 7,
-      "tax": 6,
-      "tax_price": 4050
+      "name": "銀鱈の西京焼き",
+      "price": 99999999,
+      "category": 9,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 70,
     "fields": {
-      "name": "ショットドリンク（Mサイズ）",
-      "price": 4000,
-      "category": 7,
-      "tax": 6,
-      "tax_price": 5400
+      "name": "鮮魚の焼き物",
+      "price": 99999999,
+      "category": 9,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 71,
     "fields": {
-      "name": "季節のお寿司",
-      "price": 10000,
-      "category": 10,
-      "tax": 6,
-      "tax_price": 13500
+      "name": "サーロインステーキ",
+      "price": 99999999,
+      "category": 9,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 72,
     "fields": {
-      "name": "鮮魚の煮付け",
-      "price": 10000,
-      "category": 10,
-      "tax": 6,
-      "tax_price": 13500
+      "name": "季節のお造り",
+      "price": 99999999,
+      "category": 9,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 73,
     "fields": {
-      "name": "とろける角煮",
-      "price": 10000,
+      "name": "シーザーサラダ",
+      "price": 1000,
       "category": 10,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 74,
     "fields": {
-      "name": "銀鱈の西京焼き",
-      "price": 10000,
+      "name": "シーフードサラダ",
+      "price": 1200,
       "category": 10,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 75,
     "fields": {
-      "name": "鮮魚の焼き物",
-      "price": 10000,
-      "category": 10,
-      "tax": 6,
-      "tax_price": 13500
+      "name": "前菜5種盛り",
+      "price": 2500,
+      "category": 11,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 76,
     "fields": {
-      "name": "サーロインステーキ",
-      "price": 10000,
-      "category": 10,
-      "tax": 6,
-      "tax_price": 13500
+      "name": "前菜3種盛り",
+      "price": 2000,
+      "category": 11,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 77,
     "fields": {
-      "name": "季節のお造り",
-      "price": 10000,
-      "category": 10,
-      "tax": 6,
-      "tax_price": 13500
+      "name": "生湯葉のお造り",
+      "price": 1200,
+      "category": 11,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 78,
     "fields": {
-      "name": "シーザーサラダ",
-      "price": 10000,
+      "name": "だし巻き卵",
+      "price": 1000,
       "category": 11,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 79,
     "fields": {
-      "name": "シーフードサラダ",
-      "price": 10000,
+      "name": "チャンジャ",
+      "price": 700,
       "category": 11,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 80,
     "fields": {
-      "name": "前菜5種盛り",
-      "price": 10000,
-      "category": 12,
-      "tax": 6,
-      "tax_price": 13500
+      "name": "おぼろ豆腐",
+      "price": 1300,
+      "category": 11,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 81,
     "fields": {
-      "name": "前菜3種盛り",
-      "price": 10000,
-      "category": 12,
-      "tax": 6,
-      "tax_price": 13500
+      "name": "タコわさび",
+      "price": 700,
+      "category": 11,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 82,
     "fields": {
-      "name": "生湯葉のお造り",
-      "price": 10000,
-      "category": 12,
-      "tax": 6,
-      "tax_price": 13500
+      "name": "枝豆",
+      "price": 700,
+      "category": 11,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 83,
     "fields": {
-      "name": "だし巻き卵",
-      "price": 10000,
+      "name": "天ぷらの盛り合わせ",
+      "price": 2500,
       "category": 12,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 84,
     "fields": {
-      "name": "チャンジャ",
-      "price": 10000,
+      "name": "鮮魚のフィッシュフライ",
+      "price": 1500,
       "category": 12,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 85,
     "fields": {
-      "name": "おぼろ豆腐",
-      "price": 10000,
+      "name": "しんじょ風さつま揚げ",
+      "price": 1500,
       "category": 12,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 86,
     "fields": {
-      "name": "タコわさび",
-      "price": 10000,
+      "name": "揚げ出し豆腐",
+      "price": 1000,
       "category": 12,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 87,
     "fields": {
-      "name": "枝豆",
-      "price": 10000,
+      "name": "チーズフライ",
+      "price": 1000,
       "category": 12,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 88,
     "fields": {
-      "name": "天ぷらの盛り合わせ",
-      "price": 10000,
-      "category": 13,
-      "tax": 6,
-      "tax_price": 13500
+      "name": "軟骨の唐揚げ",
+      "price": 1000,
+      "category": 12,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 89,
     "fields": {
-      "name": "鮮魚のフィッシュフライ",
-      "price": 10000,
-      "category": 13,
-      "tax": 6,
-      "tax_price": 13500
+      "name": "ポテトフライ",
+      "price": 1000,
+      "category": 12,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 90,
     "fields": {
-      "name": "しんじょ風さつま揚げ",
-      "price": 10000,
-      "category": 13,
-      "tax": 6,
-      "tax_price": 13500
+      "name": "山芋フライ",
+      "price": 1000,
+      "category": 12,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 91,
     "fields": {
-      "name": "揚げ出し豆腐",
-      "price": 10000,
-      "category": 13,
-      "tax": 6,
-      "tax_price": 13500
+      "name": "若鶏の唐揚げ",
+      "price": 1000,
+      "category": 12,
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 92,
     "fields": {
-      "name": "チーズフライ",
-      "price": 10000,
+      "name": "鮮魚の吸い物",
+      "price": 1500,
       "category": 13,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 93,
     "fields": {
-      "name": "軟骨の唐揚げ",
-      "price": 10000,
+      "name": "味噌汁（赤出汁）",
+      "price": 600,
       "category": 13,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 94,
     "fields": {
-      "name": "ポテトフライ",
-      "price": 10000,
+      "name": "味噌汁",
+      "price": 500,
       "category": 13,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 95,
     "fields": {
-      "name": "山芋フライ",
-      "price": 10000,
+      "name": "お茶漬け",
+      "price": 1000,
       "category": 13,
-      "tax": 6,
-      "tax_price": 13500
+      "tax": 4
     }
   },
   {
     "model": "crm.mproduct",
     "pk": 96,
     "fields": {
-      "name": "若鶏の唐揚げ",
-      "price": 10000,
-      "category": 13,
-      "tax": 6,
-      "tax_price": 13500
-    }
-  },
-  {
-    "model": "crm.mproduct",
-    "pk": 97,
-    "fields": {
-      "name": "鮮魚の吸い物",
-      "price": 10000,
-      "category": 14,
-      "tax": 6,
-      "tax_price": 13500
-    }
-  },
-  {
-    "model": "crm.mproduct",
-    "pk": 98,
-    "fields": {
-      "name": "味噌汁（赤出汁）",
-      "price": 10000,
-      "category": 14,
-      "tax": 6,
-      "tax_price": 13500
-    }
-  },
-  {
-    "model": "crm.mproduct",
-    "pk": 99,
-    "fields": {
-      "name": "味噌汁",
-      "price": 10000,
-      "category": 14,
-      "tax": 6,
-      "tax_price": 13500
-    }
-  },
-  {
-    "model": "crm.mproduct",
-    "pk": 100,
-    "fields": {
-      "name": "お茶漬け",
-      "price": 10000,
-      "category": 14,
-      "tax": 6,
-      "tax_price": 13500
-    }
-  },
-  {
-    "model": "crm.mproduct",
-    "pk": 101,
-    "fields": {
       "name": "焼きおにぎり",
-      "price": 10000,
-      "category": 14,
-      "tax": 6,
-      "tax_price": 13500
+      "price": 600,
+      "category": 13,
+      "tax": 4
     }
   }
 ]

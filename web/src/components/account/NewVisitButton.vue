@@ -30,5 +30,7 @@ export default {
 <style lang="scss" scoped>
     #new_visit_button_wrap {
         cursor: pointer;
+        background-color: rgba(37, 119, 224, 0.87);
+        color: white;
     }
 </style>

@@ -58,8 +58,7 @@
     "pk": 7,
     "fields": {
       "large_category": 1,
-      "middle_category": 0,
-      "small_category": 6
+      "middle_category": 1
     }
   },
   {
@@ -67,20 +66,12 @@
     "pk": 8,
     "fields": {
       "large_category": 1,
-      "middle_category": 1
-    }
-  },
-  {
-    "model": "crm.mproductcategory",
-    "pk": 9,
-    "fields": {
-      "large_category": 1,
       "middle_category": 2
     }
   },
   {
     "model": "crm.mproductcategory",
-    "pk": 10,
+    "pk": 9,
     "fields": {
       "large_category": 2,
       "middle_category": 0
@@ -88,7 +79,7 @@
   },
   {
     "model": "crm.mproductcategory",
-    "pk": 11,
+    "pk": 10,
     "fields": {
       "large_category": 2,
       "middle_category": 1
@@ -96,7 +87,7 @@
   },
   {
     "model": "crm.mproductcategory",
-    "pk": 12,
+    "pk": 11,
     "fields": {
       "large_category": 2,
       "middle_category": 2
@@ -104,7 +95,7 @@
   },
   {
     "model": "crm.mproductcategory",
-    "pk": 13,
+    "pk": 12,
     "fields": {
       "large_category": 2,
       "middle_category": 3
@@ -112,7 +103,7 @@
   },
   {
     "model": "crm.mproductcategory",
-    "pk": 14,
+    "pk": 13,
     "fields": {
       "large_category": 2,
       "middle_category": 4

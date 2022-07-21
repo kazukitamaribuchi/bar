@@ -410,6 +410,41 @@ class Const {
     INPUT_SALES_DETAIL_PRODUCT_SUIMONO_HEADER = [
         { text: '吸い物、御飯物', largeCategory: 2, middleCategory: 4, smallCategory: 0 }
     ]
+    PRODUCT_CATEGORY_DICT = {
+        1: {
+            0: {
+                0: 'シャンパン1',
+                1: 'シャンパン2',
+                2: 'ウイスキー',
+                3: '焼酎',
+                4: 'ワイン',
+                5: 'ドリンク',
+            },
+            1: {
+                0: 'ノンアルコール'
+            },
+            2: {
+                0: 'ソフトドリンク'
+            }
+        },
+        2: {
+            0: {
+                0: 'メイン',
+            },
+            1: {
+                0: 'サラダ',
+            },
+            2: {
+                0: '前菜',
+            },
+            3: {
+                0: '揚げ物',
+            },
+            4: {
+                0: '吸い物、御飯物',
+            },
+        }
+    }
     INPUT_SALES_DETAIL_PRODUCT_CATEGORY_LIST = {
         0: 'アルコール',
         1: 'ノンアルコール',

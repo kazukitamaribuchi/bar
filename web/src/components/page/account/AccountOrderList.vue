@@ -1,17 +1,25 @@
 <template>
     <div>
-        <v-row>
+        <v-row v-if="!loading" style="margin: 0 1px;">
             <v-col
-                v-for="(item, i) in testData"
+                v-if="salesHeaderList.length == 0"
+                cols="12"
+            >
+                <v-card-text>伝票情報が存在しません。</v-card-text>
+            </v-col>
+            <v-col
+                v-else
+                v-for="(item, i) in salesHeaderList"
                 :key="i"
-                cols="6"
+                class="px-1"
+                cols="12"
                 @click="toPage(item)"
             >
                 <v-card
-                    style="cursor: pointer;"
+                    class="sales-header"
                 >
                     <v-card-title class="h6 my-0 pb-1 text-center">
-                        伝票No : {{ item.sales_no }}
+                        伝票No : {{ item.id }}
                     </v-card-title>
 
                     <v-divider class="mx-5 my-1">
@@ -21,14 +29,14 @@
                         席情報
                     </v-card-title>
                     <v-card-text class="my-0 py-1">
-                        <div>
-                            席： <span style="float: inline-end">{{ item.seat_name }}</span>
+                        <div v-if="item.seat != null">
+                            席： <span style="float: inline-end">{{ item.seat.seat_name }}</span>
+                        </div>
+                        <div v-else>
+                            席： <span style="float: inline-end">指定無し</span>
                         </div>
                         <div>
-                            貸切: <span style="float: inline-end">{{ item.is_charter }}</span>
-                        </div>
-                        <div>
-                            基本料金: <span style="float: inline-end">{{ item.basic_plan_name }}</span>
+                            基本料金: <span style="float: inline-end">{{ item.basic_plan_type.name }}</span>
                         </div>
                         <div>
                             来店時間: <span style="float: inline-end; font-size: 12px;">{{ item.visit_time }}</span>
@@ -52,45 +60,9 @@
                             ランク： <span style="float: inline-end">{{ item.customer.rank_name }}</span>
                         </div>
                         <div>
-                            来店人数： <span style="float: inline-end">{{ item.total_visitors }} (男{{ item.visitor_male }},女{{ item.visitor_female }})</span>
+                            来店人数： <span style="float: inline-end">{{ item.total_visitors }} (男{{ item.male_visitors }},女{{ item.female_visitors }})</span>
                         </div>
                     </v-card-text>
-                    <!-- <v-divider class="mx-5 my-1">
-                    </v-divider>
-                    <v-card-title class="subtitle-2 mt-0 pt-2 mb-0 pb-1">
-                        注文情報
-                    </v-card-title>
-                    <v-card-text class="my-0 py-1">
-                        <div>
-                            会員No： {{ item.customer.customer_no }}
-                        </div>
-                        <div>
-                            会員名： {{ item.customer.name }}
-                        </div>
-                        <div>
-                            ランク： {{ item.customer.rank_name }}
-                        </div>
-                        <div>
-                            来店人数： {{ item.total_visitors }} (男{{ item.visitor_male }},女{{ item.visitor_female }})
-                        </div>
-                    </v-card-text> -->
-                    <!-- <v-row>
-                        <v-col cols="4">
-                            <v-img
-                                style="width: 85px; height: 85px; margin: 25px 0 0 17px;"
-                                src="http://localhost:8000/media/upload/伝票1.jpg"
-                            ></v-img>
-                        </v-col>
-                        <v-col cols="12">
-
-                            <p class="mb-0">伝票No. {{ item.sales_no }}</p>
-                            <p class="mb-0">席 {{ item.seat_name }}</p>
-                            <p class="mb-0">会員No {{ item.customer.customer_no }}</p>
-                            <p class="mb-0">会員名 {{ item.customer.name }}</p>
-                            <p class="mb-0">来店時間 {{ item.visit_time }}</p>
-                            <p class="mb-0">来店人数 {{ item.total_visitors }}</p>
-                        </v-col>
-                    </v-row> -->
                 </v-card>
             </v-col>
             <v-col cols="12" class="my-0 py-2">
@@ -100,6 +72,13 @@
                 <HomeButton/>
             </v-col>
         </v-row>
+        <div v-else style="text-align: center;">
+            <v-progress-circular
+                indeterminate
+                color="primary"
+                style="text-align: center;"
+            ></v-progress-circular>
+        </div>
     </div>
 </template>
 <script>
@@ -146,11 +125,25 @@
                     visitor_female: 1,
                     basic_plan_name: '2時間',
                 },
-            ]
+            ],
+            salesHeaderList: [],
+            loading: true,
         }),
         beforeCreate () {
         },
         created () {
+            this.$axios({
+                method: 'GET',
+                url: '/api/sales/get_non_close_sales_header/',
+            })
+            .then(res => {
+                console.log(res)
+                this.salesHeaderList = res.data
+                this.loading = false
+            })
+            .catch(e => {
+                console.log(e)
+            })
         },
         beforeMount () {
         },
@@ -174,7 +167,7 @@
                 // console.log('this.$route', this.$route)
                 const route = this.$route.name
                 const params = {
-                    'id': item.sales_no,
+                    'id': item.id,
                 }
                 if (route == 'AccountOrderSelect') {
                     this.$router.push({
@@ -183,7 +176,7 @@
                     })
                 } else if (route == 'AccountOrderCheckSelect') {
                     this.$router.push({
-                        name: 'AccountOrderCheck',
+                        name: 'AccountOrderHistory',
                         params: params
                     })
                 }
@@ -193,4 +186,9 @@
     }
 </script>
 <style lang="scss" scoped>
+    .sales-header {
+        cursor: pointer;
+        padding: 14px;
+        background-color: rgba(224, 224, 224, 0.5);
+    }
 </style>

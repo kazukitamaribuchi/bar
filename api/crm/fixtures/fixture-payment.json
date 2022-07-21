@@ -5,7 +5,7 @@
     "fields": {
       "type": 0,
       "type_name": "現金",
-      "tax": 8
+      "tax": 4
     }
   },
   {
@@ -14,7 +14,7 @@
     "fields": {
       "type": 1,
       "type_name": "クレジットカード払い",
-      "tax": 8
+      "tax": 4
     }
   }
 ]

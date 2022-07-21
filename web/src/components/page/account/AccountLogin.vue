@@ -146,7 +146,7 @@ export default {
                 this.initState()
                 this.credentials = {
                 }
-                this.$router.push({name: 'Home'})
+                this.$router.push({name: 'AccountHome'})
             })
             .catch(e => {
                 console.log(e)
@@ -159,11 +159,8 @@ export default {
 <style lang="scss" scoped>
 #login_wrap {
     height: 100%;
-    padding-top: 13rem;
-    // font-family: Hiragino Kaku Gothic Pro,ヒラギノ角ゴ Pro,Yu Gothic Medium,游ゴシック Medium,YuGothic,游ゴシック体,メイリオ,sans-serif;
+    // padding-top: 13rem;
 
-    // background-color: $theme-color;
-    background-color: $theme-color2;
 
     .input-group-text {
         height: 100%;
@@ -174,7 +171,6 @@ export default {
         text-align: center;
         font-size: 20px;
         margin: 40px auto 30px;
-        // color: white;
     }
 
     .card-body {
@@ -182,10 +178,9 @@ export default {
     }
 
     .login_card {
-        width: 500px;
+        // width: 500px;
         margin: 0 auto;
-
-        // background-color: $theme-color2;
+        border: none;
     }
 
     .submit_btn {

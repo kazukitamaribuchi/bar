@@ -30,6 +30,8 @@ from .serializers import (
     CardSerializer,
     BottleSerializer,
     SalesSerializer,
+    SalesDetailSerializer,
+    SubSalesDetailSerializer,
     # AttendanceSerializer,
     BookingSerializer,
     # QuestionSerializer,
@@ -81,7 +83,7 @@ PRODUCT_CATEGORY = {
 
     1: {
         # アルコール
-        0: [0,1,2,3,4,5,6],
+        0: [0,1,2,3,4,5],
 
         # ノンアル
         1: [0],
@@ -247,11 +249,23 @@ class CustomerViewSet(BaseModelViewSet):
 
         return Response({'status': 'success', 'data': res}, status=status.HTTP_200_OK)
 
+    @action(methods=['get'], detail=False)
+    def get_customer_exist(self, request):
+
+        try:
+            MCustomer.objects.get(pk=request.query_params['customer_id'])
+            return Response({'status': 'success', 'data': True})
+        except MCustomer.DoesNotExist:
+            return Response({'status': 'success', 'data': False})
+
+        return Response({'status': 'failure', 'data': None})
+
 
 class RankViewSet(BaseModelViewSet):
     """
     """
-    permission_classes = (permissions.IsAuthenticated,)
+    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
     queryset = MRank.objects.all()
     serializer_class = RankSerializer
 
@@ -259,7 +273,8 @@ class RankViewSet(BaseModelViewSet):
 class TaxViewSet(BaseModelViewSet):
     """
     """
-    permission_classes = (permissions.IsAuthenticated,)
+    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
     queryset = MTax.objects.all()
     serializer_class = TaxSerializer
 
@@ -427,7 +442,8 @@ class ProductViewSet(BaseModelViewSet):
 class SeatViewSet(BaseModelViewSet):
     """
     """
-    permission_classes = (permissions.IsAuthenticated,)
+    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
     queryset = MSeat.objects.all()
     serializer_class = SeatSerializer
 
@@ -435,7 +451,8 @@ class SeatViewSet(BaseModelViewSet):
 class CardViewSet(BaseModelViewSet):
     """
     """
-    permission_classes = (permissions.IsAuthenticated,)
+    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
     queryset = CardManagement.objects.all()
     serializer_class = CardSerializer
 
@@ -1705,11 +1722,154 @@ class SalesViewSet(BaseModelViewSet):
             'data': serializer.data,
         })
 
+    @transaction.atomic
+    @action(methods=['post'], detail=False)
+    def create_sales_header(self, request):
+        logger.debug('★create_sales_data')
+        logger.debug(request.data)
+
+        customer_no = request.data['customer_no']
+        customer = None
+        if customer_no != None and customer_no != '':
+            try:
+                customer = MCustomer.objects.get(card__customer_no=customer_no)
+            except MCustomer.DoesNotExist:
+                logger.error('顧客情報が取得出来ません。')
+                return Response(status.status.HTTP_400_BAD_REQUEST)
+        else:
+            logger.error('会員IDが正しくありません')
+            return Response(status.status.HTTP_400_BAD_REQUEST)
+
+        male_visitors = request.data['male_visitors']
+        female_visitors = request.data['female_visitors']
+        basic_plan_type = request.data['basic_plan_type']
+        seat_id = request.data['seat_id']
+        remarks = request.data['remarks']
+
+        try:
+            service = MService.objects.get(pk=basic_plan_type)
+        except MService.DoesNotExist:
+            logger.error('サービス情報が取得出来ません。')
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+        visit_time = datetime.now(timezone('Asia/Tokyo'))
+
+        visit_time_str = request.data['visit_time']
+
+        if visit_time_str != '' and visit_time_str != None:
+            visit_time = datetime.strptime(visit_time_str, '%Y-%m-%d %H:%M').astimezone(timezone('Asia/Tokyo'))
+
+        seat = None
+        logger.debug('seat_id')
+        logger.debug(seat_id == None)
+        if seat_id != None and seat_id != '':
+            try:
+                seat = MSeat.objects.get(pk=seat_id)
+            except MSeat.DoesNotExist:
+                logger.error('座席情報が取得出来ません。')
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        header = SalesHeader.objects.create(
+            customer=customer,
+            male_visitors=male_visitors,
+            female_visitors=female_visitors,
+            seat=seat,
+            visit_time=visit_time,
+            basic_plan_type=service,
+            remarks=remarks,
+        )
+
+        return Response({
+            'status':'success',
+            'data': SalesSerializer(header).data
+        }, status=status.HTTP_200_OK)
+
+    @action(methods=['get'], detail=False)
+    def get_non_close_sales_header(self, request):
+
+        return Response(
+            SalesSerializer(SalesHeader.objects.filter(
+                close_flg=False,
+            ),
+            many=True).data
+        )
+
+    @action(methods=['get'], detail=False)
+    def get_non_end_sales_detail(self, request):
+        return Response(
+            SubSalesDetailSerializer(SalesDetail.objects.filter(
+                end_flg=False,
+            ),
+            many=True).data
+        )
+
+    @action(methods=['post'], detail=False)
+    def end_sales_detail(self, request):
+
+        try:
+            detail = SalesDetail.objects.get(pk=request.data['sales_detail_id'])
+            detail.end_flg = True
+            detail.save()
+        except:
+            logger.error('商品明細の締めフラグ更新失敗')
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(
+            SubSalesDetailSerializer(SalesDetail.objects.filter(
+                end_flg=False,
+            ),
+            many=True).data
+        )
+
+
+    @transaction.atomic
+    @action(methods=['post'], detail=False)
+    def add_sales_detail(self, request):
+        """
+        注文を取る
+        """
+
+        logger.debug('add_sales_detail')
+        logger.debug(request.data)
+
+        try:
+            sales_header = SalesHeader.objects.get(pk=request.data['sales_header_id'])
+        except SalesHeader.DoesNotExist:
+            logger.error('伝票情報が取得出来ません。')
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        order_time = datetime.now(timezone('Asia/Tokyo'))
+
+        sales_detail_list = request.data['sales_detail_list']
+        for item in sales_detail_list:
+            try:
+                product = MProduct.objects.get(pk=item['id'])
+            except MProduct.DoesNotExist:
+                logger.error('商品情報が取得出来ません。')
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+            SalesDetail.objects.create(
+                header=sales_header,
+                product=product,
+                quantity=item['quantity'],
+                fixed_price=item['fixedPrice'],
+                tax_free_flg=item['taxFree'],
+                order_time=order_time,
+            )
+
+        logger.debug('注文データ作成完了 sales_header:' + str(sales_header.id))
+
+        return Response({
+            'status': 'success',
+            'data': SalesSerializer(sales_header).data
+        }, status=status.HTTP_200_OK)
 
 class BookingViewSet(BaseModelViewSet):
     """
     """
-    permission_classes = (permissions.IsAuthenticated,)
+    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
     queryset = BookingManagement.objects.all()
     serializer_class = BookingSerializer
 
@@ -1727,7 +1887,8 @@ class BookingViewSet(BaseModelViewSet):
 
 class TimeViewSet(viewsets.ViewSet):
 
-    permission_classes = (permissions.IsAuthenticated,)
+    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
     queryset = MCustomer.objects.all()
     serializer_class = CustomerSerializer
 

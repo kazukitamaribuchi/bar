@@ -30,5 +30,8 @@ export default {
 <style lang="scss" scoped>
     #home_button_wrap {
         cursor: pointer;
+        background-color: rgba(0, 59, 102, 0.9);
+        // background-color: $theme-color2;
+        color: white;
     }
 </style>

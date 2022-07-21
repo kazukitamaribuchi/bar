@@ -2,16 +2,51 @@
     <div id="header_wrap">
         <div>
             <i
-                class='bx bx-menu header-hum'
+                class='bx header-hum'
+                :class="{trans: menu, 'trans2': !menu, 'bx-menu': !menu, 'bx-x': menu}"
+                @click="menu = !menu"
             ></i>
         </div>
         <div class="header-title">
-            {{ headerTitle }}
+            <!-- {{ headerTitle }} -->
         </div>
+
+        <transition name="slide-fade">
+            <div
+                v-if="menu"
+                class="hum-menu"
+            >
+                <v-list>
+                    <v-subheader>MENUS</v-subheader>
+                        <v-list-item-group
+                            color="primary"
+                        >
+                            <v-list-item
+                                v-for="(item, i) in items"
+                                :key="i"
+                                @click="toEvent(item.click)"
+                            >
+                                <v-list-item-icon>
+                                    <v-icon v-text="item.icon"></v-icon>
+                                </v-list-item-icon>
+                                <v-list-item-content>
+                                    <v-list-item-title v-text="item.text"></v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </v-list-item-group>
+                </v-list>
+            </div>
+        </transition>
+
+        <LogoutConfirm
+            ref="logoutConfirm"
+        />
     </div>
 </template>
 
 <script>
+
+import LogoutConfirm from '@/components/common/dialog/LogoutConfirm'
 
 const title = {
     'AccountHome': 'ホーム',
@@ -20,20 +55,86 @@ const title = {
     'AccountNewVisit': '新規入店',
     'AccountBottle': 'ボトル',
     'AccountCustomer': '顧客情報照会',
+    'AccountOrder': '注文商品選択',
+    'AccountProductDetail': '注文商品選択',
+    'AccountOrderCheck': '注文確認',
 }
 
 export default {
     name: 'HeaderItem',
     data: () => ({
-        activeItem: {}
+        activeItem: {},
+        menu: false,
+        absolute: true,
+        items: [
+            {
+                text: 'ホーム',
+                icon: 'mdi-clock',
+                click: 0
+            },
+            {
+                text: '設定',
+                icon: 'mdi-account',
+                click: 1
+            },
+            {
+                text: 'ログアウト',
+                icon: 'mdi-flag',
+                click: 2
+            },
+        ],
     }),
     components: {
+        LogoutConfirm,
+    },
+    beforeCreate () {
+    },
+    created () {
+    },
+    beforeMount () {
+    },
+    mounted () {
+    },
+    beforeUpdate () {
+    },
+    update () {
+    },
+    beforeDestroy () {
+    },
+    destoryd () {
     },
     computed: {
         headerTitle () {
             return title[this.$route.name]
-        }
+        },
     },
+    methods: {
+        toEvent (val) {
+            switch (val) {
+                case 0:
+                    this.home()
+                    break
+                case 1:
+                    this.setting()
+                    break
+                case 2:
+                    this.logout()
+                    break
+                default:
+                    break
+            }
+        },
+        home () {
+            console.log('home')
+        },
+        setting () {
+            console.log('setting')
+        },
+        logout () {
+            console.log('logout')
+            this.$refs.logoutConfirm.open()
+        },
+    }
 }
 </script>
 
@@ -57,11 +158,20 @@ export default {
         display: flex;
     }
     .header-hum {
-        font-size: 25px;
+        font-size: 45px;
         cursor: pointer;
         position: absolute;
         top: 3px;
         left: 3px;
+    }
+
+    .trans {
+        transition: 0.5s;
+        transform: rotate(0.5turn);
+    }
+
+    .trans2 {
+        transform: rotate(-0.5turn);
     }
 
     // background-color: $theme-color;
@@ -78,6 +188,35 @@ export default {
     //     font-weight: bold;
     //     font-size: 22px;
     // }
+
+    .hum-menu {
+        z-index: 1000;
+        width: 70%;
+        left: 0;
+        position: fixed;
+        // top: 0;
+        height: 100%;
+        background: white;
+        border: 1px solid rgba(100, 100, 100, 0.5);
+        padding: 1rem;
+        margin-top: 10px;
+        // transition: 0.5s;
+    }
+
+    .slide-fade-enter-active {
+        width: 70%;
+        transition: all .2s ease;
+    }
+    .slide-fade-leave-active {
+        width: 70%;
+        transition: all .5s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+    }
+    .slide-fade-enter, .slide-fade-leave-to
+    /* .slide-fade-leave-active below version 2.1.8 */ {
+        width: 0;
+        transform: translateX(-100px);
+        opacity: 0;
+    }
 }
 
 </style>

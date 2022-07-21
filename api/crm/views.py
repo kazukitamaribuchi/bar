@@ -87,23 +87,30 @@ class AppInitView(generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         try:
             customers = CustomerSerializer(MCustomer.objects.all(), many=True).data
+            logger.debug('1')
             product = ProductSerializer(MProduct.objects.all(), many=True).data
+            logger.debug('2')
             product_by_category = get_product_by_category()
+            logger.debug('3')
             popular, top = get_popular_product()
-            cast = CastSerializer(MCast.objects.all(), many=True).data
+            logger.debug('4')
             sales = SalesSerializer(SalesHeader.objects.all(), many=True).data
-            question = QuestionSerializer(MQuestion.objects.all(), many=True).data
+            logger.debug('5')
             bottle = BottleSerializer(BottleManagement.objects.all(), many=True).data
+            seat = SeatSerializer(MSeat.objects.all(), many=True).data
+            # cast = CastSerializer(MCast.objects.all(), many=True).data
+            # question = QuestionSerializer(MQuestion.objects.all(), many=True).data
 
             return Response({
                 'customers': customers,
                 'product': product,
                 'product_by_category': product_by_category,
                 'popular': {'popular': popular, 'top': top},
-                'cast': cast,
                 'sales': sales,
-                'question': question,
                 'bottle': bottle,
+                'seat': seat,
+                # 'question': question,
+                # 'cast': cast,
             }, status=status.HTTP_200_OK)
 
         except Exception as e:

@@ -6,7 +6,7 @@
                 class='bx bx-undo undo-btn'
             ></i>
         </div>
-        <p class="text-center">
+        <p class="text-center" style="font-size: 13px;">
             伝票選択
         </p>
         <AccountOrderList
@@ -60,7 +60,7 @@
 </script>
 <style lang="scss" scoped>
     .undo-btn {
-        font-size: 25px;
+        font-size: 35px;
         cursor: pointer;
         position: absolute;
         top: 55px;

@@ -1,7 +1,6 @@
 import { Account } from '@/views/index'
 import {
     AccountHome,
-    AccountLogin,
     AccountOrder,
     AccountOrderSelect,
     AccountOrderCheck,
@@ -9,7 +8,9 @@ import {
     AccountOrderClose,
     AccountNewVisit,
     AccountBottle,
-    AccountCustomer
+    AccountCustomer,
+    AccountProductDetail,
+    AccountLogin
 } from '@/components/index'
 
 const routes = {
@@ -40,6 +41,11 @@ const routes = {
             path: 'order/:id',
             name: 'AccountOrder',
             component: AccountOrder,
+        },
+        {
+            path: 'order/:id/product/:large/:middle/:small',
+            name: 'AccountProductDetail',
+            component: AccountProductDetail,
         },
         {
             path: 'order/:id/check',

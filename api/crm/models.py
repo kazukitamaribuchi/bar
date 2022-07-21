@@ -113,6 +113,17 @@ class MRank(models.Model):
         max_length=20,
     )
 
+    bottom_line_sales = models.IntegerField(
+        _('売上ボトムライン'),
+        default=0,
+    )
+
+    top_line_sales = models.IntegerField(
+        _('売上トップライン'),
+        null=True,
+        blank=True,
+    )
+
     def __str__(self):
         return self.rank_name
 
@@ -327,37 +338,27 @@ class MProductCategory(AbstractBaseModel):
         1: 飲料
         2: フード
     　中カテゴリ
-        【0】 #削除
+        【0】 #削除 => サービスに移行
             「0」:基本料金・・・pk:1
-            「1」:指名料・・・pk:2
-            「2」:場内指名料・・・pk:3
-            「3」:VIP料金・・・pk:4
-            「4」:同伴料金・・・pk:5
         【1】
             「0」:アルコール・・・
-            「1」:ノンアルコール・・・pk:13
-            「2」:ソフトドリンク・・・pk:14
+            「1」:ノンアルコール・・・pk:8
+            「2」:ソフトドリンク・・・pk:9
         【2】【?】
-            「0」:メイン・・・pk:15
-            「1」:サラダ・・・pk:16
-            「2」:おかず・・・pk:17 => 前菜(20220609)
-            「3」:おつまみ・・・pk:18 => 揚げ物(20220609)
-            「4」:デザート・・・pk:19 => 吸い物、御飯物(20220609)
-            「5」:
+            「0」:メイン・・・pk:10
+            「1」:サラダ・・・pk:11
+            「2」:前菜・・・pk:12
+            「3」:揚げ物・・・pk:13
+            「4」:吸い物、御飯物・・・pk:14
 
     　小カテゴリ
-        →飲料[0]アルコール[0]のみ。
-
         【1】【0】【?】
-            「0」:シャンパン・・・pk:6
-            「1」:ワイン・・・pk:7 => ウイスキー(20220609)
-            「2」:焼酎・・・pk:8
-            「3」:サワー・・・pk:9 => ワイン(赤)(20220609)
-            「4」:カクテル・・・pk:10 => ワイン(白)(20220609)
-            「5」:日本酒・・・pk:11 => 顧客ドリンク(20220609)
-            「6」:ビール・・・pk:12 => キャストドリンク(20220609)
-            「7」:
-
+            「0」:シャンパン1・・・pk:2
+            「1」:シャンパン2・・・pk:3
+            「2」:ウイスキー・・・pk:4
+            「3」:焼酎・・・pk:5
+            「4」:ワイン・・・pk:6
+            「5」:ドリンク・・・pk:7
     """
 
     large_category = models.SmallIntegerField(
@@ -405,42 +406,25 @@ class MService(AbstractServiceModel):
     """
     サービス情報のマスタ
         基本料金
-        指名料金
-        同伴料金
         延長料金
             type:
                 0(基本)
-                    0:A 20:30~21:30
-                    1:B 21:30~22:30
-                    2:C 22:30~LAST
-                1(指名)
-                    0:指名
-                    1:本指名
-                    2:場内指名
-                2(同伴)
-                    0:同伴
-                3(延長)
-                    0:延長
-                4(席料金)
-                    0:席料金 (VIPの場合 席料金1)
-                    1:席料金 (VIPのみで 席料金2)
+                    0:通常
+                    1:貸切
+                1(延長)
+                    0:延長（通常）
+                    1:延長（貸切）
 
-        2022/06/06 => VIPの場合SET料金無しで席料金のみ
-　　　　　　　　　　　　⇒1~4人・・・1時間20000
-　　　　　　　　　　　　⇒5人以上・・・2時間100000で貸し切りみたいな形になる
-
-        start_tile, end_time = 21:00のようにコロン区切り4桁文字列
-
-        将来的に指名でもNormal Vipの料金違いにも対応出来るように
+            large0, middle0 [0, 1, 2]
+            large0, middle1 [0, 1, 2]
+            large1, middle0 0
+            large1, middle1 0
 
     """
-    basic_plan_type = models.SmallIntegerField(_('Normal or VIP'), default=0)
 
     large_category = models.SmallIntegerField(_('大カテゴリ'), default=0)
     middle_category = models.SmallIntegerField(_('中カテゴリ'), default=0)
-
-    start_time = models.DateTimeField(_('開始時間'), null=True, blank=True)
-    end_time = models.DateTimeField(_('終了時間'), null=True, blank=True)
+    small_category = models.SmallIntegerField(_('小カテゴリ'), default=0)
 
 
     description = models.TextField(
@@ -455,9 +439,9 @@ class MService(AbstractServiceModel):
         related_name='basic_service',
     )
 
-    tax_price = models.SmallIntegerField(
-        _('税込価格'),
-    )
+    # tax_price = models.SmallIntegerField(
+    #     _('税込価格'),
+    # )
 
     def __str__(self):
         return self.name
@@ -522,9 +506,9 @@ class MProduct(AbstractServiceModel):
         related_name='product',
     )
 
-    tax_price = models.IntegerField(
-        _('税込価格'),
-    )
+    # tax_price = models.IntegerField(
+    #     _('税込価格'),
+    # )
 
     like = models.BooleanField(
         _('お気に入り'),

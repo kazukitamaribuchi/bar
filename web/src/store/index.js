@@ -10,6 +10,8 @@ import bookingMutations from './mutations/booking'
 import salesMutations from './mutations/sales'
 import attendanceMutations from './mutations/attendance'
 import productMutations from './mutations/product'
+import accountMutations from './mutations/account'
+import seatMutations from './mutations/seat'
 
 import customerActions from './actions/customer'
 import castActions from './actions/cast'
@@ -19,6 +21,8 @@ import bookingActions from './actions/booking'
 import salesActions from './actions/sales'
 import attendanceActions from './actions/attendance'
 import productActions from './actions/product'
+import accountActions from './actions/account'
+import seatActions from './actions/seat'
 
 import router from '@/router'
 
@@ -43,6 +47,10 @@ const initialState = {
     product: [],
     popularProduct: [],
     productByCategory: [],
+    selectedProduct: [],
+    selectedProductSalesId: null,
+    seat: [],
+    accountData: [],
 }
 
 
@@ -71,6 +79,10 @@ export default new Vuex.Store({
         product: state => state.product,
         popularProduct: state => state.popularProduct,
         productByCategory: state => state.productByCategory,
+        selectedProduct: state => state.selectedProduct,
+        selectedProductSalesId: state => state.selectedProductSalesId,
+        seat: state => state.seat,
+        accountData: state => state.accountData,
     },
     mutations: {
         ...customerMutations,
@@ -81,6 +93,8 @@ export default new Vuex.Store({
         ...salesMutations,
         ...attendanceMutations,
         ...productMutations,
+        ...accountMutations,
+        ...seatMutations,
 
         setAuthToken (state, payload) {
             state.isAuth = true
@@ -111,6 +125,10 @@ export default new Vuex.Store({
             state.product = []
             state.popularProduct = []
             state.productByCategory = []
+            state.selectedProduct = []
+            state.selectedProductSalesId = null
+            state.seat = []
+            state.accountData = []
         },
         setCurrentTime (state, payload) {
             state.currentTime = payload
@@ -125,6 +143,8 @@ export default new Vuex.Store({
         ...salesActions,
         ...attendanceActions,
         ...productActions,
+        ...accountActions,
+        ...seatActions,
 
         checkAuthToken (ctx, kwargs) {
             return new Promise((resolve, reject) => {
@@ -178,11 +198,11 @@ export default new Vuex.Store({
 					this.commit('setProductList', res.data.product)
 					this.commit('setPopularProductList', res.data.popular)
                     this.commit('setProductByCategoryList', res.data.product_by_category)
-                    this.commit('setCastList', res.data.cast)
                     this.commit('setSalesList', res.data.sales)
-                    this.commit('setQuestionList', res.data.question)
                     this.commit('setBottleList', res.data.bottle)
-
+                    this.commit('setSeatList', res.data.seat)
+                    // this.commit('setCastList', res.data.cast)
+                    // this.commit('setQuestionList', res.data.question)
 					resolve(res)
 	        	})
 	        	.catch(e => {
