@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-row v-if="!loading" style="margin: 0 1px;">
+        <v-row v-if="!loading" style="margin: 0 1px;" class="pa-1">
             <v-col
                 v-if="salesHeaderList.length == 0"
                 cols="12"

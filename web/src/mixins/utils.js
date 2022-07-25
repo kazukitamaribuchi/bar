@@ -13,6 +13,10 @@ export default {
             var digitVal = Math.pow(10, -2)
             return Math.ceil(value * digitVal) / digitVal
         },
+        roundDown2 (value) {
+            var digitVal = Math.pow(10, -2)
+            return Math.floor(value * digitVal) / digitVal
+        },
         modifyStrTime (h, m) {
             return this.padStrTime(h).concat(':', this.padStrTime(m))
         },

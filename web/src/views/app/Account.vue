@@ -3,12 +3,7 @@
         <Header
             v-if="isAuth"
         />
-        <v-container
-            id="account_wrap"
-            fluid
-        >
-            <router-view/>
-        </v-container>
+        <router-view/>
         <v-overlay
             :value="humMenu"
             :zIndex="0"
@@ -57,7 +52,11 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+    html.overflow-y-hidden {
+        overflow-y: auto !important;
+    }
+
     // .humActive {
     //     background: yellow;
     //     z-index: 9999;

@@ -579,7 +579,8 @@ class MSeat(models.Model):
     )
 
     def show_str(self, type, no):
-        return str(self.SEAT_TYPE_CHOICES[seat_type] + seat_name)
+        # return str(self.SEAT_TYPE_CHOICES[seat_type] + seat_name)
+        return self.seat_name
 
     def __str__(self):
         return self.show_str(self.seat_type, self.seat_name)

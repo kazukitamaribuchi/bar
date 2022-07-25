@@ -1,17 +1,15 @@
 <template>
-    <v-row>
-        <div>
-            <i
-                @click="undo"
-                class='bx bx-undo undo-btn'
-            ></i>
-        </div>
+    <div>
+        <i
+            @click="undo"
+            class='bx bx-undo undo-btn'
+        ></i>
         <p class="text-center" style="font-size: 13px;">
             伝票選択
         </p>
         <AccountOrderList
         />
-    </v-row>
+    </div>
 </template>
 
 
@@ -60,7 +58,7 @@
 </script>
 <style lang="scss" scoped>
     .undo-btn {
-        font-size: 35px;
+        font-size: 25px;
         cursor: pointer;
         position: absolute;
         top: 55px;

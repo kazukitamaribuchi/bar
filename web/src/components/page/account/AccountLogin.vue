@@ -1,6 +1,33 @@
 <template>
     <div id="login_wrap">
-        <b-card
+        <v-container>
+
+            <div class="logo_area">
+                <div class="logo">
+                    LOGO
+                </div>
+            </div>
+
+            <vs-input v-model="value1" placeholder="User name">
+                <template #icon>
+                    <i class='bx bx-user'></i>
+                </template>
+            </vs-input>
+
+            <vs-input type="password" v-model="value2" placeholder="Password">
+                <template #icon>
+                    <i class='bx bx-lock-open-alt'></i>
+                </template>
+            </vs-input>
+
+            <vs-button
+                block
+            >
+            <i class='bx bxs-paint-roll' ></i> Edit Theme
+            </vs-button>
+        </v-container>
+
+        <!-- <b-card
             title="Login"
             class="login_card"
         >
@@ -56,7 +83,7 @@
                     @click="login"
                 >Login</b-button>
             </b-form>
-        </b-card>
+        </b-card> -->
     </div>
 
 </template>
@@ -158,35 +185,43 @@ export default {
 
 <style lang="scss" scoped>
 #login_wrap {
-    height: 100%;
-    // padding-top: 13rem;
+    // height: 100%;
 
+    .logo_area {
+        height: 200px;
 
-    .input-group-text {
-        height: 100%;
-        border-radius: 5px 0 0 5px !important;
+        .logo {
+            line-height: 200px;
+            text-align: center;
+            margin: 0 auto;
+        }
     }
 
-    .card-title {
-        text-align: center;
-        font-size: 20px;
-        margin: 40px auto 30px;
-    }
-
-    .card-body {
-        padding: 0.5rem 3rem;
-    }
-
-    .login_card {
-        // width: 500px;
-        margin: 0 auto;
-        border: none;
-    }
-
-    .submit_btn {
-        margin: 1.5rem auto 2rem;
-        width: 40%;
-        display: block;
-    }
+    // .input-group-text {
+    //     height: 100%;
+    //     border-radius: 5px 0 0 5px !important;
+    // }
+    //
+    // .card-title {
+    //     text-align: center;
+    //     font-size: 20px;
+    //     margin: 40px auto 30px;
+    // }
+    //
+    // .card-body {
+    //     padding: 0.5rem 3rem;
+    // }
+    //
+    // .login_card {
+    //     // width: 500px;
+    //     margin: 0 auto;
+    //     border: none;
+    // }
+    //
+    // .submit_btn {
+    //     margin: 1.5rem auto 2rem;
+    //     width: 40%;
+    //     display: block;
+    // }
 }
 </style>

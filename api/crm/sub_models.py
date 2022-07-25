@@ -193,13 +193,6 @@ class SalesHeader(AbstractBaseModel):
 
     # move_time = models.DateTimeField(null=True, blank=True)
 
-    payment = models.ForeignKey(
-        'crm.MPayment',
-        on_delete=models.CASCADE,
-        related_name='sales_header',
-        null=True,
-    )
-
     # is_charterd = models.BooleanField(
     #     _('貸し切りフラグ'),
     #     default=False,
@@ -252,15 +245,38 @@ class SalesHeader(AbstractBaseModel):
         default=0,
     )
 
-    tax_free_flg = models.BooleanField(
-        _('非課税フラグ'),
-        default=False,
+    # tax_free_flg = models.BooleanField(
+    #     _('非課税フラグ'),
+    #     default=False,
+    # )
+    #
+    # tax_rate = models.SmallIntegerField(
+    #     _('税率'),
+    #     default=35,
+    # )
+
+    basic_plan_service_tax = models.SmallIntegerField(
+        _('税率'),
+        default=10,
     )
 
-    tax_rate = models.SmallIntegerField(
+    basic_plan_tax = models.SmallIntegerField(
         _('税率'),
-        default=35,
+        default=10,
     )
+
+    basic_plan_card_tax = models.SmallIntegerField(
+        _('税率'),
+        default=0,
+    )
+
+    payment = models.ForeignKey(
+        'crm.MPayment',
+        on_delete=models.CASCADE,
+        related_name='sales_header',
+        null=True,
+    )
+
 
     seat = models.ForeignKey(
         'crm.MSeat',

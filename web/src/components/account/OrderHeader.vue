@@ -27,7 +27,7 @@
             cols="3"
             class="pa-0 menu-area"
             style="border-right: 1px solid rgba(200, 200, 200, 0.5);"
-            @click="toAccountOrderCheck"
+            @click="showOrderDetail"
         >
             <p class="text-center menu-text">
                 注文情報
@@ -36,17 +36,31 @@
         <v-col
             cols="3"
             class="pa-0 menu-area"
-            @click="toEditSalesHeader"
+            @click="showSeatDetail"
         >
             <p class="text-center menu-text">
                 席情報
             </p>
         </v-col>
+
+        <CustomerDetailDialog
+            ref="customerDetailDialog"
+        />
+        <OrderDetailDialog
+            ref="orderDetailDialog"
+        />
+        <SeatDetailDialog
+            ref="seatDetailDialog"
+            @updateSalesData="updateSalesData"
+        />
     </v-row>
 </template>
 
 <script>
 
+import CustomerDetailDialog from '@/components/account/dialog/CustomerDetailDialog'
+import OrderDetailDialog from '@/components/account/dialog/OrderDetailDialog'
+import SeatDetailDialog from '@/components/account/dialog/SeatDetailDialog'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
@@ -55,6 +69,9 @@ export default {
         headerInfo: null,
     }),
     components: {
+        CustomerDetailDialog,
+        OrderDetailDialog,
+        SeatDetailDialog,
     },
     created () {
         this.$axios({
@@ -86,10 +103,16 @@ export default {
             })
         },
         showCustomerDetail () {
+            this.$refs.customerDetailDialog.open(this.headerInfo.customer)
         },
-        toAccountOrderCheck () {
+        showOrderDetail () {
+            this.$refs.orderDetailDialog.open(this.headerInfo)
         },
-        toEditSalesHeader () {
+        showSeatDetail () {
+            this.$refs.seatDetailDialog.open(this.headerInfo)
+        },
+        updateSalesData (salesData) {
+            this.headerInfo = salesData
         }
     }
 }

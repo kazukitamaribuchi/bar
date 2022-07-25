@@ -1,18 +1,35 @@
 <template>
-    <v-row class="selected_product_footer_wrap">
-        <v-col cols="7" class="order_detail pr-0">
+    <v-row class="account_check_footer_wrap">
+        <v-col
+            cols="7"
+            class="account_detail pr-0"
+            v-if="mode == 0"
+        >
             <v-card-subtitle class="ma-0 pb-1 pt-0 px-0">
-                注文数 : <SelectedProductTotalCnt/>点
+                注文数 : {{ totalOrder }}点
             </v-card-subtitle>
             <v-card-subtitle class="ma-0 pb-1 pt-0 px-0">
-                総計(税抜) : <SelectedProductTotalPrice/>
+                合計(税抜) : <i class='bx bx-yen'></i>{{ totalPrice | priceLocaleString }}
             </v-card-subtitle>
             <v-card-subtitle class="ma-0 py-0 px-0">
-                総計(税込) : <SelectedProductTotalPrice :tax=true />
+                合計(税込) : <i class='bx bx-yen'></i>{{ totalTaxPrice | priceLocaleString }}
             </v-card-subtitle>
         </v-col>
-        <v-col cols="5" class="order_check" @click="orderCheck" :class="{order_confirm: isOrderComfirm}">
-            <p class="order_check_text">{{ orderCheckText }}</p>
+        <v-col
+            v-else
+            cols="7"
+            class="account_close_cancel pr-0"
+            @click="accountCloseCancel"
+        >
+            <p class="account_close_cancel_text">キャンセル</p>
+        </v-col>
+        <v-col
+            cols="5"
+            class="account_check"
+            @click="accountCloseCheck"
+            :class="{account_close_confirm: isAccountClose}"
+        >
+            <p class="account_check_text">{{ accountCloseText }}</p>
         </v-col>
 
         <v-dialog
@@ -20,16 +37,31 @@
         >
             <v-card>
                 <v-card-title>
-                    {{ dialogText }}
+                    締め処理を行います。<br>
+                    宜しいですか？
                 </v-card-title>
                 <v-card-actions>
-                    <v-btn
-                        color="green darken-1"
-                        text
-                        @click="toHome"
-                    >
-                        OK
-                    </v-btn>
+                    <v-row class="ma-0">
+                        <v-col class="ma-0">
+                            <v-btn
+                                block
+                                color="blue-grey"
+                                @click="dialog = false"
+                                dark
+                            >
+                                いいえ
+                            </v-btn>
+                        </v-col>
+                        <v-col class="ma-0">
+                            <v-btn
+                                block
+                                color="primary"
+                                @click="closeAccount"
+                            >
+                                はい
+                            </v-btn>
+                        </v-col>
+                    </v-row>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -39,54 +71,43 @@
 <script>
 
 import { mapGetters, mapMutations } from 'vuex'
-import SelectedProductTotalCnt from '@/components/account/parts/SelectedProductTotalCnt'
-import SelectedProductTotalPrice from '@/components/account/parts/SelectedProductTotalPrice'
 
 export default {
     name: 'EndSalesFooterItem',
+    props: {
+        totalOrder: {
+            type: Number,
+            required: true,
+        },
+        totalPrice: {
+            type: Number,
+            required: true,
+        },
+        totalTaxPrice: {
+            type: Number,
+            required: true,
+        },
+        mode: {
+            type: Number,
+            required: true,
+        }
+    },
     data: () => ({
         dialog: false,
         dialogText: '',
         sendStatus: false,
     }),
     components: {
-        SelectedProductTotalCnt,
-        SelectedProductTotalPrice,
     },
     computed: {
-        ...mapGetters([
-            'selectedProduct',
-            'selectedProductSalesId',
-        ]),
-        totalOrderCnt () {
-            if (this.selectedProduct != undefined) {
-                let totalCnt = 0
-                for (const i of this.selectedProduct) {
-                    totalCnt += i.quantity
-                }
-                return totalCnt
-            }
-            return 10
-        },
-        totalOrderPrice () {
-            if (this.selectedProduct != undefined) {
-                let totalPrice = 0
-                console.log(this.selectedProduct)
-                for (const i of this.selectedProduct) {
-                    totalPrice += Number(i.fixedPrice) * i.quantity
-                }
-                return totalPrice
-            }
-            return 0
-        },
-        orderCheckText () {
-            if (this.isOrderComfirm) {
+        accountCloseText () {
+            if (this.mode == 1) {
                 return '会計締め'
             }
             return '会計'
         },
-        isOrderComfirm () {
-            if (this.$route.name == 'AccountOrderCheck') {
+        isAccountClose () {
+            if (this.mode == 1) {
                 return true
             }
             return false
@@ -94,43 +115,17 @@ export default {
     },
     methods: {
         ...mapMutations([
-            'initSelectedProductData',
         ]),
-        orderCheck () {
-            if (this.isOrderComfirm) {
-                this.orderConfirm()
+        accountCloseCheck () {
+            if (this.isAccountClose) {
+                this.dialog = true
             } else {
-                this.$router.push({
-                    name: 'AccountOrderCheck',
-                    params: {
-                        id: this.$route.params.id
-                    }
-                })
+                this.$emit('changeMode', 1)
             }
         },
-        orderConfirm () {
-            console.log('売上伝票追加', this.selectedProduct, this.selectedProductSalesId)
-            this.$axios({
-                method: 'POST',
-                url: '/api/sales/add_sales_detail/',
-                data: {
-                    sales_header_id: this.selectedProductSalesId,
-                    sales_detail_list: this.selectedProduct,
-                }
-            })
-            .then(res => {
-                console.log(res)
-                this.dialogText = '注文が完了しました。'
-                this.sendStatus = true
-                this.dialog = true
-                this.initSelectedProductData()
-            })
-            .catch(e => {
-                console.log(e)
-                this.dialogText = '注文送信時にエラーが発生しました。'
-                this.dialog = true
-                this.sendStatus = false
-            })
+        closeAccount () {
+            this.$emit("closeAccount")
+            this.dialog = false
         },
         toHome () {
             if (this.sendStatus) {
@@ -139,13 +134,17 @@ export default {
                 })
             }
             this.dialog = false
+        },
+        accountCloseCancel () {
+            this.$emit('changeMode', 0)
         }
     }
 }
 </script>
 
 <style lang="scss" scoped>
-    .selected_product_footer_wrap {
+    .account_check_footer_wrap {
+        margin: 0;
         z-index: 1000;
         position: fixed;
         height: 110px;
@@ -153,31 +152,47 @@ export default {
         bottom: 0;
         background: white;
 
-        .order_detail {
+        .account_detail {
             background-color: rgb(142, 142, 142);
             color: white;
         }
 
-        .order_check {
+        .account_close_cancel {
+            background-color: rgba(142, 142, 142, 1);
+            color: white;
+            cursor: pointer;
+            .account_close_cancel_text {
+                line-height: 75px;
+                text-align: center;
+            }
+        }
+
+        .account_close_cancel:hover {
+            // background-color: rgba(193, 60, 60, 1);
+            background-color: rgba(142, 142, 142, 0.6);
+            transition: 0.5s;
+        }
+
+        .account_check {
             cursor: pointer;
             border-left: 1px solid rgba(112, 104, 104, 0.7);
             // background-color: rgba(193, 80, 80, 0.7);
             background-color: rgba(0, 78, 227, 0.7);
             color: white;
-            .order_check_text {
+            .account_check_text {
                 line-height: 75px;
                 text-align: center;
             }
         }
-        .order_check:hover {
+        .account_check:hover {
             // background-color: rgba(193, 60, 60, 1);
             background-color: rgba(0, 78, 227, 1);
             transition: 0.5s;
         }
-        .order_confirm {
+        .account_close_confirm {
             background-color: rgba(193, 80, 80, 1);
         }
-        .order_confirm:hover {
+        .account_close_confirm:hover {
             background-color: rgba(243, 80, 80, 1);
             transition: 0.5s;
         }

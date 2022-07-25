@@ -70,8 +70,10 @@ from .exceptions import (
 from .utils import (
     utc_to_jst,
     users_card,
+    update_customer_rank,
 )
 
+from django.db.models.functions import Coalesce
 
 import logging
 
@@ -1785,6 +1787,43 @@ class SalesViewSet(BaseModelViewSet):
             'data': SalesSerializer(header).data
         }, status=status.HTTP_200_OK)
 
+    @action(methods=['put'], detail=False)
+    def update_sales_header(self, request):
+
+        try:
+            header = SalesHeader.objects.get(pk=request.data['id'])
+        except SalesHeader.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        seat = None
+        seat_id = request.data['seat_id']
+
+        male_visitors = request.data['male_visitors']
+        female_visitors = request.data['female_visitors']
+        basic_plan_type = request.data['basic_plan_type_id']
+        remarks = request.data['remarks']
+
+        try:
+            service = MService.objects.get(pk=basic_plan_type)
+        except MService.DoesNotExist:
+            logger.error('サービス情報が取得出来ません。')
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        if seat_id != None and seat_id != '':
+            try:
+                seat = MSeat.objects.get(pk=seat_id)
+            except MSeat.DoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        header.seat = seat
+        header.basic_plan_type = service
+        header.male_visitors = male_visitors
+        header.female_visitors = female_visitors
+        header.remarks = remarks
+        header.save()
+        return Response(SalesSerializer(header).data, status=status.HTTP_200_OK)
+
+
     @action(methods=['get'], detail=False)
     def get_non_close_sales_header(self, request):
 
@@ -1800,6 +1839,7 @@ class SalesViewSet(BaseModelViewSet):
         return Response(
             SubSalesDetailSerializer(SalesDetail.objects.filter(
                 end_flg=False,
+                header__close_flg=False,
             ),
             many=True).data
         )
@@ -1864,6 +1904,128 @@ class SalesViewSet(BaseModelViewSet):
             'status': 'success',
             'data': SalesSerializer(sales_header).data
         }, status=status.HTTP_200_OK)
+
+    @transaction.atomic
+    @action(methods=['put'], detail=False)
+    def update_sales_detail(self, request):
+        """
+        明細更新
+        """
+
+        try:
+            detail = SalesDetail.objects.get(pk=request.data['id'])
+        except SalesDetail.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        detail.fixed_price = request.data['fixed_price']
+        detail.tax_free_flg = request.data['tax_free_flg']
+        detail.quantity = request.data['quantity']
+        detail.save()
+
+        try:
+            header = SalesHeader.objects.get(pk=request.data['header_id'])
+        except SalesHeader.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(SalesSerializer(header).data)
+
+
+    @transaction.atomic
+    @action(methods=['delete'], detail=False)
+    def delete_sales_detail(self, request):
+        """
+        明細更新
+        """
+        try:
+            detail = SalesDetail.objects.get(pk=request.data['id'])
+            detail.delete()
+        except SalesDetail.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            header = SalesHeader.objects.get(pk=request.data['header_id'])
+        except SalesHeader.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(SalesSerializer(header).data)
+
+
+    @transaction.atomic
+    @action(methods=['post'], detail=False)
+    def close_sales_header(self, request):
+        """
+        締め処理
+        """
+        # 売上でランク更新
+        # 総計登録
+        # サービス明細の作成
+        # ボトル登録
+        # 締めフラグ更新
+        logger.debug('close_sales_header')
+        logger.debug(request.data)
+
+        try:
+            header = SalesHeader.objects.get(pk=request.data['id'])
+            customer = MCustomer.objects.get(pk=request.data['customer']['id'])
+        except SalesHeader.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        except MCustomer.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        header.total_sales = request.data['total_sales']
+        header.total_tax_sales = request.data['total_tax_sales']
+        header.basic_plan_service_tax = request.data['basic_plan_service_tax']
+        header.basic_plan_tax = request.data['basic_plan_tax']
+        header.basic_plan_card_tax = request.data['basic_plan_card_tax']
+
+        open_date_str = request.data['leave_time']
+        open_date = datetime.strptime(open_date_str, '%Y/%m/%d %H:%M').astimezone(timezone('Asia/Tokyo'))
+
+        for sales_detail in request.data['sales_detail']:
+            if 'bottle' in sales_detail:
+                try:
+                    product = MProduct.objects.get(pk=sales_detail['id'])
+                except MProduct.DoesNotExist:
+                    return Response(status.status.HTTP_400_BAD_REQUEST)
+                logger.debug('ボトル登録有')
+                BottleManagement.objects.create(
+                    customer=customer,
+                    open_date=open_date,
+                    product=product,
+                )
+
+        for sales_service_detail in request.data['sales_service_detail']:
+            logger.debug(sales_service_detail)
+            service = MService.objects.get(
+                large_category=sales_service_detail['service']['large_category'],
+                middle_category=sales_service_detail['service']['middle_category'],
+                small_category=sales_service_detail['service']['small_category'],
+            )
+            quantity = sales_service_detail['quantity']
+            fixed_price = sales_service_detail['fixed_price']
+            discount_flg = sales_service_detail['discount_flg']
+            tax_rate = sales_service_detail['tax_rate']
+
+            SalesServiceDetail.objects.create(
+                header=header,
+                service=service,
+                quantity=quantity,
+                fixed_price=fixed_price,
+                discount_flg=discount_flg,
+                tax_rate=tax_rate,
+            )
+
+        header.close_flg = True
+        header.save()
+
+        # 顧客のランク更新
+        total_sales_for_rank = SalesHeader.objects.filter(
+            customer=customer
+        ).aggregate(total=Coalesce(models.Sum('total_tax_sales'), 0))['total']
+        update_customer_rank(customer, total_sales_for_rank)
+
+        return Response(status=status.HTTP_200_OK)
+
 
 class BookingViewSet(BaseModelViewSet):
     """

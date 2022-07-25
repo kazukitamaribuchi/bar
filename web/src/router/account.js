@@ -7,6 +7,7 @@ import {
     AccountOrderHistory,
     AccountOrderClose,
     AccountNewVisit,
+    AccountNewCustomer,
     AccountBottle,
     AccountCustomer,
     AccountProductDetail,
@@ -66,6 +67,11 @@ const routes = {
             path: 'newvisit',
             name: 'AccountNewVisit',
             component: AccountNewVisit,
+        },
+        {
+            path: 'newcustomer',
+            name: 'AccountNewCustomer',
+            component: AccountNewCustomer,
         },
         {
             path: 'bottle',

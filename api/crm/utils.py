@@ -88,3 +88,40 @@ def get_val_in_validated_data(key, data):
             return None
         return data[key]
     return None
+
+
+def update_customer_rank(customer, sales):
+    NORMAL_BOTTOM_LINE = 0
+    NORMAL_TOP_LINE = 2999999
+    GOLD_BOTTOM_LINE = 3000000
+    GOLD_TOP_LINE = 6999999
+    PLATINUM_BOTTOM_LINE = 7000000
+    PLATINUM_TOP_LINE = 9999999
+    BLACK_BOTTOM_LINE = 10000000
+
+    if NORMAL_BOTTOM_LINE <= sales <= NORMAL_BOTTOM_LINE:
+        pass
+    elif GOLD_BOTTOM_LINE <= sales <= GOLD_TOP_LINE:
+        if customer.rank.id != 2:
+            try:
+                rank = MRank.objects.get(pk=2)
+            except MRank.DoesNotExist:
+                logger.error('顧客のランク更新時、ランクの取得に失敗しました。')
+            customer.rank = rank
+            customer.save()
+    elif PLATINUM_BOTTOM_LINE <= sales <= PLATINUM_TOP_LINE:
+        if customer.rank.id != 3:
+            try:
+                rank = MRank.objects.get(pk=3)
+            except MRank.DoesNotExist:
+                logger.error('顧客のランク更新時、ランクの取得に失敗しました。')
+            customer.rank = rank
+            customer.save()
+    elif BLACK_BOTTOM_LINE <= sales:
+        if customer.rank.id != 4:
+            try:
+                rank = MRank.objects.get(pk=4)
+            except MRank.DoesNotExist:
+                logger.error('顧客のランク更新時、ランクの取得に失敗しました。')
+            customer.rank = rank
+            customer.save()

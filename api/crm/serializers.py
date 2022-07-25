@@ -123,6 +123,7 @@ class RankSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = MRank
         fields = [
+            'id',
             'rank_id',
             'rank_name',
             'customer'
@@ -207,7 +208,7 @@ class CustomerSerializer(DynamicFieldsModelSerializer):
 
     def get_birthday(self, obj):
         if obj.birthday == None:
-            return ''
+            return '-'
         return obj.birthday.strftime('%Y/%m/%d')
 
     def get_job(self, obj):
@@ -802,6 +803,7 @@ class SalesDetailSerializer(DynamicFieldsModelSerializer):
             # 'total_tax_price',
             'end_flg',
             'order_time',
+            'tax_free_flg',
         ]
 
     def get_total_price(self, obj):
@@ -838,6 +840,7 @@ class SubSalesDetailSerializer(DynamicFieldsModelSerializer):
             'header_id',
             'disp_order_time',
             'disp_seat_name',
+            'tax_free_flg',
         ]
 
     def get_total_price(self, obj):
@@ -942,7 +945,7 @@ class SalesSerializer(DynamicFieldsModelSerializer):
             # 'appoint',
             # 'douhan',
             # 'is_charterd',
-            'tax_rate',
+            # 'tax_rate',
             'booking',
             'basic_plan_type',
             'stay_hour',
@@ -967,6 +970,9 @@ class SalesSerializer(DynamicFieldsModelSerializer):
             'seat',
             'header_id',
             'disp_seat_name',
+            'basic_plan_service_tax',
+            'basic_plan_tax',
+            'basic_plan_card_tax',
         ]
 
     def get_sales_detail(self, obj):

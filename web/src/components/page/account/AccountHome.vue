@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="pa-2">
         <v-card-title class="account_home_title">
             メニュー
         </v-card-title>
@@ -236,6 +236,13 @@ export default {
                 src: 'http://localhost:8000/media/upload/data1.jpg',
                 // src: '',
                 link: 'AccountCustomer',
+                icon: 'bx bx-user account-menu-card-icon',
+            },
+            {
+                title: '新規会員登録',
+                src: 'http://localhost:8000/media/upload/account3.jpg',
+                // src: '',
+                link: 'AccountNewCustomer',
                 icon: 'bx bx-user account-menu-card-icon',
             },
         ],

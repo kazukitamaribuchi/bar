@@ -69,14 +69,23 @@
                                         >{{ item.price | priceLocaleString }}</span>
                                     </p>
                                 </div>
-                                <div style="display: flex;" class="mt-2">
+                                <div class="mt-1 mb-2">
+                                    <b-form-spinbutton
+                                        id="sb-inline"
+                                        v-model="items[i].quantity"
+                                        size="sm"
+                                        min="0"
+                                        @change="changeQuantity(item)"
+                                    ></b-form-spinbutton>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;" class="mt-2 mb-2">
                                     <vs-button
-                                        style="width: 100px; border-radius: 13px;"
+                                        style="width: 130px; border-radius: 13px;"
                                         @click.stop="addCart(item, i)"
                                     >
                                         追加
                                     </vs-button>
-                                    <b-form-spinbutton
+                                    <!-- <b-form-spinbutton
                                         id="sb-inline"
                                         v-model="items[i].quantity"
                                         inline
@@ -84,9 +93,7 @@
                                         style="height: 20px; margin: auto;"
                                         min="0"
                                         @change="changeQuantity(item)"
-                                    ></b-form-spinbutton>
-                                    <!-- <SpinButton
-                                    /> -->
+                                    ></b-form-spinbutton> -->
                                     <vs-button
                                         circle
                                         icon
@@ -98,6 +105,7 @@
                                         <i class='bx bx-plus' ></i>
                                     </vs-button>
                                 </div>
+
                             </v-col>
                             <!-- <v-col cols="3">
                                 1

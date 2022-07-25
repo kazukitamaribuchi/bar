@@ -146,6 +146,7 @@ export default {
 
 <style lang="scss" scoped>
     .selected_product_footer_wrap {
+        margin: 0;
         z-index: 1000;
         position: fixed;
         height: 110px;

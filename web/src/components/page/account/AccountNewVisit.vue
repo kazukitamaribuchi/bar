@@ -1,11 +1,9 @@
 <template>
-    <v-row>
-        <div>
-            <i
-                @click="undo"
-                class='bx bx-undo undo-btn'
-            ></i>
-        </div>
+    <div>
+        <i
+            @click="undo"
+            class='bx bx-undo undo-btn'
+        ></i>
         <p class="text-center" style="font-size: 13px;">
             入店情報入力
         </p>
@@ -57,6 +55,7 @@
                 <v-col cols="6" class="pt-0">
                     <label style="font-size:12px;">男性客数</label>
                     <b-form-spinbutton
+                        inline
                         v-model="visitInfo.maleVisitors"
                         min="0"
                         size="lg"
@@ -66,6 +65,7 @@
                 <v-col cols="6" class="pt-0">
                     <label style="font-size:12px;">女性客数</label>
                     <b-form-spinbutton
+                        inline
                         v-model="visitInfo.femaleVisitors"
                         min="0"
                         size="lg"
@@ -210,7 +210,7 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-    </v-row>
+    </div>
 </template>
 <script>
     import dayjs from 'dayjs'

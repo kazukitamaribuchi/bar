@@ -1,5 +1,5 @@
 <template>
-    <v-row>
+    <v-row class="pa-2">
         <!-- <div>
             <i
                 @click="undo"
