@@ -1,18 +1,20 @@
 <template>
     <div class="pa-2">
-        <v-card-title class="account_home_title">
-            メニュー
-        </v-card-title>
+        <div class="account_home_title mb-0 mt-0">
+            <v-card-title class="py-0">
+                Menu
+            </v-card-title>
+        </div>
+
         <v-row class="mb-2 mx-1">
             <v-col
                 v-for="(item, i) in items"
                 :key="i"
                 cols="6"
-                class="pa-1"
+                class="pb-3 px-1"
             >
                 <v-card
                     class="account-menu-card"
-                    flat
                     @click="toPage(item.link)"
                     style="background-color: rgba(200, 200, 200, 0.1);"
                 >
@@ -45,19 +47,28 @@
                         ></i>
                     </div> -->
                     <div class="account-menu-card-text-area pa-2">
-                        <v-card-text class="card-title text-center">
+                        <!-- <v-card-text class="card-title text-center">
                             {{ item.title }}
-                        </v-card-text>
+                        </v-card-text> -->
+                        {{ item.title }}
                     </div>
                 </v-card>
             </v-col>
         </v-row>
+
+
+
+        <div class="account_home_title mb-0 mt-4">
+            <v-card-title class="py-0">
+                Wait Order
+            </v-card-title>
+        </div>
         <v-card
             flat
         >
-            <v-card-title class="account_home_title">
+            <!-- <v-card-title class="account_home_title">
                 オーダー待ち状況
-            </v-card-title>
+            </v-card-title> -->
             <v-row
                 v-if="nonEndSalesDetail.length != 0"
                 class="mb-1 mx-1"
@@ -204,35 +215,42 @@ export default {
     data: () => ({
         items: [
             {
-                title: 'オーダー',
+                title: '注文',
                 src: 'http://localhost:8000/media/upload/glass2.jpg',
                 // src: '',
                 link: 'AccountOrderSelect',
                 icon: 'bx bx-food-menu account-menu-card-icon',
             },
             {
-                title: '注文確認',
+                title: '伝票確認',
                 src: 'http://localhost:8000/media/upload/account1.jpg',
                 // src: '',
                 link: 'AccountOrderCheckSelect',
                 icon: 'bx bx-yen account-menu-card-icon',
             },
             {
-                title: '新規入店',
+                title: '新規来店',
                 src: 'http://localhost:8000/media/upload/bar4.jpg',
                 // src: '',
                 link: 'AccountNewVisit',
                 icon: 'bx bxs-face account-menu-card-icon',
             },
             {
-                title: 'ボトル',
+                title: 'ボトル情報照会',
                 src: 'http://localhost:8000/media/upload/酒2サムネ.png',
                 // src: '',
                 link: 'AccountBottle',
                 icon: 'bx bxs-drink account-menu-card-icon',
             },
             {
-                title: '顧客情報',
+                title: 'ボトル情報作成',
+                src: 'http://localhost:8000/media/upload/酒2サムネ.png',
+                // src: '',
+                link: 'AccountBottle',
+                icon: 'bx bxs-drink account-menu-card-icon',
+            },
+            {
+                title: '顧客情報照会',
                 src: 'http://localhost:8000/media/upload/data1.jpg',
                 // src: '',
                 link: 'AccountCustomer',
@@ -354,6 +372,7 @@ export default {
         }
 
         .account-menu-card-text-area {
+            font-size: 13px;
             text-align: center;
             // height: 30px;
             .card-title {

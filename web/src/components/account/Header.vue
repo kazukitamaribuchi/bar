@@ -4,12 +4,12 @@
             <i
                 class='bx header-hum'
                 :class="{trans: menu, 'trans2': !menu, 'bx-menu': !menu, 'bx-x': menu}"
-                @click="menu = !menu"
             ></i>
+            <!-- @click="menu = !menu" -->
         </div>
-        <div class="header-title">
-            <!-- {{ headerTitle }} -->
-        </div>
+        <!-- <div class="header-title">
+            {{ headerTitle }}
+        </div> -->
 
         <transition name="slide-fade">
             <div
@@ -147,7 +147,7 @@ export default {
 
     // border-bottom: 0.5px solid rgba(150, 150, 150, 0.5);
 
-    height: 42px;
+    height: 50px;
     padding-bottom: 3px;
 
     .header-title {
@@ -158,11 +158,11 @@ export default {
         display: flex;
     }
     .header-hum {
-        font-size: 45px;
+        font-size: 25px;
         cursor: pointer;
         position: absolute;
-        top: 3px;
-        left: 3px;
+        top: 8px;
+        left: 10px;
     }
 
     .trans {

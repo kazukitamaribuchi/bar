@@ -1,10 +1,18 @@
 <template>
-    <v-card
+    <!-- <v-card
         id="home_button_wrap"
         @click="toHome"
     >
         <p class="text-center py-4 mb-0">ホームへ</p>
-    </v-card>
+    </v-card> -->
+    <vs-button
+        block
+        size="large"
+        style="position: relative; left: -5px;"
+        @click="toHome"
+    >
+        <i class='bx bx-home'></i> ホームへ
+    </vs-button>
 </template>
 
 <script>

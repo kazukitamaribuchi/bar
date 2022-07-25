@@ -10,106 +10,164 @@
         <v-card
             flat
         >
-            <v-row
-                style="padding: 0 3rem;"
-            >
-                <v-col cols="12" class="py-0">
-                    <v-text-field
-                        label="会員No"
-                        v-model="customerInfo.customerNo"
-                        :rules="[rules.required, rules.small]"
-                    ></v-text-field>
-                </v-col>
+            <v-container>
+                <v-row>
+                    <v-col cols="12" class="category_top">
+                        基本情報
+                    </v-col>
 
-                <v-col cols="12" class="py-0">
-                    <v-text-field
-                        label="顧客名"
-                        v-model="customerInfo.name"
-                        :rules="[rules.required]"
-                    ></v-text-field>
-                </v-col>
+                    <v-col cols="12">
+                        <!-- <v-text-field
+                            label="会員No"
+                            v-model="customerInfo.customerNo"
+                            :rules="[rules.required, rules.small]"
+                        ></v-text-field> -->
+                        <vs-input
+                            class="my-3"
+                            placeholder="会員No"
+                            v-model="customerInfo.customerNo"
+                            label="会員No(必須)"
+                        >
+                        </vs-input>
 
-                <v-col cols="12" class="py-0">
-                    <v-text-field
-                        label="顧客名(カナ)"
-                        v-model="customerInfo.nameKana"
-                    ></v-text-field>
-                </v-col>
+                    </v-col>
 
-                <v-col cols="12" class="py-0">
-                    <v-text-field
-                        label="年齢"
-                        v-model="customerInfo.age"
-                    ></v-text-field>
-                </v-col>
+                    <v-col cols="12">
+                        <!-- <v-text-field
+                            label="顧客名"
+                            v-model="customerInfo.name"
+                            :rules="[rules.required]"
+                        ></v-text-field> -->
+                        <vs-input
+                            class="my-3"
+                            placeholder="名前"
+                            v-model="customerInfo.name"
+                            label="顧客名(必須)"
+                        >
+                        </vs-input>
+                    </v-col>
 
-                <v-col cols="12" class="py-1">
-                    <label style="color: rgba(50, 50, 50, 0.8);">
-                        誕生日
-                    </label>
-                    <b-input-group>
-                        <b-form-input
-                            v-model="customerInfo.birthday"
+                    <v-col cols="12" class="pt-0">
+                        <vs-input
+                            class="my-3"
+                            placeholder="名前(ふりがな)"
+                            v-model="customerInfo.name"
+                            label="顧客名ふりがな(任意)"
+                        >
+                        </vs-input>
+                    </v-col>
+
+                    <v-col cols="4" class="py-1">
+                        <vs-input
+                            class="my-3"
+                            placeholder="年齢"
+                            v-model="customerInfo.age"
+                            label="年齢(任意)"
+                        >
+                        </vs-input>
+                    </v-col>
+
+                    <v-col cols="8" class="py-1">
+                        <!-- <label style="color: rgba(50, 50, 50, 0.8);">
+                            誕生日
+                        </label>
+                        <b-input-group>
+                            <b-form-input
+                                v-model="customerInfo.birthday"
+                                type="date"
+                            ></b-form-input>
+                        </b-input-group> -->
+                        <vs-input
+                            class="my-3"
                             type="date"
-                        ></b-form-input>
-                    </b-input-group>
-                </v-col>
+                            v-model="customerInfo.birthday"
+                            label="誕生日(任意)"
+                        />
+                    </v-col>
 
+                    <v-col cols="12" class="category_top mt-5">
+                        詳細情報
+                    </v-col>
 
-                <v-col cols="12" class="py-0">
-                    <v-text-field
-                        label="電話番号"
-                        v-model="customerInfo.phone"
-                    ></v-text-field>
-                </v-col>
+                    <v-col cols="12" class="mt-4">
+                        <vs-input
+                            placeholder="電話番号"
+                            v-model="customerInfo.phone"
+                            label="電話番号(任意)"
+                        >
+                        </vs-input>
+                    </v-col>
 
-                <v-col cols="12" class="py-0">
-                    <v-text-field
-                        label="メール"
-                        v-model="customerInfo.mail"
-                    ></v-text-field>
-                </v-col>
+                    <v-col cols="12">
+                        <vs-input
+                            placeholder="メールアドレス"
+                            v-model="customerInfo.phone"
+                            label="メールアドレス(任意)"
+                        >
+                        </vs-input>
+                    </v-col>
 
-                <v-col cols="12" class="py-0">
-                    <v-text-field
-                        label="住所"
-                        v-model="customerInfo.address"
-                    ></v-text-field>
-                </v-col>
+                    <v-col cols="12">
+                        <vs-input
+                            placeholder="住所"
+                            v-model="customerInfo.address"
+                            label="住所(任意)"
+                        >
+                        </vs-input>
+                    </v-col>
 
-                <v-col cols="12" class="py-0">
-                    <v-text-field
-                        label="職業"
-                        v-model="customerInfo.job"
-                    ></v-text-field>
-                </v-col>
+                    <v-col cols="12" class="mt-5">
+                        <vs-input
+                            placeholder="職業"
+                            v-model="customerInfo.job"
+                            label="職業(任意)"
+                        >
+                        </vs-input>
+                    </v-col>
 
-                <v-col cols="12" class="py-0">
-                    <v-text-field
-                        label="会社"
-                        v-model="customerInfo.company"
-                    ></v-text-field>
-                </v-col>
+                    <v-col cols="12">
+                        <vs-input
+                            placeholder="会社"
+                            v-model="customerInfo.company"
+                            label="会社(任意)"
+                        >
+                        </vs-input>
+                    </v-col>
 
-                <v-col cols="12" class="py-0">
-                    <v-checkbox
-                        v-model="customerInfo.cautionFlg"
-                        label="要注意人物"
-                    ></v-checkbox>
-                </v-col>
+                    <v-col cols="12">
+                        <!-- <v-checkbox
+                            v-model="customerInfo.cautionFlg"
+                            label="要注意人物"
+                        ></v-checkbox> -->
+                        <vs-checkbox v-model="customerInfo.cautionFlg">
+                            要注意人物
+                        </vs-checkbox>
+                    </v-col>
 
-                <v-col cols="12">
-                    <v-textarea
-                        label="備考"
-                        auto-grow
-                        outlined
-                        rows="2"
-                        row-height="20"
-                        v-model="customerInfo.remarks"
-                    ></v-textarea>
-                </v-col>
-            </v-row>
-            <v-col cols="12" class="mt-4">
+                    <v-col cols="12">
+                        <v-textarea
+                            label="備考(任意)"
+                            auto-grow
+                            outlined
+                            rows="2"
+                            row-height="20"
+                            v-model="customerInfo.remarks"
+                        ></v-textarea>
+                    </v-col>
+
+                    <vs-button
+                        block
+                        success
+                        size="large"
+                        style="position: relative; left: -5px;"
+                        @click="register"
+                    >
+                        <i class='bx bxs-send'></i> 会員情報作成
+                    </vs-button>
+
+                </v-row>
+            </v-container>
+            <!-- <v-col cols="12" class="mt-4">
                 <v-card
                     id="new_visit_button_wrap"
                     style="background-color:rgba(37, 119, 224, 0.87); color:white; cursor:pointer;"
@@ -117,7 +175,8 @@
                 >
                     <p class="text-center py-4 mb-0">会員情報作成</p>
                 </v-card>
-            </v-col>
+            </v-col> -->
+
             <v-col cols="12">
                 <HomeButton/>
             </v-col>
@@ -174,15 +233,15 @@
         },
         data: () => ({
             customerInfo: {
-                customerNo: null,
+                customerNo: '',
                 name: '',
-                nameKana: null,
-                age: null,
-                birthday: null,
-                phone: null,
-                mail: null,
-                address: null,
-                company: null,
+                nameKana: '',
+                age: '',
+                birthday: '',
+                phone: '',
+                mail: '',
+                address: '',
+                company: '',
                 cautionFlg: false,
                 remarks: '',
             },
@@ -313,5 +372,19 @@
         position: absolute;
         top: 55px;
         left: 20px;
+    }
+
+    .vs-input-parent::v-deep {
+        width: 100%;
+        .vs-input {
+            width: 100%;
+        }
+    }
+
+    .category_top {
+        // border-bottom: 1px solid rgba(151, 151, 151, 0.9);
+        border-bottom: 1px solid rgba(213, 213, 213, 0.9);
+        padding-bottom: 0px;
+        margin-bottom: 10px;
     }
 </style>

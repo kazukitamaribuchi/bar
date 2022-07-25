@@ -237,7 +237,7 @@ export default {
         cursor: pointer;
     }
     .undo-btn {
-        font-size: 35px;
+        font-size: 25px;
         cursor: pointer;
         position: absolute;
         top: 55px;

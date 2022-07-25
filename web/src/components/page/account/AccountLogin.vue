@@ -1,29 +1,52 @@
 <template>
     <div id="login_wrap">
-        <v-container>
+        <v-container class="pa-9">
 
             <div class="logo_area">
                 <div class="logo">
-                    LOGO
+                    <v-img
+                        style="margin: 0 auto;"
+                        height="50px"
+                        width="50px"
+                        src="http://localhost:8000/media/upload/logo2.jpg"
+                    ></v-img>
+                </div>
+                <div class="logo_text">
+                    alpha pos
                 </div>
             </div>
 
-            <vs-input v-model="value1" placeholder="User name">
+            <vs-input
+                class="my-3"
+                v-model="credentials.username"
+                placeholder="User name"
+                @keyup.enter="checkLogin"
+                @keypress="setlogin1"
+            >
                 <template #icon>
                     <i class='bx bx-user'></i>
                 </template>
             </vs-input>
 
-            <vs-input type="password" v-model="value2" placeholder="Password">
+            <vs-input
+                class="my-3"
+                v-model="credentials.password"
+                placeholder="Password"
+                @keyup.enter="checkLogin"
+                @keypress="setlogin2"
+            >
                 <template #icon>
                     <i class='bx bx-lock-open-alt'></i>
                 </template>
             </vs-input>
 
             <vs-button
+                class="mt-9"
                 block
+                @click="login"
+                size="large"
             >
-            <i class='bx bxs-paint-roll' ></i> Edit Theme
+                <i class='bx bxs-lock-open'></i> Login
             </vs-button>
         </v-container>
 
@@ -188,12 +211,25 @@ export default {
     // height: 100%;
 
     .logo_area {
-        height: 200px;
+        height: 300px;
+        padding: 100px;
 
         .logo {
-            line-height: 200px;
+            // line-height: 200px;
             text-align: center;
             margin: 0 auto;
+        }
+        .logo_text {
+            // line-height: 200px;
+            text-align: center;
+            margin: 0 auto;
+        }
+    }
+
+    .vs-input-parent::v-deep {
+        width: 100%;
+        .vs-input {
+            width: 100%;
         }
     }
 

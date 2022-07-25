@@ -761,7 +761,7 @@
 </script>
 <style lang="scss" scoped>
     .undo-btn {
-        font-size: 35px;
+        font-size: 25px;
         cursor: pointer;
         position: absolute;
         top: 55px;

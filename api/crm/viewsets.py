@@ -73,6 +73,11 @@ from .utils import (
     update_customer_rank,
 )
 
+from .filters import (
+    CustomerFilter,
+    BottleFilter,
+)
+
 from django.db.models.functions import Coalesce
 
 import logging
@@ -127,6 +132,7 @@ class CustomerViewSet(BaseModelViewSet):
     permission_classes = (permissions.AllowAny,)
     queryset = MCustomer.objects.all()
     serializer_class = CustomerSerializer
+    filter_class = CustomerFilter
 
     def create(self, request, *args, **kwargs):
         """
@@ -261,6 +267,26 @@ class CustomerViewSet(BaseModelViewSet):
             return Response({'status': 'success', 'data': False})
 
         return Response({'status': 'failure', 'data': None})
+
+    @action(methods=['get'], detail=False)
+    def search(self, request):
+
+        logger.debug(request.query_params)
+        queryset = self.filter_queryset(self.get_queryset())
+        logger.debug('★')
+        logger.debug(queryset)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(
+                page,
+                many=True
+            )
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(
+            queryset,
+            many=True
+        )
+        return Response(serializer.data)
 
 
 class RankViewSet(BaseModelViewSet):
@@ -466,6 +492,7 @@ class BottleViewSet(BaseModelViewSet):
     permission_classes = (permissions.AllowAny,)
     queryset = BottleManagement.objects.all()
     serializer_class = BottleSerializer
+    filter_class = BottleFilter
 
     # def update(self, request, pk=None):
     #     logger.debug('★UPDATE')
@@ -653,6 +680,26 @@ class BottleViewSet(BaseModelViewSet):
             'status': 'success',
             'data': BottleSerializer(instance).data,
         },status=status.HTTP_200_OK)
+
+    @action(methods=['get'], detail=False)
+    def search(self, request):
+
+        logger.debug(request.query_params)
+        queryset = self.filter_queryset(self.get_queryset())
+        logger.debug('★')
+        logger.debug(queryset)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(
+                page,
+                many=True
+            )
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(
+            queryset,
+            many=True
+        )
+        return Response(serializer.data)
 
 class SalesViewSet(BaseModelViewSet):
     """
@@ -1858,6 +1905,7 @@ class SalesViewSet(BaseModelViewSet):
         return Response(
             SubSalesDetailSerializer(SalesDetail.objects.filter(
                 end_flg=False,
+                header__close_flg=False,
             ),
             many=True).data
         )

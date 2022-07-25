@@ -10,160 +10,206 @@
         <v-card
             flat
         >
-            <v-row
-                style="padding: 0 3rem;"
-            >
-                <v-col cols="12">
-                    <v-text-field
-                        label="会員No"
-                        v-model="visitInfo.customerNo"
-                        :rules="[rules.required, rules.small]"
-                    ></v-text-field>
-                </v-col>
-                <v-col cols="12" class="pb-0">
-                    <v-select
-                      :items="seat"
-                      item-text="seat_name"
-                      item-value="id"
-                      label="座席"
-                      dense
-                      outlined
-                      v-model="visitInfo.seatId"
-                    >
-                        <template v-slot:prepend-item>
-                            <v-list-item ripple @click="toggle">
-                                <v-list-item-content>
-                                    <v-list-item-title>
-                                        指定無し
-                                    </v-list-item-title>
-                                </v-list-item-content>
-                            </v-list-item>
-                        </template>
-                    </v-select>
-                </v-col>
-                <v-col cols="12" class="pb-0">
-                    <v-select
-                      :items="basicPlanTypeList"
-                      item-text="name"
-                      item-value="id"
-                      label="基本料金"
-                      dense
-                      outlined
-                      v-model="visitInfo.basicPlanType"
-                    ></v-select>
-                </v-col>
-                <v-col cols="6" class="pt-0">
-                    <label style="font-size:12px;">男性客数</label>
-                    <b-form-spinbutton
-                        inline
-                        v-model="visitInfo.maleVisitors"
-                        min="0"
-                        size="lg"
-                    ></b-form-spinbutton>
-                <!-- @change="updateQuantity(item)" -->
-                </v-col>
-                <v-col cols="6" class="pt-0">
-                    <label style="font-size:12px;">女性客数</label>
-                    <b-form-spinbutton
-                        inline
-                        v-model="visitInfo.femaleVisitors"
-                        min="0"
-                        size="lg"
-                    ></b-form-spinbutton>
-                </v-col>
-                <v-col cols="12">
-                    <div>来店時間</div>
-                    <v-switch
-                        v-model="visitTimeSwitch"
-                        label="現在時刻"
-                    ></v-switch>
-                    <v-menu
-                        v-if="!visitTimeSwitch"
-                        ref="menu"
-                        v-model="menu"
-                        :close-on-content-click="false"
-                        :return-value.sync="date"
-                        transition="scale-transition"
-                        offset-y
-                        min-width="auto"
-                    >
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-text-field
+            <v-container>
+                <v-row>
+                    <v-col cols="12" class="category_top">
+                        来店情報
+                    </v-col>
+
+                    <v-col cols="12">
+                        <vs-input
+                            class="my-3"
+                            placeholder="会員No"
+                            v-model="visitInfo.customerNo"
+                            label="会員No(必須)"
+                        >
+                        </vs-input>
+                    </v-col>
+                    <v-col cols="12">
+                        <!-- <v-select
+                          :items="seat"
+                          item-text="seat_name"
+                          item-value="id"
+                          label="座席"
+                          dense
+                          outlined
+                          v-model="visitInfo.seatId"
+                        >
+                            <template v-slot:prepend-item>
+                                <v-list-item ripple @click="toggle">
+                                    <v-list-item-content>
+                                        <v-list-item-title>
+                                            指定無し
+                                        </v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </template>
+                        </v-select> -->
+                        <vs-select
+                            placeholder='座席を選択してください'
+                            label="座席(任意)"
+                            v-model="visitInfo.seatId"
+                            chips
+                        >
+                            <vs-option
+                                v-for='(label, i) in seat'
+                                :key='i'
+                                :label='label.seat_name'
+                                :value='label.id'
+                            >{{ label.seat_name }}
+                            </vs-option>
+                        </vs-select>
+
+                    </v-col>
+                    <v-col cols="12">
+                        <!-- <v-select
+                          :items="basicPlanTypeList"
+                          item-text="name"
+                          item-value="id"
+                          label="基本料金"
+                          dense
+                          outlined
+                          v-model="visitInfo.basicPlanType"
+                        ></v-select> -->
+
+                        <vs-select
+                            placeholder='座席を選択してください'
+                            label="基本料金(必須)"
+                            v-model="visitInfo.basicPlanType"
+                            chips
+                        >
+                            <vs-option
+                                v-for='(label, i) in basicPlanTypeList'
+                                :key='i'
+                                :label='label.name'
+                                :value='label.id'
+                            >{{ label.name }}
+                            </vs-option>
+                        </vs-select>
+                    </v-col>
+                    <v-col cols="6" class="pt-0">
+                        <label style="font-size:12px;">男性客数</label>
+                        <b-form-spinbutton
+                            inline
+                            v-model="visitInfo.maleVisitors"
+                            min="0"
+                            size="lg"
+                        ></b-form-spinbutton>
+                    <!-- @change="updateQuantity(item)" -->
+                    </v-col>
+                    <v-col cols="6" class="pt-0">
+                        <label style="font-size:12px;">女性客数</label>
+                        <b-form-spinbutton
+                            inline
+                            v-model="visitInfo.femaleVisitors"
+                            min="0"
+                            size="lg"
+                        ></b-form-spinbutton>
+                    </v-col>
+                    <v-col cols="12">
+                        <div>来店時間</div>
+                        <v-switch
+                            v-model="visitTimeSwitch"
+                            label="現在時刻"
+                        ></v-switch>
+                        <v-menu
+                            v-if="!visitTimeSwitch"
+                            ref="menu"
+                            v-model="menu"
+                            :close-on-content-click="false"
+                            :return-value.sync="date"
+                            transition="scale-transition"
+                            offset-y
+                            min-width="auto"
+                        >
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                    v-model="date"
+                                    label="日付"
+                                    prepend-icon="mdi-calendar"
+                                    readonly
+                                    v-bind="attrs"
+                                    v-on="on"
+                                ></v-text-field>
+                            </template>
+                            <v-date-picker
                                 v-model="date"
-                                label="日付"
-                                prepend-icon="mdi-calendar"
-                                readonly
-                                v-bind="attrs"
-                                v-on="on"
-                            ></v-text-field>
-                        </template>
-                        <v-date-picker
-                            v-model="date"
-                            no-title
-                            scrollable
+                                no-title
+                                scrollable
+                            >
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                    text
+                                    color="primary"
+                                    @click="menu = false"
+                                >Cancel</v-btn>
+                                <v-btn
+                                    text
+                                    color="primary"
+                                    @click="$refs.menu.save(date)"
+                                >OK</v-btn>
+                            </v-date-picker>
+                        </v-menu>
+                        <v-menu
+                            v-if="!visitTimeSwitch"
+                            ref="menu2"
+                            v-model="menu2"
+                            :close-on-content-click="false"
+                            :return-value.sync="time"
+                            transition="scale-transition"
+                            offset-y
+                            min-width="auto"
                         >
-                            <v-spacer></v-spacer>
-                            <v-btn
-                                text
-                                color="primary"
-                                @click="menu = false"
-                            >Cancel</v-btn>
-                            <v-btn
-                                text
-                                color="primary"
-                                @click="$refs.menu.save(date)"
-                            >OK</v-btn>
-                        </v-date-picker>
-                    </v-menu>
-                    <v-menu
-                        v-if="!visitTimeSwitch"
-                        ref="menu2"
-                        v-model="menu2"
-                        :close-on-content-click="false"
-                        :return-value.sync="time"
-                        transition="scale-transition"
-                        offset-y
-                        min-width="auto"
-                    >
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-text-field
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                    v-model="time"
+                                    label="時刻"
+                                    prepend-icon="mdi-calendar"
+                                    readonly
+                                    v-bind="attrs"
+                                    v-on="on"
+                                ></v-text-field>
+                            </template>
+                            <v-time-picker
                                 v-model="time"
-                                label="時刻"
-                                prepend-icon="mdi-calendar"
-                                readonly
-                                v-bind="attrs"
-                                v-on="on"
-                            ></v-text-field>
-                        </template>
-                        <v-time-picker
-                            v-model="time"
-                        >
-                            <v-spacer></v-spacer>
-                            <v-btn
-                                text
-                                color="primary"
-                                @click="menu2 = false"
-                            >Cancel</v-btn>
-                            <v-btn
-                                text
-                                color="primary"
-                                @click="$refs.menu2.save(time)"
-                            >OK</v-btn>
-                        </v-time-picker>
-                    </v-menu>
-                </v-col>
-                <v-col cols="12">
-                    <v-textarea
-                        label="備考"
-                        auto-grow
-                        outlined
-                        rows="2"
-                        row-height="20"
-                        v-model="visitInfo.remarks"
-                    ></v-textarea>
-                </v-col>
-            </v-row>
-            <v-col cols="12" class="mt-4">
+                            >
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                    text
+                                    color="primary"
+                                    @click="menu2 = false"
+                                >Cancel</v-btn>
+                                <v-btn
+                                    text
+                                    color="primary"
+                                    @click="$refs.menu2.save(time)"
+                                >OK</v-btn>
+                            </v-time-picker>
+                        </v-menu>
+                    </v-col>
+                    <v-col cols="12">
+                        <v-textarea
+                            label="備考(任意)"
+                            auto-grow
+                            outlined
+                            rows="2"
+                            row-height="20"
+                            v-model="visitInfo.remarks"
+                        ></v-textarea>
+                    </v-col>
+
+                    <vs-button
+                        block
+                        success
+                        size="large"
+                        style="position: relative; left: -5px;"
+                        @click="createSalesHeader"
+                    >
+                        <i class='bx bxs-send'></i> 入店情報作成
+                    </vs-button>
+                </v-row>
+            </v-container>
+            <!-- <v-col cols="12" class="mt-4">
                 <v-card
                     id="new_visit_button_wrap"
                     style="background-color:rgba(37, 119, 224, 0.87); color:white; cursor:pointer;"
@@ -171,7 +217,7 @@
                 >
                     <p class="text-center py-4 mb-0">入店情報作成</p>
                 </v-card>
-            </v-col>
+            </v-col> -->
             <v-col cols="12">
                 <HomeButton/>
             </v-col>
@@ -228,12 +274,12 @@
         },
         data: () => ({
             visitInfo: {
-                seatId: null,
+                seatId: '',
                 maleVisitors: 0,
                 femaleVisitors: 0,
-                customerNo: null,
-                basicPlanType: null,
-                visitTime: null,
+                customerNo: '',
+                basicPlanType: '',
+                visitTime: '',
                 remarks: '',
             },
             basicPlanTypeList: [
@@ -385,5 +431,19 @@
         position: absolute;
         top: 55px;
         left: 20px;
+    }
+
+    .vs-input-parent::v-deep {
+        width: 100%;
+        .vs-input {
+            width: 100%;
+        }
+    }
+
+    .category_top {
+        // border-bottom: 1px solid rgba(151, 151, 151, 0.9);
+        border-bottom: 1px solid rgba(213, 213, 213, 0.9);
+        padding-bottom: 0px;
+        margin-bottom: 10px;
     }
 </style>

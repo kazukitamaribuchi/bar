@@ -41,12 +41,12 @@
                         <v-list-item-subtitle>{{ customer.birthday }}</v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item>
+                <!-- <v-list-item>
                     <v-list-item-content>
                         <v-list-item-title>顧客名</v-list-item-title>
                         <v-list-item-subtitle>{{ customer.name }}</v-list-item-subtitle>
                     </v-list-item-content>
-                </v-list-item>
+                </v-list-item> -->
                 <v-list-item>
                     <v-list-item-content>
                         <v-list-item-title>ランク</v-list-item-title>

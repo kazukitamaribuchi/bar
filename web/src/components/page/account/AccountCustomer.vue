@@ -8,50 +8,156 @@
             会員情報
         </p>
 
-        <v-card
-            flat
-            class="pb-5"
-        >
-            <v-row
-                style="padding: 0 3rem;"
-            >
-                <v-card-title>
-                    会員No検索
-                </v-card-title>
-                <v-col cols="12">
-                    <v-text-field
-                        style="width: 80%; margin: 0 auto;"
-                        label="会員No"
-                        v-model="visitInfo.customerNo"
-                        :rules="[rules.required, rules.small]"
-                    ></v-text-field>
-                </v-col>
-                <v-btn
-                    color="primary"
-                    style="width: 75%; margin: 0 auto;"
+        <v-container>
+
+            <v-card-title class="py-0">
+                検索条件
+            </v-card-title>
+
+            <div>
+                <div class="px-5">
+                    <vs-input
+                        class="my-3"
+                        placeholder="会員No"
+                        v-model="searchInfo.customerNo"
+                    >
+                        <template #icon>
+                            <i class='bx bx-credit-card' ></i>
+                        </template>
+                    </vs-input>
+                    <vs-input
+                        class="my-3"
+                        placeholder="名前"
+                        v-model="searchInfo.customerName"
+                    >
+                        <template #icon>
+                            <i class='bx bx-user'></i>
+                        </template>
+                    </vs-input>
+
+                </div>
+
+                <vs-button
+                    class="mt-4"
+                    block
+                    :loading="searchLoading"
+                    @click="search"
                 >
-                    検索
-                </v-btn>
-            </v-row>
-        </v-card>
+                    <i class='bx bx-search-alt'></i> Search
+                </vs-button>
+            </div>
+
+        </v-container>
 
         <v-divider class="mx-6 mt-8"/>
 
-        <v-card
-            flat
-            class="pb-5"
-        >
-            <v-row
-                style="padding: 0 3rem;"
-            >
-                <v-card-title>
-                    顧客情報
-                </v-card-title>
-                <v-col cols="12">
+        <v-container class="px-3">
+            <v-card-title>
+                検索結果: {{ searchResult.count }} 件
+            </v-card-title>
+            <v-card-text v-if="searchResult.results == null">
+                検索条件を入力してください。
+            </v-card-text>
+            <v-card-text v-else-if="searchResult.results.length == 0">
+                検索結果が0件です。
+            </v-card-text>
+            <v-card-text v-else>
+                <v-row class="mb-3">
+                    <v-col
+                        v-for="(item, i) in searchResult.results"
+                        :key="i"
+                        class="my-0 py-0"
+                        cols="12"
+                    >
+                        <v-card
+                            class="mt-1 px-1 py-3"
+                            style="cursor: pointer;"
+                            @click="showCustomerDetail(item)"
+                        >
+                            <v-row
+                                align="center"
+                                class="spacer"
+                                no-gutters
+                            >
+                                <v-col
+                                    cols="3"
+                                    sm="1"
+                                    md="1"
+                                    class="pl-2"
+                                >
+                                    <v-avatar
+                                        size="36px"
+                                    >
+                                        <img
+                                            alt="Avatar"
+                                            src="http://localhost:8000/media/upload/男性1.jpg"
+                                        >
+                                    </v-avatar>
+                                    <!-- {{ item.customer_no }} -->
+                                </v-col>
+                                <!-- class="hidden-xs-only" -->
+                                <v-col
+                                    sm="4"
+                                    md="4"
+                                >
+                                    <div style="font-size:10px;" class="text-grey">名前</div>
+                                    <div>{{ item.name }}</div>
+                                </v-col>
+                                <v-col
+                                    cols="3"
+                                    sm="2"
+                                    md="2"
+                                >
+                                    <div style="font-size:10px;" class="text-grey">会員No</div>
+                                    <div>{{ item.customer_no }}</div>
+                                </v-col>
+                                <v-col
+                                    cols="1"
+                                    sm="1"
+                                    md="1"
+                                    class="hidden-lg-only"
+                                >
+                                    <div class="text-right">
+                                        <i style="color:rgba(100,100,100,0.5);" class='bx bx-chevron-right'></i>
+                                    </div>
+                                </v-col>
+                            </v-row>
+                        </v-card>
+                        <!-- <vs-card type="3">
+                            <template #title>
+                                <h3>Pot with a plant</h3>
+                            </template>
+                            <template #img>
+                                <img src="http://localhost:8000/media/upload/男性99.jpg" alt="">
+                            </template>
+                            <template #text>
+                                <p>
+                                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                                    </p>
+                                </template>
+                            <template #interactions>
+                                <vs-button danger icon>
+                                    <i class='bx bx-heart'></i>
+                                </vs-button>
+                                <vs-button class="btn-chat" shadow primary>
+                                    <i class='bx bx-chat' ></i>
+                                    <span class="span">
+                                        54
+                                    </span>
+                                </vs-button>
+                            </template>
+                        </vs-card> -->
+                    </v-col>
+                </v-row>
 
-                </v-col>
-            </v-row>
-        </v-card>
+                <vs-pagination
+                    v-model="currentPage"
+                    :length=pageNum
+                    @input="getPageNumber"
+                ></vs-pagination>
+            </v-card-text>
+        </v-container>
+
 
         <v-snackbar
             v-model="snackbar"
@@ -68,7 +174,7 @@
             </template>
         </v-snackbar>
 
-        <v-dialog
+        <!-- <v-dialog
             v-model="dialog"
         >
             <v-card>
@@ -85,77 +191,54 @@
                     </v-btn>
                 </v-card-actions>
             </v-card>
-        </v-dialog>
+        </v-dialog> -->
+
+        <CustomerDetailDialog
+            ref="customerDetailDialog"
+        />
     </div>
 </template>
 <script>
+    import CustomerDetailDialog from '@/components/account/dialog/CustomerDetailDialog'
     import dayjs from 'dayjs'
     import { mapGetters } from 'vuex'
     import HomeButton from '@/components/account/HomeButton'
-    const nowD = dayjs().format('YYYY-MM-DD')
-    const nowT = dayjs().format('hh:mm')
 
     export default {
-        name: 'AccountNewVisitItem',
+        name: 'AccountCustomerItem',
         components: {
+            CustomerDetailDialog,
             HomeButton,
         },
         props: {
         },
         data: () => ({
-            visitInfo: {
-                seatId: null,
-                maleVisitors: 0,
-                femaleVisitors: 0,
-                customerNo: null,
-                basicPlanType: null,
-                visitTime: null,
-                remarks: '',
-            },
-            basicPlanTypeList: [
-                {
-                    name: '通常料金(1時間)',
-                    id: 1,
-                },
-                {
-                    name: '通常料金(2時間)',
-                    id: 2,
-                },
-                {
-                    name: '通常料金(3時間)',
-                    id: 3,
-                },
-                {
-                    name: '貸切料金(1時間)',
-                    id: 4,
-                },
-                {
-                    name: '貸切料金(2時間)',
-                    id: 5,
-                },
-                {
-                    name: '貸切料金(3時間)',
-                    id: 6,
-                },
-            ],
             rules: {
                 required: val => !!val || '必須項目です。',
                 small: val => !!Number(val) > 0 || '正しい数値を入力して下さい。',
             },
             snackbar: false,
-            snackbarText: '入店データの作成に失敗しました。',
-            visitTimeSwitch: true,
-            date: nowD,
-            time: nowT,
-            menu: false,
-            menu2: false,
-            dialog: false,
+            snackbarText: '顧客情報の取得に失敗しました。',
+            searchInfo: {
+                customerNo: '',
+                customerName: '',
+            },
+            searchedInfo: {
+                customerNo: '',
+                customerName: '',
+            },
+            searchLoading: false,
+            searchResult: {
+                results: null,
+                count: 0,
+                next: '',
+                previous: '',
+            },
+            currentPage: 1,
         }),
         beforeCreate () {
         },
         created () {
-            console.log('test', this.seat)
-            console.log((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10))
         },
         beforeMount () {
         },
@@ -170,20 +253,12 @@
         destoryd () {
         },
         watch: {
-            'visitInfo.customerNo': function (val) {
-                // if (val != null) {
-                // }
-            }
         },
         computed: {
             ...mapGetters([
-                'seat',
             ]),
-            nowDate () {
-                return dayjs().format('YYYY-MM-DD')
-            },
-            nowTime () {
-                return dayjs().format('hh:mm')
+            pageNum () {
+                return Math.ceil(this.searchResult.count / 5)
             }
         },
         methods: {
@@ -192,63 +267,76 @@
                     name: 'AccountHome',
                 })
             },
-            toggle () {
-                this.$nextTick(() => {
-                    this.visitInfo.seatId = null
-                })
-            },
-            createSalesHeader () {
-                console.log('this.visitInfo', this.visitInfo)
-                console.log('this.date', this.date)
-                console.log('this.time', this.time)
-                const data = this.visitInfo
-
-                if (!this.visitTimeSwitch) {
-                    data.visit_time = this.date + ' ' + this.time
-                }
-                this.$axios({
-                    method: 'POST',
-                    url: '/api/sales/create_sales_header/',
-                    data: {
-                        customer_no: data.customerNo,
-                        male_visitors: data.maleVisitors,
-                        female_visitors: data.femaleVisitors,
-                        seat_id: data.seatId,
-                        basic_plan_type: data.basicPlanType,
-                        visit_time: data.visitTime,
-                        remarks: data.remarks,
-                    }
-                })
-                .then(res => {
-                    console.log('createSalesHeader', res)
-                    this.dialog = true
-                })
-                .catch(e => {
-                    console.log(e)
-                    this.snackbar = true
-                })
-            },
             init () {
-                this.visitInfo = {
-                    seatId: null,
-                    maleVisitors: 0,
-                    femaleVisitors: 0,
-                    customerNo: null,
-                    basicPlanType: null,
-                    visitTime: null,
-                    remarks: '',
+                this.snackbar = false
+                this.snackbarText = '顧客情報の取得に失敗しました。'
+                this.searchInfo = {
+                    customerNo: '',
+                    customerName: '',
                 }
-                this.visitTimeSwitch = true
-                this.menu = false,
-                this.menu2 = false
-                this.date = this.nowDate
-                this.time = this.nowTime
+                this.searchLoading = false
             },
             toHome () {
                 this.init()
                 this.$router.push({
                     name: 'AccountHome',
                 })
+            },
+            search () {
+                let params = {}
+                if (this.searchInfo.customerName != '') {
+                    params.name = this.searchInfo.customerName
+                }
+                if (this.searchInfo.customerNo != '') {
+                    params.customer_no = this.searchInfo.customerNo
+                }
+
+                this.searchLoading = true
+                this.$axios({
+                    method: 'get',
+                    url: '/api/customer/search/',
+                    params: params
+                })
+                .then(res => {
+                    this.searchedInfo.customerNo = this.searchInfo.customerNo
+                    this.searchedInfo.customerName = this.searchInfo.customerName
+                    this.searchLoading = false
+                    this.searchResult = res.data
+                    console.log(res)
+                })
+                .catch(e => {
+                    this.searchLoading = false
+                    this.snackbar = true
+                    console.log(e)
+                })
+            },
+            getPageNumber (pageNumber) {
+                const page = '?page=' + pageNumber
+                let url = '/api/customer/search/' + page
+                if (this.searchedInfo.customerNo != '') {
+                    url += '&customerNo=' + this.searchedInfo.customerNo
+                }
+                if (this.searchedInfo.customerName != '') {
+                    url += '&customerName=' + this.searchedInfo.customerName
+                }
+                this.searchLoading = true
+                this.$axios({
+                    method: 'get',
+                    url: url
+                })
+                .then(res => {
+                    this.searchLoading = false
+                    this.searchResult = res.data
+                    console.log(res)
+                })
+                .catch(e => {
+                    this.searchLoading = false
+                    this.snackbar = true
+                    console.log(e)
+                })
+            },
+            showCustomerDetail (item) {
+                this.$refs.customerDetailDialog.open(item)
             }
         },
         mixins: [],
@@ -261,5 +349,12 @@
         position: absolute;
         top: 55px;
         left: 20px;
+    }
+
+    .vs-input-parent::v-deep {
+        width: 100%;
+        .vs-input {
+            width: 100%;
+        }
     }
 </style>

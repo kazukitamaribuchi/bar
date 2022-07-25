@@ -1,10 +1,19 @@
 <template>
-    <v-card
+    <!-- <v-card
         id="new_visit_button_wrap"
         @click="toNewVisit"
     >
         <p class="text-center py-4 mb-0">新規入店</p>
-    </v-card>
+    </v-card> -->
+    <vs-button
+        block
+        success
+        size="large"
+        style="position: relative; left: -5px;"
+        @click="toNewVisit"
+    >
+        <i class='bx bx-home'></i> 新規入店
+    </vs-button>
 </template>
 
 <script>
