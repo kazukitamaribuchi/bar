@@ -8,6 +8,7 @@ import {
     AccountOrderClose,
     AccountNewVisit,
     AccountNewCustomer,
+    AccountNewBottle,
     AccountBottle,
     AccountCustomer,
     AccountProductDetail,
@@ -77,6 +78,11 @@ const routes = {
             path: 'bottle',
             name: 'AccountBottle',
             component: AccountBottle,
+        },
+        {
+            path: 'newbottle',
+            name: 'AccountNewBottle',
+            component: AccountNewBottle,
         },
         {
             path: 'customer',

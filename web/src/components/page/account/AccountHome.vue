@@ -244,9 +244,9 @@ export default {
             },
             {
                 title: 'ボトル情報作成',
-                src: 'http://localhost:8000/media/upload/酒2サムネ.png',
+                src: 'http://localhost:8000/media/upload/bar2.jpg',
                 // src: '',
-                link: 'AccountBottle',
+                link: 'AccountNewBottle',
                 icon: 'bx bxs-drink account-menu-card-icon',
             },
             {

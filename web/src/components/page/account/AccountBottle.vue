@@ -72,7 +72,7 @@
                         <v-card
                             class="mt-1 px-1 py-3"
                             style="cursor: pointer;"
-                            @click="showCustomerDetail(item)"
+                            @click="showBottleDetail(item)"
                         >
                             <v-row
                                 align="center"
@@ -211,13 +211,14 @@
             </v-card>
         </v-dialog> -->
 
-        <CustomerDetailDialog
-            ref="customerDetailDialog"
+        <BottleDetailDialog
+            ref="bottleDetailDialog"
+            @deleteSuccess="deleteSuccess"
         />
     </div>
 </template>
 <script>
-    import CustomerDetailDialog from '@/components/account/dialog/CustomerDetailDialog'
+    import BottleDetailDialog from '@/components/account/dialog/BottleDetailDialog'
     import dayjs from 'dayjs'
     import { mapGetters } from 'vuex'
     import HomeButton from '@/components/account/HomeButton'
@@ -225,7 +226,7 @@
     export default {
         name: 'AccountBottleItem',
         components: {
-            CustomerDetailDialog,
+            BottleDetailDialog,
             HomeButton,
         },
         props: {
@@ -253,6 +254,7 @@
                 previous: '',
             },
             currentPage: 1,
+            deleteConfirmDialog: false,
         }),
         beforeCreate () {
         },
@@ -354,7 +356,10 @@
                 })
             },
             showBottleDetail (item) {
-                // this.$refs.customerDetailDialog.open(item)
+                this.$refs.bottleDetailDialog.open(item)
+            },
+            deleteSuccess (item) {
+                this.searchResult = this.searchResult.filter((_, i) => i !== item.id)
             }
         },
         mixins: [],

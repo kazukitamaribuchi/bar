@@ -1,9 +1,12 @@
 <template>
-    <v-dialog
+    <vs-dialog
         v-model="dialog"
     >
-        <v-card class="pt-3">
-            <v-toolbar dark>
+        <v-card
+            class="pt-3"
+            flat
+        >
+            <!-- <v-toolbar dark>
                 <v-btn
                     icon
                     @click="dialog = false"
@@ -12,7 +15,7 @@
                 </v-btn>
             </v-toolbar>
 
-            <v-divider/>
+            <v-divider/> -->
 
             <v-card-title>
                 注文情報
@@ -30,6 +33,8 @@
                         <v-list-item-title>来店日付</v-list-item-title>
                         <v-list-item-subtitle>{{ salesData.visit_time }}</v-list-item-subtitle>
                     </v-list-item-content>
+                </v-list-item>
+                <v-list-item>
                     <v-list-item-content>
                         <v-list-item-title>滞在時間</v-list-item-title>
                         <v-list-item-subtitle>{{ stayHour }}</v-list-item-subtitle>
@@ -41,6 +46,8 @@
                         <v-list-item-title>来店人数</v-list-item-title>
                         <v-list-item-subtitle>{{salesData.total_visitors}}人（男: {{salesData.male_visitors}}, 女: {{salesData.female_visitors}}）</v-list-item-subtitle>
                     </v-list-item-content>
+                </v-list-item>
+                <v-list-item>
                     <v-list-item-content>
                         <v-list-item-title>注文数</v-list-item-title>
                         <v-list-item-subtitle>{{ salesData.sales_detail.length }}</v-list-item-subtitle>
@@ -80,7 +87,7 @@
                 >閉じる</v-btn>
             </v-card-actions>
         </v-card>
-    </v-dialog>
+    </vs-dialog>
 </template>
 
 <script>

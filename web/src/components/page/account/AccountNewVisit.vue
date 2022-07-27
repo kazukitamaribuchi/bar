@@ -17,13 +17,18 @@
                     </v-col>
 
                     <v-col cols="12">
-                        <vs-input
+                        <!-- <vs-input
                             class="my-3"
                             placeholder="会員No"
                             v-model="visitInfo.customerNo"
                             label="会員No(必須)"
                         >
-                        </vs-input>
+                        </vs-input> -->
+
+                        <SearchCustomerInfo
+                            @updateCustomerInfo="updateCustomerInfo"
+                        />
+
                     </v-col>
                     <v-col cols="12">
                         <!-- <v-select
@@ -262,6 +267,7 @@
     import dayjs from 'dayjs'
     import { mapGetters } from 'vuex'
     import HomeButton from '@/components/account/HomeButton'
+    import SearchCustomerInfo from '@/components/account/SearchCustomerInfo'
     const nowD = dayjs().format('YYYY-MM-DD')
     const nowT = dayjs().format('hh:mm')
 
@@ -269,6 +275,7 @@
         name: 'AccountNewVisitItem',
         components: {
             HomeButton,
+            SearchCustomerInfo,
         },
         props: {
         },
@@ -419,6 +426,13 @@
                 this.$router.push({
                     name: 'AccountHome',
                 })
+            },
+            updateCustomerInfo (val) {
+                if (val == null) {
+                    this.visitInfo.customerNo = ''
+                } else {
+                    this.visitInfo.customerNo = val.customer_no
+                }
             }
         },
         mixins: [],

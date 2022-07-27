@@ -97,14 +97,19 @@
                                 ></b-form-spinbutton>
                             </div>
                             <div>
-                                <v-checkbox
+                                <!-- <v-checkbox
                                     v-model="item.taxFree"
                                     label="非課税"
                                     @change="updateTaxFree(item)"
-                                ></v-checkbox>
+                                ></v-checkbox> -->
+                                <vs-checkbox
+                                    class="mt-4"
+                                    v-model="item.taxFree"
+                                >非課税</vs-checkbox>
                             </div>
                             <div>
                                 <vs-button
+                                    class="mt-4"
                                     circle
                                     icon
                                     danger

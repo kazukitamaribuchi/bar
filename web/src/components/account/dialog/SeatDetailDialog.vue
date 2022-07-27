@@ -1,9 +1,12 @@
 <template>
-    <v-dialog
+    <vs-dialog
         v-model="dialog"
     >
-        <v-card class="pt-3">
-            <v-toolbar dark>
+        <v-card
+            class="pt-3"
+            flat
+        >
+            <!-- <v-toolbar dark>
                 <v-btn
                     icon
                     @click="dialog = false"
@@ -12,7 +15,7 @@
                 </v-btn>
             </v-toolbar>
 
-            <v-divider/>
+            <v-divider/> -->
 
             <v-card-title>
                 席情報
@@ -24,6 +27,8 @@
                         <v-list-item-title>来店時間</v-list-item-title>
                         <v-list-item-subtitle>{{ salesData.visit_time }}</v-list-item-subtitle>
                     </v-list-item-content>
+                </v-list-item>
+                <v-list-item>
                     <v-list-item-content>
                         <v-list-item-title>滞在時間</v-list-item-title>
                         <v-list-item-subtitle>{{ stayHour }}</v-list-item-subtitle>
@@ -31,29 +36,24 @@
                 </v-list-item>
 
                 <v-list-item class="mt-3">
-                    <v-select
-                      :items="seat"
-                      item-text="seat_name"
-                      item-value="id"
-                      label="座席"
-                      dense
-                      outlined
-                      v-model="seatId"
+                    <vs-select
+                        placeholder='座席を選択してください'
+                        label="座席(任意)"
+                        v-model="seatId"
+                        chips
                     >
-                        <template v-slot:prepend-item>
-                            <v-list-item ripple @click="toggle">
-                                <v-list-item-content>
-                                    <v-list-item-title>
-                                        指定無し
-                                    </v-list-item-title>
-                                </v-list-item-content>
-                            </v-list-item>
-                        </template>
-                    </v-select>
+                        <vs-option
+                            v-for='(label, i) in seat'
+                            :key='i'
+                            :label='label.seat_name'
+                            :value='label.id'
+                        >{{ label.seat_name }}
+                        </vs-option>
+                    </vs-select>
                 </v-list-item>
 
                 <v-list-item class="mt-3">
-                    <v-select
+                    <!-- <v-select
                       :items="basicPlanTypeList"
                       item-text="name"
                       item-value="id"
@@ -61,7 +61,21 @@
                       dense
                       outlined
                       v-model="basicPlanType"
-                    ></v-select>
+                    ></v-select> -->
+                    <vs-select
+                        placeholder='基本料金を選択してください'
+                        label="基本料金"
+                        v-model="basicPlanType"
+                        chips
+                    >
+                        <vs-option
+                            v-for='(label, i) in basicPlanTypeList'
+                            :key='i'
+                            :label='label.name'
+                            :value='label.id'
+                        >{{ label.name }}
+                        </vs-option>
+                    </vs-select>
                 </v-list-item>
 
                 <v-list-item>
@@ -99,7 +113,27 @@
                 </v-list-item>
 
             </v-card-text>
-            <v-card-actions>
+
+
+            <v-btn
+                block
+                color="primary"
+                depressed
+                outlined
+                @click="update"
+                :loading="updateLoading"
+                class="my-3"
+            >更新</v-btn>
+            <v-btn
+                block
+                color="blue-grey"
+                outlined
+                @click="dialog = false"
+                dark
+            >
+                閉じる
+            </v-btn>
+            <!-- <v-card-actions>
                 <v-row class="ma-0">
                     <v-col class="ma-0">
                         <v-btn
@@ -121,7 +155,7 @@
                         >更新</v-btn>
                     </v-col>
                 </v-row>
-            </v-card-actions>
+            </v-card-actions> -->
         </v-card>
 
         <v-snackbar
@@ -142,22 +176,37 @@
         <v-dialog
             v-model="successDialog"
         >
-            <v-card>
+            <v-card
+                class="pt-3"
+                flat
+            >
                 <v-card-title>
                     データの更新に成功しました。
                 </v-card-title>
                 <v-card-actions>
-                    <v-btn
-                        color="green darken-1"
-                        text
+                    <vs-button
+                        primary
+                        transparent
+                        size="large"
                         @click="init"
-                    >
-                        OK
-                    </v-btn>
+                    >はい</vs-button>
                 </v-card-actions>
             </v-card>
+            <!-- <div class="con-content">
+                データの更新に成功しました。
+            </div>
+            <template #footer>
+                <div class="con-footer">
+                    <vs-button
+                        primary
+                        transparent
+                        size="large"
+                        @click="init"
+                    >はい</vs-button>
+                </div>
+            </template> -->
         </v-dialog>
-    </v-dialog>
+    </vs-dialog>
 </template>
 
 <script>
@@ -286,4 +335,36 @@
 </script>
 
 <style lang="scss" scoped>
+    .con-content {
+        width: 100%;
+        p {
+            font-size: .8rem;
+            padding: 0px 10px;
+            .vs-checkbox-label {
+                font-size: .8rem;
+            }
+            .vs-input-parent {
+                width: 100%;
+            }
+            .vs-input-content {
+                margin: 10px 0px;
+                width: calc(100%);
+                .vs-input {
+                    width: 100%;
+                }
+            }
+        }
+    }
+
+    .con-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        .vs-button {
+            margin: 0px;
+            .vs-button__content {
+                padding: 10px 30px;
+            }
+        }
+    }
 </style>

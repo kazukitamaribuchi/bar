@@ -402,25 +402,26 @@
             </template>
         </v-snackbar>
 
-        <v-dialog
+        <vs-dialog
             v-model="endAccountSuccessDialog"
         >
-            <v-card>
+            <v-card
+                flat
+            >
                 <v-card-title>
                     伝票データの締め処理が成功しました。
                     ホームへ戻ります。
                 </v-card-title>
                 <v-card-actions>
-                    <v-btn
-                        block
-                        color="primary"
+                    <vs-button
+                        primary
+                        transparent
+                        size="large"
                         @click="toHome"
-                    >
-                        はい
-                    </v-btn>
+                    >はい</vs-button>
                 </v-card-actions>
             </v-card>
-        </v-dialog>
+        </vs-dialog>
 
         <EndSalesFooter
             :totalOrder="totalOrderCnt"

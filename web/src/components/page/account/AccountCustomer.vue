@@ -108,8 +108,10 @@
                                     sm="2"
                                     md="2"
                                 >
-                                    <div style="font-size:10px;" class="text-grey">会員No</div>
-                                    <div>{{ item.customer_no }}</div>
+                                    <!-- <div style="font-size:10px;" class="text-grey">会員No</div>
+                                    <div>{{ item.customer_no }}</div> -->
+                                    <div style="font-size:10px;" class="text-grey">年齢</div>
+                                    <div>{{ item.age }}歳</div>
                                 </v-col>
                                 <v-col
                                     cols="1"

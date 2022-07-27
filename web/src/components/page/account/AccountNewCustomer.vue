@@ -5,7 +5,7 @@
             class='bx bx-undo undo-btn'
         ></i>
         <p class="text-center" style="font-size: 13px;">
-            入店情報入力
+            会員登録
         </p>
         <v-card
             flat
@@ -27,7 +27,20 @@
                             placeholder="会員No"
                             v-model="customerInfo.customerNo"
                             label="会員No(必須)"
+                            @blur="checkCustomerNo"
                         >
+                            <template
+                                v-if="custonerNoSuccess"
+                                #message-success
+                            >
+                                OK
+                            </template>
+                            <template
+                                v-if="customerNoError"
+                                #message-danger
+                            >
+                                {{ customerNoErrorText }}
+                            </template>
                         </vs-input>
 
                     </v-col>
@@ -51,7 +64,7 @@
                         <vs-input
                             class="my-3"
                             placeholder="名前(ふりがな)"
-                            v-model="customerInfo.name"
+                            v-model="customerInfo.name_kana"
                             label="顧客名ふりがな(任意)"
                         >
                         </vs-input>
@@ -256,6 +269,9 @@
             menu: false,
             menu2: false,
             dialog: false,
+            customerNoError: false,
+            customerNoErrorText: '',
+            custonerNoSuccess: false,
         }),
         beforeCreate () {
         },
@@ -274,10 +290,6 @@
         destoryd () {
         },
         watch: {
-            'customerInfo.customerNo': function (val) {
-                // if (val != null) {
-                // }
-            }
         },
         computed: {
             ...mapGetters([
@@ -302,30 +314,29 @@
                 })
             },
             register () {
-                const data = this.customerInfo
                 let birthday = ''
-                if (data.birthday != '' && data.birthday != null) {
-                    birthday = data.birthday.replaceAll('-', '/')
+                if (this.customerInfo.birthday != '' && this.customerInfo.birthday != null) {
+                    birthday = this.customerInfo.birthday.replaceAll('-', '/')
                 }
+
+                let data = {}
+                data.customer_no = this.customerInfo.customerNo
+                data.name = this.customerInfo.name
+                data.name_kana = this.addData(this.customerInfo.name_kana)
+                data.age = this.addData(this.customerInfo.age)
+                data.birthday_str = this.addData(birthday)
+                data.job = this.addData(this.customerInfo.job)
+                data.mail = this.addData(this.customerInfo.mail)
+                data.phone = this.addData(this.customerInfo.phone)
+                data.company = this.addData(this.customerInfo.company)
+                data.caution_flg = this.customerInfo.cautionFlg
+                data.remarks = this.addData(this.customerInfo.remarks)
+                data.rank_id = 1
 
                 this.$axios({
                     method: 'POST',
                     url: '/api/customer/',
-                    data: {
-                        name: data.name,
-                        name_kana: data.nameKana,
-                        age: data.age,
-                        birthday_str: birthday,
-                        job: data.job,
-                        mail: data.mail,
-                        phone: data.phone,
-                        company: data.company,
-                        customer_no: data.customerNo,
-                        caution_flg: data.cautionFlg,
-                        remarks: data.remarks,
-                        // ランクは最初から上位で作る事も許容させるか? => マスタでやらせる。
-                        rank_id: 1,
-                    }
+                    data: data
                 })
                 .then(res => {
                     console.log('register', res)
@@ -335,6 +346,12 @@
                     console.log(e)
                     this.snackbar = true
                 })
+            },
+            addData (val) {
+                if (val != '') {
+                    return val
+                }
+                return null
             },
             init () {
                 this.customerInfo = {
@@ -360,7 +377,50 @@
                 this.$router.push({
                     name: 'AccountHome',
                 })
-            }
+            },
+            checkCustomerNo () {
+                const no = this.customerInfo.customerNo
+                console.log(no)
+                if (no != '') {
+                    const reg = /^[0-9]+$/
+                    if (no <= 0 || !reg.test(no)) {
+                        this.showError('正しい会員Noを入力してください。')
+                    } else {
+                        this.$axios({
+                            method: 'post',
+                            url: '/api/customer/get_customer_no_duplicate/',
+                            data: {
+                                customer_no: no
+                            }
+                        })
+                        .then(res => {
+                            console.log(res.data.result == true)
+                            if (res.data.result) {
+                                this.hideError()
+                                this.custonerNoSuccess = true
+                            } else {
+                                this.showError('既に他のユーザーと紐づいている会員Noです。')
+                            }
+                        })
+                        .catch(e => {
+                            console.log(e)
+                            this.showError('会員No重複確認に失敗しました。')
+                        })
+                    }
+                } else {
+                    this.hideError()
+                    this.custonerNoSuccess = false
+                }
+            },
+            showError (text) {
+                this.custonerNoSuccess = false
+                this.customerNoError = true
+                this.customerNoErrorText = text
+            },
+            hideError () {
+                this.customerNoError = false
+                this.customerNoErrorText = ''
+            },
         },
         mixins: [],
     }

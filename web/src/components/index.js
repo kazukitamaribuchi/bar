@@ -23,6 +23,7 @@ export { default as AccountProductDetail } from './page/account/AccountProductDe
 export { default as AccountLogin } from './page/account/AccountLogin'
 export { default as AccountNewVisit } from './page/account/AccountNewVisit'
 export { default as AccountNewCustomer } from './page/account/AccountNewCustomer'
+export { default as AccountNewBottle } from './page/account/AccountNewBottle'
 export { default as AccountCustomer } from './page/account/AccountCustomer'
 export { default as AccountOrderClose } from './page/account/AccountOrderClose'
 export { default as AccountOrderHistory } from './page/account/AccountOrderHistory'

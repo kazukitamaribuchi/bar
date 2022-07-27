@@ -32,10 +32,29 @@
             <p class="account_check_text">{{ accountCloseText }}</p>
         </v-col>
 
-        <v-dialog
+        <vs-dialog
             v-model="dialog"
         >
-            <v-card>
+            <div class="con-content">
+                締め処理を行います。<br>
+                宜しいですか？
+            </div>
+            <template #footer>
+                <div class="con-footer">
+                    <vs-button
+                        transparent
+                        size="large"
+                        @click="dialog = false"
+                    >いいえ</vs-button>
+                    <vs-button
+                        primary
+                        transparent
+                        size="large"
+                        @click="closeAccount"
+                    >はい</vs-button>
+                </div>
+            </template>
+            <!-- <v-card>
                 <v-card-title>
                     締め処理を行います。<br>
                     宜しいですか？
@@ -63,8 +82,8 @@
                         </v-col>
                     </v-row>
                 </v-card-actions>
-            </v-card>
-        </v-dialog>
+            </v-card> -->
+        </vs-dialog>
     </v-row>
 </template>
 
@@ -195,6 +214,39 @@ export default {
         .account_close_confirm:hover {
             background-color: rgba(243, 80, 80, 1);
             transition: 0.5s;
+        }
+    }
+
+    .con-content {
+        width: 100%;
+        p {
+            font-size: .8rem;
+            padding: 0px 10px;
+            .vs-checkbox-label {
+                font-size: .8rem;
+            }
+            .vs-input-parent {
+                width: 100%;
+            }
+            .vs-input-content {
+                margin: 10px 0px;
+                width: calc(100%);
+                .vs-input {
+                    width: 100%;
+                }
+            }
+        }
+    }
+
+    .con-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        .vs-button {
+            margin: 0px;
+            .vs-button__content {
+                padding: 10px 30px;
+            }
         }
     }
 </style>
