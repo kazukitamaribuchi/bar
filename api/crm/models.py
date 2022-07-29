@@ -342,23 +342,22 @@ class MProductCategory(AbstractBaseModel):
             「0」:基本料金・・・pk:1
         【1】
             「0」:アルコール・・・
-            「1」:ノンアルコール・・・pk:8
-            「2」:ソフトドリンク・・・pk:9
+            「1」:ノンアルコール・・・pk:7
+            「2」:ソフトドリンク・・・pk:8
         【2】【?】
-            「0」:メイン・・・pk:10
-            「1」:サラダ・・・pk:11
-            「2」:前菜・・・pk:12
-            「3」:揚げ物・・・pk:13
-            「4」:吸い物、御飯物・・・pk:14
+            「0」:メイン・・・pk:9
+            「1」:サラダ・・・pk:10
+            「2」:一品物・・・pk:11
+            「3」:揚げ物・・・pk:12
+            「4」:吸い物、御飯物・・・pk:13
 
     　小カテゴリ
         【1】【0】【?】
             「0」:シャンパン1・・・pk:2
-            「1」:シャンパン2・・・pk:3
-            「2」:ウイスキー・・・pk:4
-            「3」:焼酎・・・pk:5
-            「4」:ワイン・・・pk:6
-            「5」:ドリンク・・・pk:7
+            「1」:ウイスキー・・・pk:3
+            「2」:焼酎・・・pk:4
+            「3」:ワイン・・・pk:5
+            「4」:ドリンク・・・pk:6
     """
 
     large_category = models.SmallIntegerField(
@@ -485,6 +484,19 @@ class MProduct(AbstractServiceModel):
         商品名
         商品カテゴリ
         金額（税区分によって
+
+        filter_key:
+            0: ア
+            1: カ
+            2: サ
+            3: タ
+            4: ナ
+            5: ハ
+            6: マ
+            7: ヤ
+            8: ラ
+            9: ワ
+            10: 他
     """
 
     thumbnail = models.ImageField(
@@ -521,6 +533,11 @@ class MProduct(AbstractServiceModel):
 
     priority = models.SmallIntegerField(
         _('優先順位'),
+        default=0,
+    )
+
+    filter_key= models.SmallIntegerField(
+        _('フィルターのkey'),
         default=0,
     )
 

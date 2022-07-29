@@ -599,11 +599,11 @@ class ProductCategorySerializer(DynamicFieldsModelSerializer):
                 'アルコール',
                 {
                     0: 'シャンパン1',
-                    1: 'シャンパン2',
-                    2: 'ウイスキー',
-                    3: '焼酎',
-                    4: 'ワイン',
-                    5: 'ドリンク',
+                    # 1: 'シャンパン2',
+                    1: 'ウイスキー',
+                    2: '焼酎',
+                    3: 'ワイン',
+                    4: 'ドリンク',
                 },
             ],
             1: 'ノンアルコール',
@@ -612,7 +612,7 @@ class ProductCategorySerializer(DynamicFieldsModelSerializer):
         2: {
             0: 'メイン',
             1: 'サラダ',
-            2: '前菜',
+            2: '一品物',
             3: '揚げ物',
             4: '吸い物、御飯物',
         }
@@ -666,6 +666,8 @@ class ProductSerializer(DynamicFieldsModelSerializer):
         fields = [
             'id',
             'name',
+            'name_kana',
+            'filter_key',
             'price',
             'category',
             'tax',

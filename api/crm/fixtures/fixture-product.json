@@ -3,8 +3,10 @@
     "model": "crm.mproduct",
     "pk": 1,
     "fields": {
-      "name": "アルマン・ド ・ブリニャック(ロゼ)",
-      "price": 350000,
+      "name": "ヴーヴ・クリコ イエロー・ラベル・ブリュット",
+      "name_kana": "ヴーヴ・クリコ イエロー・ラベル・ブリュット",
+      "filter_key": 0,
+      "price": 17000,
       "category": 1,
       "tax": 4
     }
@@ -13,8 +15,10 @@
     "model": "crm.mproduct",
     "pk": 2,
     "fields": {
-      "name": "アルマン・ド・ブリニャック グリーン マスターズエディション(グリーン)",
-      "price": 350000,
+      "name": "ヴーヴ・クリコ ホワイト・ラベル・ドゥミ・セック",
+      "name_kana": "ヴーヴ・クリコ ホワイト・ラベル・ドゥミ・セック",
+      "filter_key": 0,
+      "price": 20000,
       "category": 1,
       "tax": 4
     }
@@ -23,8 +27,10 @@
     "model": "crm.mproduct",
     "pk": 3,
     "fields": {
-      "name": "アルマン・ド・ブリニャック ドゥミ・セック(レッド)",
-      "price": 350000,
+      "name": "ヴーヴ・クリコ ローズ･ラベル",
+      "name_kana": "ヴーヴ・クリコ ローズ･ラベル",
+      "filter_key": 0,
+      "price": 27000,
       "category": 1,
       "tax": 4
     }
@@ -33,8 +39,10 @@
     "model": "crm.mproduct",
     "pk": 4,
     "fields": {
-      "name": "アルマン・ド・ブリニャック ブラン・ド・ノワール(ブラック)",
-      "price": 99999999,
+      "name": "モエ・エ・シャンドン モエ アンペリアル ",
+      "name_kana": "モエ・エ・シャンドン モエ アンペリアル ",
+      "filter_key": 6,
+      "price": 17000,
       "category": 1,
       "tax": 4
     }
@@ -43,8 +51,10 @@
     "model": "crm.mproduct",
     "pk": 5,
     "fields": {
-      "name": "アルマン・ド・ブリニャック ブラン・ド・ブラン(シルバー)",
-      "price": 99999999,
+      "name": "モエ・エ・シャンドン モエ ロゼ アンペリアル",
+      "name_kana": "モエ・エ・シャンドン モエ ロゼ アンペリアル",
+      "filter_key": 6,
+      "price": 25000,
       "category": 1,
       "tax": 4
     }
@@ -53,8 +63,10 @@
     "model": "crm.mproduct",
     "pk": 6,
     "fields": {
-      "name": "アルマン・ド・ブリニャック ブリュット(ゴールド)",
-      "price": 200000,
+      "name": "モエ・エ・シャンドン ネクターアンペリアル",
+      "name_kana": "モエ・エ・シャンドン ネクターアンペリアル",
+      "filter_key": 6,
+      "price": 30000,
       "category": 1,
       "tax": 4
     }
@@ -63,8 +75,10 @@
     "model": "crm.mproduct",
     "pk": 7,
     "fields": {
-      "name": "ウィリアム フェーブル シャブリ グランクリュ レ プルーズ",
-      "price": 99999999,
+      "name": "モエ エ　シャンドン　ネクター　アンぺリアル　ロゼ",
+      "name_kana": "モエ エ　シャンドン　ネクター　アンぺリアル　ロゼ",
+      "filter_key": 6,
+      "price": 35000,
       "category": 1,
       "tax": 4
     }
@@ -73,8 +87,10 @@
     "model": "crm.mproduct",
     "pk": 8,
     "fields": {
-      "name": "ヴーヴ・クリコ イエロー・ラベル・ブリュット",
-      "price": 25000,
+      "name": "モエ・エ・シャンドン アイス アンペリアル",
+      "name_kana": "モエ・エ・シャンドン アイス アンペリアル",
+      "filter_key": 6,
+      "price": 37000,
       "category": 1,
       "tax": 4
     }
@@ -83,8 +99,10 @@
     "model": "crm.mproduct",
     "pk": 9,
     "fields": {
-      "name": "ヴーヴ・クリコ ホワイト・ラベル・ドゥミ・セック",
-      "price": 28000,
+      "name": "モエ・エ・シャンドン アイス アンペリアル ロゼ",
+      "name_kana": "モエ・エ・シャンドン アイス アンペリアル ロゼ",
+      "filter_key": 6,
+      "price": 50000,
       "category": 1,
       "tax": 4
     }
@@ -93,8 +111,10 @@
     "model": "crm.mproduct",
     "pk": 10,
     "fields": {
-      "name": "ヴーヴ・クリコ ローズ･ラベル",
-      "price": 35000,
+      "name": "ペリエ・ジュエ ベル・エポック・ブラン",
+      "name_kana": "ペリエ・ジュエ ベル・エポック・ブラン",
+      "filter_key": 5,
+      "price": 65000,
       "category": 1,
       "tax": 4
     }
@@ -103,8 +123,10 @@
     "model": "crm.mproduct",
     "pk": 11,
     "fields": {
-      "name": "エンジェルシャンパン ドゥミセック",
-      "price": 330000,
+      "name": "ペリエ・ジュエ ベル・エポック・ロゼ",
+      "name_kana": "ペリエ・ジュエ ベル・エポック・ロゼ",
+      "filter_key": 5,
+      "price": 150000,
       "category": 1,
       "tax": 4
     }
@@ -113,8 +135,10 @@
     "model": "crm.mproduct",
     "pk": 12,
     "fields": {
-      "name": "エンジェルシャンパンドゥミセックローズ",
-      "price": 330000,
+      "name": "ペリエ・ジュエ ブラン・ド・ブラン",
+      "name_kana": "ペリエ・ジュエ ブラン・ド・ブラン",
+      "filter_key": 5,
+      "price": 99999999,
       "category": 1,
       "tax": 4
     }
@@ -123,8 +147,10 @@
     "model": "crm.mproduct",
     "pk": 13,
     "fields": {
-      "name": "オリヴィエ ルフレーヴ ムルソー",
-      "price": 99999999,
+      "name": "ドンペリニヨン　ヴィンテージ（ドンペリ白）",
+      "name_kana": "ドンペリニヨン　ヴィンテージ（ドンペリ白）",
+      "filter_key": 3,
+      "price": 70000,
       "category": 1,
       "tax": 4
     }
@@ -133,8 +159,10 @@
     "model": "crm.mproduct",
     "pk": 14,
     "fields": {
-      "name": "クラウディー ベイ ソーヴィニヨン ブラン",
-      "price": 99999999,
+      "name": "ドンペリニヨン　ロゼ　ヴィンテージ（ピンドン）",
+      "name_kana": "ドンペリニヨン　ロゼ　ヴィンテージ（ピンドン）",
+      "filter_key": 3,
+      "price": 140000,
       "category": 1,
       "tax": 4
     }
@@ -143,8 +171,10 @@
     "model": "crm.mproduct",
     "pk": 15,
     "fields": {
-      "name": "ソウメイ ブリュット",
-      "price": 85000,
+      "name": "ドンぺリニヨン　エノテーク（ドンペリ黒）",
+      "name_kana": "ドンぺリニヨン　エノテーク（ドンペリ黒）",
+      "filter_key": 3,
+      "price": 99999999,
       "category": 1,
       "tax": 4
     }
@@ -153,8 +183,10 @@
     "model": "crm.mproduct",
     "pk": 16,
     "fields": {
-      "name": "ソウメイ ロゼ",
-      "price": 150000,
+      "name": "ドンペリニヨン　レゼルヴ・ドゥ・ラ・ベイ（ドンペリゴールド）",
+      "name_kana": "ドンペリニヨン　レゼルヴ・ドゥ・ラ・ベイ（ドンペリゴールド）",
+      "filter_key": 3,
+      "price": 99999999,
       "category": 1,
       "tax": 4
     }
@@ -163,8 +195,10 @@
     "model": "crm.mproduct",
     "pk": 17,
     "fields": {
-      "name": "ドンペリニヨン ヴィンテージ(ドンペリ白)",
-      "price": 90000,
+      "name": "ルイ・ロデレール クリスタル",
+      "name_kana": "ルイ・ロデレール クリスタル",
+      "filter_key": 8,
+      "price": 100000,
       "category": 1,
       "tax": 4
     }
@@ -173,9 +207,11 @@
     "model": "crm.mproduct",
     "pk": 18,
     "fields": {
-      "name": "ドンぺリニヨン エノテーク(ドンペリ黒)",
-      "price": 99999999,
-      "category": 2,
+      "name": "ルイ・ロデレール クリスタル・ロゼ",
+      "name_kana": "ルイ・ロデレール クリスタル・ロゼ",
+      "filter_key": 8,
+      "price": 210000,
+      "category": 1,
       "tax": 4
     }
   },
@@ -183,9 +219,11 @@
     "model": "crm.mproduct",
     "pk": 19,
     "fields": {
-      "name": "ドンペリニヨン レゼルヴ・ドゥ・ラ・ベイ(ドンペリゴールド)",
-      "price": 99999999,
-      "category": 2,
+      "name": "アルマン・ド・ブリニャック ブリュット（ゴールド）",
+      "name_kana": "アルマン・ド・ブリニャック ブリュット（ゴールド）",
+      "filter_key": 0,
+      "price": 150000,
+      "category": 1,
       "tax": 4
     }
   },
@@ -193,9 +231,11 @@
     "model": "crm.mproduct",
     "pk": 20,
     "fields": {
-      "name": "ドンペリニヨン ロゼ ヴィンテージ(ピンドン)",
-      "price": 190000,
-      "category": 2,
+      "name": "アルマン・ド ・ブリニャック（ロゼ）",
+      "name_kana": "アルマン・ド ・ブリニャック（ロゼ）",
+      "filter_key": 0,
+      "price": 300000,
+      "category": 1,
       "tax": 4
     }
   },
@@ -203,9 +243,11 @@
     "model": "crm.mproduct",
     "pk": 21,
     "fields": {
-      "name": "パルメイヤー ジェイソン シャルドネ",
-      "price": 99999999,
-      "category": 2,
+      "name": "アルマン・ド・ブリニャック グリーン マスターズエディション（グリーン）",
+      "name_kana": "アルマン・ド・ブリニャック グリーン マスターズエディション（グリーン）",
+      "filter_key": 0,
+      "price": 300000,
+      "category": 1,
       "tax": 4
     }
   },
@@ -213,9 +255,11 @@
     "model": "crm.mproduct",
     "pk": 22,
     "fields": {
-      "name": "ペリエ・ジュエ グラン・ブリュット",
-      "price": 99999999,
-      "category": 2,
+      "name": "アルマン・ド・ブリニャック ドゥミ・セック（レッド）",
+      "name_kana": "アルマン・ド・ブリニャック ドゥミ・セック（レッド）",
+      "filter_key": 0,
+      "price": 300000,
+      "category": 1,
       "tax": 4
     }
   },
@@ -223,9 +267,11 @@
     "model": "crm.mproduct",
     "pk": 23,
     "fields": {
-      "name": "ペリエ・ジュエ ブラゾン・ロゼ",
+      "name": "アルマン・ド・ブリニャック ブラン・ド・ブラン（シルバー）",
+      "name_kana": "アルマン・ド・ブリニャック ブラン・ド・ブラン（シルバー）",
+      "filter_key": 0,
       "price": 99999999,
-      "category": 2,
+      "category": 1,
       "tax": 4
     }
   },
@@ -233,9 +279,11 @@
     "model": "crm.mproduct",
     "pk": 24,
     "fields": {
-      "name": "ペリエ・ジュエ ブラン・ド・ブラン",
+      "name": "アルマン・ド・ブリニャック ブラン・ド・ノワール（ブラック）",
+      "name_kana": "アルマン・ド・ブリニャック ブラン・ド・ノワール（ブラック）",
+      "filter_key": 0,
       "price": 99999999,
-      "category": 2,
+      "category": 1,
       "tax": 4
     }
   },
@@ -243,9 +291,11 @@
     "model": "crm.mproduct",
     "pk": 25,
     "fields": {
-      "name": "ペリエ・ジュエ ベル・エポック・ブラン",
-      "price": 100000,
-      "category": 2,
+      "name": "エンジェルシャンパン ドゥミセック",
+      "name_kana": "エンジェルシャンパン ドゥミセック",
+      "filter_key": 0,
+      "price": 250000,
+      "category": 1,
       "tax": 4
     }
   },
@@ -253,9 +303,11 @@
     "model": "crm.mproduct",
     "pk": 26,
     "fields": {
-      "name": "ペリエ・ジュエ ベル・エポック・ロゼ",
-      "price": 200000,
-      "category": 2,
+      "name": "エンジェルシャンパンドゥミセックローズ",
+      "name_kana": "エンジェルシャンパンドゥミセックローズ",
+      "filter_key": 0,
+      "price": 250000,
+      "category": 1,
       "tax": 4
     }
   },
@@ -263,9 +315,11 @@
     "model": "crm.mproduct",
     "pk": 27,
     "fields": {
-      "name": "モエ エ シャンドン ネクター アンぺリアル ロゼ",
-      "price": 55000,
-      "category": 2,
+      "name": "ソウメイ　ブリュット",
+      "name_kana": "ソウメイ　ブリュット",
+      "filter_key": 2,
+      "price": 60000,
+      "category": 1,
       "tax": 4
     }
   },
@@ -273,9 +327,11 @@
     "model": "crm.mproduct",
     "pk": 28,
     "fields": {
-      "name": "モエ・エ・シャンドン アイス アンペリアル",
-      "price": 45000,
-      "category": 2,
+      "name": "ソウメイ　ロゼ",
+      "name_kana": "ソウメイ　ロゼ",
+      "filter_key": 2,
+      "price": 100000,
+      "category": 1,
       "tax": 4
     }
   },
@@ -283,9 +339,11 @@
     "model": "crm.mproduct",
     "pk": 29,
     "fields": {
-      "name": "モエ・エ・シャンドン アイス アンペリアル ロゼ",
-      "price": 60000,
-      "category": 2,
+      "name": "アンリ・グラン・ブリュット",
+      "name_kana": "アンリ・グラン・ブリュット",
+      "filter_key": 0,
+      "price": 50000,
+      "category": 1,
       "tax": 4
     }
   },
@@ -293,9 +351,11 @@
     "model": "crm.mproduct",
     "pk": 30,
     "fields": {
-      "name": "モエ・エ・シャンドン ネクターアンペリアル",
+      "name": "ディアデーマ・ドサージュ・ゼロ",
+      "name_kana": "ディアデーマ・ドサージュ・ゼロ",
+      "filter_key": 3,
       "price": 40000,
-      "category": 2,
+      "category": 1,
       "tax": 4
     }
   },
@@ -303,9 +363,11 @@
     "model": "crm.mproduct",
     "pk": 31,
     "fields": {
-      "name": "モエ・エ・シャンドン モエ アンペリアル",
-      "price": 25000,
-      "category": 2,
+      "name": "ディアデーマ・シャンパーニュ・ロゼ",
+      "name_kana": "ディアデーマ・シャンパーニュ・ロゼ",
+      "filter_key": 3,
+      "price": 60000,
+      "category": 1,
       "tax": 4
     }
   },
@@ -313,8 +375,10 @@
     "model": "crm.mproduct",
     "pk": 32,
     "fields": {
-      "name": "モエ・エ・シャンドン モエ ロゼ アンペリアル",
-      "price": 30000,
+      "name": "角瓶",
+      "name_kana": "カクビン",
+      "filter_key": 1,
+      "price": 7000,
       "category": 2,
       "tax": 4
     }
@@ -323,8 +387,10 @@
     "model": "crm.mproduct",
     "pk": 33,
     "fields": {
-      "name": "ルイ・ロデレール クリスタル",
-      "price": 150000,
+      "name": "ジャック ダニエル",
+      "name_kana": "ジャック ダニエル",
+      "filter_key": 2,
+      "price": 15000,
       "category": 2,
       "tax": 4
     }
@@ -333,8 +399,10 @@
     "model": "crm.mproduct",
     "pk": 34,
     "fields": {
-      "name": "ルイ・ロデレール クリスタル・ロゼ",
-      "price": 280000,
+      "name": "CHIVAS REGAL 12",
+      "name_kana": "シーバスリーガル",
+      "filter_key": 2,
+      "price": 15000,
       "category": 2,
       "tax": 4
     }
@@ -343,9 +411,11 @@
     "model": "crm.mproduct",
     "pk": 35,
     "fields": {
-      "name": "角瓶",
-      "price": 7000,
-      "category": 3,
+      "name": "山崎",
+      "name_kana": "ヤマザキ",
+      "filter_key": 7,
+      "price": 50000,
+      "category": 2,
       "tax": 4
     }
   },
@@ -353,9 +423,11 @@
     "model": "crm.mproduct",
     "pk": 36,
     "fields": {
-      "name": "ジャック ダニエル",
-      "price": 15000,
-      "category": 3,
+      "name": "山崎12年",
+      "name_kana": "ヤマザキ12年",
+      "filter_key": 7,
+      "price": 100000,
+      "category": 2,
       "tax": 4
     }
   },
@@ -363,9 +435,11 @@
     "model": "crm.mproduct",
     "pk": 37,
     "fields": {
-      "name": "CHIVAS REGAL 12",
-      "price": 15000,
-      "category": 3,
+      "name": "山崎18年",
+      "name_kana": "ヤマザキ18年",
+      "filter_key": 7,
+      "price": 99999999,
+      "category": 2,
       "tax": 4
     }
   },
@@ -373,9 +447,11 @@
     "model": "crm.mproduct",
     "pk": 38,
     "fields": {
-      "name": "山崎",
-      "price": 50000,
-      "category": 3,
+      "name": "響",
+      "name_kana": "ヒビキ",
+      "filter_key": 5,
+      "price": 60000,
+      "category": 2,
       "tax": 4
     }
   },
@@ -383,9 +459,11 @@
     "model": "crm.mproduct",
     "pk": 39,
     "fields": {
-      "name": "山崎12年",
-      "price": 100000,
-      "category": 3,
+      "name": "響21年",
+      "name_kana": "ヒビキ21年",
+      "filter_key": 5,
+      "price": 99999999,
+      "category": 2,
       "tax": 4
     }
   },
@@ -393,9 +471,11 @@
     "model": "crm.mproduct",
     "pk": 40,
     "fields": {
-      "name": "山崎18年",
-      "price": 10000,
-      "category": 3,
+      "name": "白州",
+      "name_kana": "ハクシュウ",
+      "filter_key": 5,
+      "price": 35000,
+      "category": 2,
       "tax": 4
     }
   },
@@ -403,9 +483,11 @@
     "model": "crm.mproduct",
     "pk": 41,
     "fields": {
-      "name": "響",
-      "price": 60000,
-      "category": 3,
+      "name": "白州12年",
+      "name_kana": "ハクシュウ12年",
+      "filter_key": 5,
+      "price": 99999999,
+      "category": 2,
       "tax": 4
     }
   },
@@ -413,9 +495,11 @@
     "model": "crm.mproduct",
     "pk": 42,
     "fields": {
-      "name": "響21年",
-      "price": 99999999,
-      "category": 3,
+      "name": "ザ・マッカラン シェリーオーク",
+      "name_kana": "ザ・マッカラン シェリーオーク",
+      "filter_key": 2,
+      "price": 35000,
+      "category": 2,
       "tax": 4
     }
   },
@@ -423,9 +507,11 @@
     "model": "crm.mproduct",
     "pk": 43,
     "fields": {
-      "name": "白州",
-      "price": 35000,
-      "category": 3,
+      "name": "ザ・マッカラン ダブルカスク",
+      "name_kana": "ザ・マッカラン ダブルカスク",
+      "filter_key": 2,
+      "price": 99999999,
+      "category": 2,
       "tax": 4
     }
   },
@@ -433,8 +519,10 @@
     "model": "crm.mproduct",
     "pk": 44,
     "fields": {
-      "name": "白州12年",
-      "price": 99999999,
+      "name": "鏡月Green",
+      "name_kana": "キョウゲツGreen",
+      "filter_key": 1,
+      "price": 6000,
       "category": 3,
       "tax": 4
     }
@@ -443,8 +531,10 @@
     "model": "crm.mproduct",
     "pk": 45,
     "fields": {
-      "name": "ザ・マッカラン シェリーオーク",
-      "price": 35000,
+      "name": "鏡月プレミアム",
+      "name_kana": "キョウゲツプレミアム",
+      "filter_key": 1,
+      "price": 7000,
       "category": 3,
       "tax": 4
     }
@@ -453,8 +543,10 @@
     "model": "crm.mproduct",
     "pk": 46,
     "fields": {
-      "name": "ザ・マッカラン ダブルカスク",
-      "price": 99999999,
+      "name": "黒霧島",
+      "name_kana": "クロキリシマ",
+      "filter_key": 1,
+      "price": 5000,
       "category": 3,
       "tax": 4
     }
@@ -463,9 +555,11 @@
     "model": "crm.mproduct",
     "pk": 47,
     "fields": {
-      "name": "鏡月Green",
-      "price": 6000,
-      "category": 4,
+      "name": "魔王",
+      "name_kana": "マオウ",
+      "filter_key": 6,
+      "price": 30000,
+      "category": 3,
       "tax": 4
     }
   },
@@ -473,19 +567,11 @@
     "model": "crm.mproduct",
     "pk": 48,
     "fields": {
-      "name": "鏡月プレミアム",
-      "price": 7000,
-      "category": 4,
-      "tax": 4
-    }
-  },
-  {
-    "model": "crm.mproduct",
-    "pk": 48,
-    "fields": {
-      "name": "JINRO",
-      "price": 5000,
-      "category": 4,
+      "name": "吉四六",
+      "name_kana": "キッチョム",
+      "filter_key": 1,
+      "price": 10000,
+      "category": 3,
       "tax": 4
     }
   },
@@ -493,8 +579,10 @@
     "model": "crm.mproduct",
     "pk": 49,
     "fields": {
-      "name": "宮崎本店 キッコーミヤ焼酎",
-      "price": 5000,
+      "name": "クロスデロスシエテ",
+      "name_kana": "クロスデロスシエテ",
+      "filter_key": 1,
+      "price": 99999999,
       "category": 4,
       "tax": 4
     }
@@ -503,8 +591,10 @@
     "model": "crm.mproduct",
     "pk": 50,
     "fields": {
-      "name": "黒霧島",
-      "price": 5000,
+      "name": "ルイラトゥールヴォーヌロマネ",
+      "name_kana": "ルイラトゥールヴォーヌロマネ",
+      "filter_key": 8,
+      "price": 99999999,
       "category": 4,
       "tax": 4
     }
@@ -513,8 +603,10 @@
     "model": "crm.mproduct",
     "pk": 51,
     "fields": {
-      "name": "赤霧島",
-      "price": 5000,
+      "name": "オーパスワン",
+      "name_kana": "オーパスワン",
+      "filter_key": 0,
+      "price": 99999999,
       "category": 4,
       "tax": 4
     }
@@ -523,8 +615,10 @@
     "model": "crm.mproduct",
     "pk": 52,
     "fields": {
-      "name": "魔王",
-      "price": 30000,
+      "name": "ダスティ",
+      "name_kana": "ダスティ",
+      "filter_key": 3,
+      "price": 99999999,
       "category": 4,
       "tax": 4
     }
@@ -533,8 +627,10 @@
     "model": "crm.mproduct",
     "pk": 53,
     "fields": {
-      "name": "吉四六",
-      "price": 10000,
+      "name": "シャブリ",
+      "name_kana": "シャブリ",
+      "filter_key": 2,
+      "price": 99999999,
       "category": 4,
       "tax": 4
     }
@@ -543,9 +639,11 @@
     "model": "crm.mproduct",
     "pk": 54,
     "fields": {
-      "name": "神の河",
-      "price": 7000,
-      "category": 4,
+      "name": "ドリンク（Sサイズ）",
+      "name_kana": "ドリンク（Sサイズ）",
+      "filter_key": 3,
+      "price": 1500,
+      "category": 5,
       "tax": 4
     }
   },
@@ -553,8 +651,10 @@
     "model": "crm.mproduct",
     "pk": 55,
     "fields": {
-      "name": "クロスデロスシエテ",
-      "price": 99999999,
+      "name": "ドリンク（Mサイズ）",
+      "name_kana": "ドリンク（Mサイズ）",
+      "filter_key": 3,
+      "price": 2000,
       "category": 5,
       "tax": 4
     }
@@ -563,8 +663,10 @@
     "model": "crm.mproduct",
     "pk": 56,
     "fields": {
-      "name": "ルイラトゥールヴォーヌロマネ",
-      "price": 99999999,
+      "name": "ドリンク（Lサイズ）",
+      "name_kana": "ドリンク（Lサイズ）",
+      "filter_key": 3,
+      "price": 2500,
       "category": 5,
       "tax": 4
     }
@@ -573,8 +675,10 @@
     "model": "crm.mproduct",
     "pk": 57,
     "fields": {
-      "name": "オーパスワン",
-      "price": 99999999,
+      "name": "ショットドリンク（Sサイズ）",
+      "name_kana": "ショットドリンク（Sサイズ）",
+      "filter_key": 2,
+      "price": 1500,
       "category": 5,
       "tax": 4
     }
@@ -583,8 +687,10 @@
     "model": "crm.mproduct",
     "pk": 58,
     "fields": {
-      "name": "ダスティ",
-      "price": 99999999,
+      "name": "ショットドリンク（Mサイズ）",
+      "name_kana": "ショットドリンク（Mサイズ）",
+      "filter_key": 2,
+      "price": 2000,
       "category": 5,
       "tax": 4
     }
@@ -593,8 +699,10 @@
     "model": "crm.mproduct",
     "pk": 59,
     "fields": {
-      "name": "シャブリ",
-      "price": 99999999,
+      "name": "ショットドリンク（Lサイズ）",
+      "name_kana": "ショットドリンク（Lサイズ）",
+      "filter_key": 2,
+      "price": 2500,
       "category": 5,
       "tax": 4
     }
@@ -603,9 +711,11 @@
     "model": "crm.mproduct",
     "pk": 60,
     "fields": {
-      "name": "ショットドリンク（Sサイズ）",
-      "price": 3000,
-      "category": 6,
+      "name": "ピッチャー（Sサイズ）",
+      "name_kana": "ピッチャー（Sサイズ）",
+      "filter_key": 5,
+      "price": 1000,
+      "category": 5,
       "tax": 4
     }
   },
@@ -613,9 +723,11 @@
     "model": "crm.mproduct",
     "pk": 61,
     "fields": {
-      "name": "ショットドリンク（Mサイズ）",
-      "price": 4000,
-      "category": 6,
+      "name": "ピッチャー（Mサイズ）",
+      "name_kana": "ピッチャー（Mサイズ）",
+      "filter_key": 5,
+      "price": 2000,
+      "category": 5,
       "tax": 4
     }
   },
@@ -623,9 +735,11 @@
     "model": "crm.mproduct",
     "pk": 62,
     "fields": {
-      "name": "ピッチャー（割り物）Sサイズ",
+      "name": "ピッチャー（Lサイズ）",
+      "name_kana": "ピッチャー（Lサイズ）",
+      "filter_key": 5,
       "price": 3000,
-      "category": 6,
+      "category": 5,
       "tax": 4
     }
   },
@@ -633,9 +747,11 @@
     "model": "crm.mproduct",
     "pk": 63,
     "fields": {
-      "name": "ピッチャー（割り物）Mサイズ",
-      "price": 4000,
-      "category": 6,
+      "name": "カットレモン",
+      "name_kana": "カットレモン",
+      "filter_key": 1,
+      "price": 1000,
+      "category": 5,
       "tax": 4
     }
   },
@@ -643,9 +759,11 @@
     "model": "crm.mproduct",
     "pk": 64,
     "fields": {
-      "name": "カットレモン",
-      "price": 2000,
-      "category": 6,
+      "name": "梅干し",
+      "name_kana": "ウメボシ",
+      "filter_key": 0,
+      "price": 1000,
+      "category": 5,
       "tax": 4
     }
   },
@@ -653,9 +771,11 @@
     "model": "crm.mproduct",
     "pk": 65,
     "fields": {
-      "name": "梅干し",
-      "price": 2000,
-      "category": 6,
+      "name": "お寿司の盛り合わせ",
+      "name_kana": "オスシノモリアワセ",
+      "filter_key": 0,
+      "price": 3000,
+      "category": 8,
       "tax": 4
     }
   },
@@ -663,9 +783,11 @@
     "model": "crm.mproduct",
     "pk": 66,
     "fields": {
-      "name": "季節のお寿司",
-      "price": 99999999,
-      "category": 9,
+      "name": "鮮魚の煮付け",
+      "name_kana": "センギョノニツケ",
+      "filter_key": 2,
+      "price": 2500,
+      "category": 8,
       "tax": 4
     }
   },
@@ -673,9 +795,11 @@
     "model": "crm.mproduct",
     "pk": 67,
     "fields": {
-      "name": "鮮魚の煮付け",
-      "price": 99999999,
-      "category": 9,
+      "name": "とろける角煮",
+      "name_kana": "トロケルカクニ",
+      "filter_key": 3,
+      "price": 1500,
+      "category": 8,
       "tax": 4
     }
   },
@@ -683,9 +807,11 @@
     "model": "crm.mproduct",
     "pk": 68,
     "fields": {
-      "name": "とろける角煮",
-      "price": 99999999,
-      "category": 9,
+      "name": "銀鱈の西京焼き",
+      "name_kana": "ギンダラノサイキョウヤキ",
+      "filter_key": 1,
+      "price": 2000,
+      "category": 8,
       "tax": 4
     }
   },
@@ -693,9 +819,11 @@
     "model": "crm.mproduct",
     "pk": 69,
     "fields": {
-      "name": "銀鱈の西京焼き",
-      "price": 99999999,
-      "category": 9,
+      "name": "鮮魚の焼き物",
+      "name_kana": "センギョノヤキモノ",
+      "filter_key": 2,
+      "price": 2000,
+      "category": 8,
       "tax": 4
     }
   },
@@ -703,9 +831,11 @@
     "model": "crm.mproduct",
     "pk": 70,
     "fields": {
-      "name": "鮮魚の焼き物",
-      "price": 99999999,
-      "category": 9,
+      "name": "サーロインステーキ",
+      "name_kana": "サーロインステーキ",
+      "filter_key": 2,
+      "price": 5000,
+      "category": 8,
       "tax": 4
     }
   },
@@ -713,9 +843,11 @@
     "model": "crm.mproduct",
     "pk": 71,
     "fields": {
-      "name": "サーロインステーキ",
-      "price": 99999999,
-      "category": 9,
+      "name": "刺身の盛り合わせ",
+      "name_kana": "サシミノモリアワセ",
+      "filter_key": 2,
+      "price": 2000,
+      "category": 8,
       "tax": 4
     }
   },
@@ -723,8 +855,10 @@
     "model": "crm.mproduct",
     "pk": 72,
     "fields": {
-      "name": "季節のお造り",
-      "price": 99999999,
+      "name": "海鮮サラダ",
+      "name_kana": "カイセンサラダ",
+      "filter_key": 1,
+      "price": 1500,
       "category": 9,
       "tax": 4
     }
@@ -733,8 +867,10 @@
     "model": "crm.mproduct",
     "pk": 73,
     "fields": {
-      "name": "シーザーサラダ",
-      "price": 1000,
+      "name": "海苔巻きユッケ",
+      "name_kana": "ノリマキユッケ",
+      "filter_key": 4,
+      "price": 1500,
       "category": 10,
       "tax": 4
     }
@@ -743,8 +879,10 @@
     "model": "crm.mproduct",
     "pk": 74,
     "fields": {
-      "name": "シーフードサラダ",
-      "price": 1200,
+      "name": "だし巻き卵",
+      "name_kana": "ダシマキタマゴ",
+      "filter_key": 3,
+      "price": 1500,
       "category": 10,
       "tax": 4
     }
@@ -753,9 +891,11 @@
     "model": "crm.mproduct",
     "pk": 75,
     "fields": {
-      "name": "前菜5種盛り",
-      "price": 2500,
-      "category": 11,
+      "name": "チャンジャ",
+      "name_kana": "チャンジャ",
+      "filter_key": 3,
+      "price": 1000,
+      "category": 10,
       "tax": 4
     }
   },
@@ -763,9 +903,11 @@
     "model": "crm.mproduct",
     "pk": 76,
     "fields": {
-      "name": "前菜3種盛り",
-      "price": 2000,
-      "category": 11,
+      "name": "おぼろ豆腐",
+      "name_kana": "オボロドウフ",
+      "filter_key": 0,
+      "price": 1000,
+      "category": 10,
       "tax": 4
     }
   },
@@ -773,9 +915,11 @@
     "model": "crm.mproduct",
     "pk": 77,
     "fields": {
-      "name": "生湯葉のお造り",
-      "price": 1200,
-      "category": 11,
+      "name": "タコわさび",
+      "name_kana": "タコワサビ",
+      "filter_key": 3,
+      "price": 1000,
+      "category": 10,
       "tax": 4
     }
   },
@@ -783,9 +927,11 @@
     "model": "crm.mproduct",
     "pk": 78,
     "fields": {
-      "name": "だし巻き卵",
+      "name": "枝豆",
+      "name_kana": "エダマメ",
+      "filter_key": 0,
       "price": 1000,
-      "category": 11,
+      "category": 10,
       "tax": 4
     }
   },
@@ -793,9 +939,11 @@
     "model": "crm.mproduct",
     "pk": 79,
     "fields": {
-      "name": "チャンジャ",
-      "price": 700,
-      "category": 11,
+      "name": "なめろう",
+      "name_kana": "ナメロウ",
+      "filter_key": 4,
+      "price": 1500,
+      "category": 10,
       "tax": 4
     }
   },
@@ -803,9 +951,11 @@
     "model": "crm.mproduct",
     "pk": 80,
     "fields": {
-      "name": "おぼろ豆腐",
-      "price": 1300,
-      "category": 11,
+      "name": "漬け物の盛り合わせ",
+      "name_kana": "ツケモノノモリアワセ",
+      "filter_key": 3,
+      "price": 1000,
+      "category": 10,
       "tax": 4
     }
   },
@@ -813,8 +963,10 @@
     "model": "crm.mproduct",
     "pk": 81,
     "fields": {
-      "name": "タコわさび",
-      "price": 700,
+      "name": "天ぷらの盛り合わせ",
+      "name_kana": "テンプラノモリアワセ",
+      "filter_key": 3,
+      "price": 2000,
       "category": 11,
       "tax": 4
     }
@@ -823,8 +975,10 @@
     "model": "crm.mproduct",
     "pk": 82,
     "fields": {
-      "name": "枝豆",
-      "price": 700,
+      "name": "しんじょ風さつま揚げ",
+      "name_kana": "シンジョフウサツマアゲ",
+      "filter_key": 2,
+      "price": 1500,
       "category": 11,
       "tax": 4
     }
@@ -833,9 +987,11 @@
     "model": "crm.mproduct",
     "pk": 83,
     "fields": {
-      "name": "天ぷらの盛り合わせ",
-      "price": 2500,
-      "category": 12,
+      "name": "揚げ出し豆腐",
+      "name_kana": "アゲダシドウフ",
+      "filter_key": 0,
+      "price": 1000,
+      "category": 11,
       "tax": 4
     }
   },
@@ -843,9 +999,11 @@
     "model": "crm.mproduct",
     "pk": 84,
     "fields": {
-      "name": "鮮魚のフィッシュフライ",
-      "price": 1500,
-      "category": 12,
+      "name": "ポテトフライ",
+      "name_kana": "ポテトフライ",
+      "filter_key": 5,
+      "price": 1000,
+      "category": 11,
       "tax": 4
     }
   },
@@ -853,9 +1011,11 @@
     "model": "crm.mproduct",
     "pk": 85,
     "fields": {
-      "name": "しんじょ風さつま揚げ",
-      "price": 1500,
-      "category": 12,
+      "name": "若鶏の唐揚げ",
+      "name_kana": "ワカドリノカラアゲ",
+      "filter_key": 9,
+      "price": 1000,
+      "category": 11,
       "tax": 4
     }
   },
@@ -863,7 +1023,9 @@
     "model": "crm.mproduct",
     "pk": 86,
     "fields": {
-      "name": "揚げ出し豆腐",
+      "name": "本日の吸い物",
+      "name_kana": "ホンジツノスイモノ",
+      "filter_key": 5,
       "price": 1000,
       "category": 12,
       "tax": 4
@@ -873,7 +1035,9 @@
     "model": "crm.mproduct",
     "pk": 87,
     "fields": {
-      "name": "チーズフライ",
+      "name": "味噌汁（赤出汁）",
+      "name_kana": "ミソシル（アカダシ）",
+      "filter_key": 6,
       "price": 1000,
       "category": 12,
       "tax": 4
@@ -883,7 +1047,9 @@
     "model": "crm.mproduct",
     "pk": 88,
     "fields": {
-      "name": "軟骨の唐揚げ",
+      "name": "味噌汁（白出汁）",
+      "name_kana": "ミソシル（シロダシ）",
+      "filter_key": 6,
       "price": 1000,
       "category": 12,
       "tax": 4
@@ -893,7 +1059,9 @@
     "model": "crm.mproduct",
     "pk": 89,
     "fields": {
-      "name": "ポテトフライ",
+      "name": "お茶漬け",
+      "name_kana": "オチャヅケ",
+      "filter_key": 0,
       "price": 1000,
       "category": 12,
       "tax": 4
@@ -903,69 +1071,11 @@
     "model": "crm.mproduct",
     "pk": 90,
     "fields": {
-      "name": "山芋フライ",
-      "price": 1000,
-      "category": 12,
-      "tax": 4
-    }
-  },
-  {
-    "model": "crm.mproduct",
-    "pk": 91,
-    "fields": {
-      "name": "若鶏の唐揚げ",
-      "price": 1000,
-      "category": 12,
-      "tax": 4
-    }
-  },
-  {
-    "model": "crm.mproduct",
-    "pk": 92,
-    "fields": {
-      "name": "鮮魚の吸い物",
-      "price": 1500,
-      "category": 13,
-      "tax": 4
-    }
-  },
-  {
-    "model": "crm.mproduct",
-    "pk": 93,
-    "fields": {
-      "name": "味噌汁（赤出汁）",
-      "price": 600,
-      "category": 13,
-      "tax": 4
-    }
-  },
-  {
-    "model": "crm.mproduct",
-    "pk": 94,
-    "fields": {
-      "name": "味噌汁",
-      "price": 500,
-      "category": 13,
-      "tax": 4
-    }
-  },
-  {
-    "model": "crm.mproduct",
-    "pk": 95,
-    "fields": {
-      "name": "お茶漬け",
-      "price": 1000,
-      "category": 13,
-      "tax": 4
-    }
-  },
-  {
-    "model": "crm.mproduct",
-    "pk": 96,
-    "fields": {
       "name": "焼きおにぎり",
-      "price": 600,
-      "category": 13,
+      "name_kana": "ヤキオニギリ",
+      "filter_key": 7,
+      "price": 1000,
+      "category": 12,
       "tax": 4
     }
   }
