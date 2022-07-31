@@ -35,14 +35,14 @@
                         >
                             <i class='bx bx-check'></i>
                         </vs-button> -->
-                        <vs-button
+                        <!-- <vs-button
                             circle
                             icon
                             primary
                             @click="updateDialog = true"
                         >
                             <i class='bx bx-edit'></i>
-                        </vs-button>
+                        </vs-button> -->
                         <vs-button
                             circle
                             icon
@@ -93,6 +93,13 @@
 
                 <v-list-item>
                     <v-list-item-content>
+                        <v-list-item-subtitle>備考</v-list-item-subtitle>
+                        <div>{{ bottleData.remarks | dispNone }}</div>
+                    </v-list-item-content>
+                </v-list-item>
+
+                <v-list-item>
+                    <v-list-item-content>
                         <v-list-item-subtitle>データ作成日時</v-list-item-subtitle>
                         <div>{{ bottleData.created_at }}</div>
                     </v-list-item-content>
@@ -103,8 +110,8 @@
                     block
                     outlined
                     color="success"
-                    @click="endConfirm = true"
-                >締め</v-btn>
+                    @click="endConfirmDialog = true"
+                >空に更新</v-btn>
             </v-card-actions>
             <v-card-actions>
                 <v-btn
@@ -141,24 +148,54 @@
                 </v-card-actions>
 
             </v-card>
-            <!-- <div class="con-content">
-                ボトルデータを削除します。<br>宜しいですか？
-            </div>
-            <template #footer>
-                <div class="con-footer">
+        </v-dialog>
+
+        <v-dialog
+            v-model="endConfirmDialog"
+        >
+            <v-card
+                class="pt-3"
+                flat
+            >
+                <v-card-title>
+                    ボトルを空に更新します。<br>宜しいですか？
+                </v-card-title>
+                <v-card-actions>
                     <vs-button
                         transparent
                         size="large"
-                        @click="deleteConfirmDialog = false"
+                        @click="endConfirmDialog = false"
                     >閉じる</vs-button>
                     <vs-button
                         primary
                         transparent
                         size="large"
-                        @click="deleteBottle"
+                        @click="endBottle"
                     >はい</vs-button>
-                </div>
-            </template> -->
+                </v-card-actions>
+
+            </v-card>
+        </v-dialog>
+
+        <v-dialog
+            v-model="updateSuccessDialog"
+        >
+            <v-card
+                class="pt-3"
+                flat
+            >
+                <v-card-title>
+                    データの更新に成功しました。
+                </v-card-title>
+                <v-card-actions>
+                    <vs-button
+                        primary
+                        transparent
+                        size="large"
+                        @click="updateSuccess"
+                    >はい</vs-button>
+                </v-card-actions>
+            </v-card>
         </v-dialog>
 
         <v-dialog
@@ -169,7 +206,7 @@
                 flat
             >
                 <v-card-title>
-                    データの更新に成功しました。
+                    データの削除に成功しました。
                 </v-card-title>
                 <v-card-actions>
                     <vs-button
@@ -211,7 +248,8 @@
             // info: null,
             loading: false,
             updateDialog: false,
-            endConfirm: false,
+            endConfirmDialog: false,
+            updateSuccessDialog: false,
             deleteConfirmDialog: false,
             snackbar: false,
             deleteSuccessDialog: false,
@@ -221,6 +259,7 @@
         methods: {
             open (bottleData) {
                 // this.loading = true
+
                 this.bottleData = bottleData
                 // this.$axios({
                 //     method: 'get',
@@ -238,11 +277,11 @@
                 this.dialog = true
             },
             close () {
+                // this.init()
                 this.dialog = false
             },
             init () {
-                this.bottleData = null
-                this.close()
+                // this.bottleData = null
             },
             showDeleteConfirm () {
                 this.deleteConfirmDialog = true
@@ -251,11 +290,11 @@
                 this.deleteConfirmDialog = false
                 this.$axios({
                     method: 'delete',
-                    url: `/api/bottle/${this.bottleData.id}`
+                    url: `/api/bottle/${this.bottleData.id}/`
                 })
                 .then(res => {
                     console.log(res)
-                    this.deleteSuccessConfirm = true
+                    this.deleteSuccessDialog = true
                 })
                 .catch(e => {
                     console.log(e)
@@ -263,8 +302,34 @@
                 })
             },
             deleteSuccess () {
-                this.$emit('deleteSuccess', this.bottleData)
-            }
+                this.$emit('deleteBottleSuccess', this.bottleData)
+                this.deleteSuccessDialog = false
+                this.close()
+            },
+            endBottle () {
+                this.$axios({
+                    method: 'put',
+                    url: '/api/bottle/end_bottle_data/',
+                    data: {
+                        id: this.bottleData.id,
+                        endDate: '',
+                    }
+                })
+                .then(res => {
+                    console.log(res)
+                    this.updateSuccessDialog = true
+                })
+                .catch(e => {
+                    console.log(e)
+                    this.snackbar = true
+                })
+            },
+            updateSuccess () {
+                this.$emit('deleteBottleSuccess', this.bottleData)
+                // this.$emit('updateBottleSuccess', this.bottleData)
+                this.updateSuccessDialog = false
+                this.close()
+            },
         }
     }
 

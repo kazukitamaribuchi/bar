@@ -59,7 +59,7 @@
                 検索条件を入力してください。
             </v-card-text>
             <v-card-text v-else-if="searchResult.results.length == 0">
-                検索結果が0件です。
+                検索結果は0件です。
             </v-card-text>
             <v-card-text v-else>
                 <v-row class="mb-3">
@@ -213,7 +213,7 @@
 
         <BottleDetailDialog
             ref="bottleDetailDialog"
-            @deleteSuccess="deleteSuccess"
+            @deleteBottleSuccess="deleteBottleSuccess"
         />
     </div>
 </template>
@@ -311,6 +311,9 @@
                     params.customer_no = this.searchInfo.customerNo
                 }
 
+                params.end_flg = false
+                params.delete_flg = false
+
                 this.searchLoading = true
                 this.$axios({
                     method: 'get',
@@ -358,8 +361,9 @@
             showBottleDetail (item) {
                 this.$refs.bottleDetailDialog.open(item)
             },
-            deleteSuccess (item) {
-                this.searchResult = this.searchResult.filter((_, i) => i !== item.id)
+            deleteBottleSuccess (item) {
+                this.searchResult.results = this.searchResult.results.filter(s => s.id != item.id)
+                this.searchResult.count = this.searchResult.results.length
             }
         },
         mixins: [],

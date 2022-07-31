@@ -8,6 +8,7 @@ import attendance from './attendance'
 import booking from './booking'
 import bottle from './bottle'
 import account from './account'
+import kitchen from './kitchen'
 
 Vue.use(VueRouter)
 
@@ -20,6 +21,7 @@ const routes = [
     {...bottle},
     {...booking},
     {...account},
+    {...kitchen},
 ]
 
 const router = new VueRouter({

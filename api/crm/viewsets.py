@@ -520,10 +520,10 @@ class BottleViewSet(BaseModelViewSet):
 
         customer_type = request.data['customerType']
         customer_no = request.data['customerNo']
-        non_member_name = request.data['nonMemberName']
 
         # selected_bottle_list = request.data['selectedBottleList']
         selected_bottle = request.data['selectedBottle']
+        remarks = request.data['remarks']
 
         # res = []
         # for item in selected_bottle_list:
@@ -554,8 +554,13 @@ class BottleViewSet(BaseModelViewSet):
         #             product=product,
         #         ))
 
+        open_date = datetime.now(timezone('Asia/Tokyo'))
+
         open_date_str = request.data['openDate']
-        open_date = datetime.strptime(open_date_str, '%Y-%m-%d').astimezone(timezone('Asia/Tokyo'))
+
+        if open_date_str != '' and open_date_str != None:
+            open_date = datetime.strptime(open_date_str, '%Y-%m-%d').astimezone(timezone('Asia/Tokyo'))
+
         try:
             product = MProduct.objects.get(pk=selected_bottle['id'])
         except MProduct.DoesNotExist:
@@ -563,6 +568,8 @@ class BottleViewSet(BaseModelViewSet):
 
 
         if customer_type == 0:
+            non_member_name = request.data['nonMemberName']
+
             res = BottleManagement.objects.create(
             non_member_name=non_member_name,
             open_date=open_date,
@@ -579,6 +586,7 @@ class BottleViewSet(BaseModelViewSet):
                 customer=customer,
                 open_date=open_date,
                 product=product,
+                remarks=remarks,
             )
 
         # return Response({
@@ -654,8 +662,11 @@ class BottleViewSet(BaseModelViewSet):
             instance.end_date = None
         else:
             # 空き状態に更新
+            end_date = datetime.now(timezone('Asia/Tokyo'))
             end_date_str = request.data['endDate']
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%d').astimezone(timezone('Asia/Tokyo'))
+            if end_date_str != '' and end_date_str != None:
+                end_date = datetime.strptime(end_date_str, '%Y-%m-%d').astimezone(timezone('Asia/Tokyo'))
+
             instance.end_date = end_date
 
         instance.end_flg = not bool(instance.end_flg)
@@ -1882,10 +1893,30 @@ class SalesViewSet(BaseModelViewSet):
 
     @action(methods=['get'], detail=False)
     def get_non_end_sales_detail(self, request):
+        """
+        締めていない伝票の作っていない注文
+        """
         return Response(
             SubSalesDetailSerializer(SalesDetail.objects.filter(
                 end_flg=False,
+                delete_flg=False,
                 header__close_flg=False,
+                header__delete_flg=False,
+            ),
+            many=True).data
+        )
+
+    @action(methods=['get'], detail=False)
+    def get_end_sales_detail(self, request):
+        """
+        締めていない伝票の消込済注文
+        """
+        return Response(
+            SubSalesDetailSerializer(SalesDetail.objects.filter(
+                end_flg=True,
+                delete_flg=False,
+                header__close_flg=False,
+                header__delete_flg=False,
             ),
             many=True).data
         )

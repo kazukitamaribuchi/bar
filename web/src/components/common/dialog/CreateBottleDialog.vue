@@ -511,6 +511,7 @@ export default {
             customerType: 0,
             nonMemberName: '',
             openDate: now,
+            remarks: '',
         },
         year: Con.SELECT_BIRTHDAY_YEAR,
         dialog: false,
@@ -691,6 +692,7 @@ export default {
                 customerNo: '',
                 nonMemberName: '',
                 customerType: 0,
+                remarks: '',
             }
             this.customerNoError = ''
             this.nonMemberNameError = ''

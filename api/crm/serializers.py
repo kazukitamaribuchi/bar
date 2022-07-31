@@ -246,6 +246,7 @@ class CustomerSerializer(DynamicFieldsModelSerializer):
                 'open_date',
                 'end_flg',
                 'waste_flg',
+                'remarks',
             ],
             many=True,
         ).data
@@ -757,6 +758,7 @@ class BottleSerializer(DynamicFieldsModelSerializer):
             'non_member_name',
             'customer_type',
             'customer_name',
+            'remarks'
         ]
 
     def get_deadline(self, obj):

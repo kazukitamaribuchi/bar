@@ -4,6 +4,9 @@ import logging
 import environ
 import datetime
 
+env = environ.Env()
+env.read_env('.env')
+
 
 logging.basicConfig(
     level = logging.DEBUG,
@@ -21,14 +24,27 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'tk)y1cu0@sqzogczfe222q6fn8w499n!+*@9pkbh(@ojtr(zjj'
+# SECRET_KEY = 'tk)y1cu0@sqzogczfe222q6fn8w499n!+*@9pkbh(@ojtr(zjj'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    '*'
-]
+# ALLOWED_HOSTS = [
+#     '*'
+# ]
+
+if os.environ['DJANGO_ENV'] == 'production':
+    # 本番
+    DEBUG = False
+    ALLOWED_HOSTS = ['*']
+
+else:
+    # 開発
+    DEBUG = True
+    ALLOWED_HOSTS = [
+        '*',
+    ]
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
@@ -46,6 +62,9 @@ INSTALLED_APPS = [
     'django_filters',
     'crm.apps.CrmConfig',
     'corsheaders',
+    'webpack_loader',
+    'ws.apps.WsConfig',
+    'channels',
 ]
 
 REST_FRAMEWORK = {
@@ -80,13 +99,32 @@ JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=86400), # Sessionの保存期間を設定(24時間)
     # 'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=604800), # Sessionの保存期間を設定(1週間)
     'JWT_ALLOW_REFRESH': True,
-    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=1),
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
     # 'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(seconds=1),
 }
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('172.17.0.1', 6379)],
+        },
+        # 'CONFIG': {
+        #     'hosts':[os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+        # },
+    },
+}
+if not DEBUG:
+    CHANNEL_LAYERS['default'].update({
+        'CONFIG': {
+            'hosts':[os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+        },
+    })
 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -115,7 +153,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'api.wsgi.application'
-
+ASGI_APPLICATION = 'api.routing.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -173,16 +211,56 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
+#
+# from corsheaders.defaults import default_headers
+#
+# CORS_ALLOW_HEADERS = default_headers + (
+#     'access-control-allow-origin',
+# )
+#
+# CORS_ALLOW_CREDENTIALS = True
+#
+# CORS_ORIGIN_WHITELIST = (
+#     'http://localhost:8080',
+# )
 
-from corsheaders.defaults import default_headers
+if DEBUG:
+    logging.basicConfig(
+        level = logging.DEBUG,
+        format = '''%(levelname)s %(asctime)s %(pathname)s:%(funcName)s:%(lineno)s
+        %(message)s''')
+    INSTALLED_APPS += ['corsheaders']
+    MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE
+    from corsheaders.defaults import default_headers
+    CORS_ORIGIN_WHITELIST = (
+        'http://localhost:8080',
+    )
+    CORS_ALLOW_CREDENTIALS = True
+    CORS_ORIGIN_ALLOW_ALL = True
+    CORS_ALLOW_HEADERS = default_headers + (
+        'access-control-allow-origin',
+    )
 
-CORS_ALLOW_HEADERS = default_headers + (
-    'access-control-allow-origin',
-)
-
-CORS_ALLOW_CREDENTIALS = True
-
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:8080',
-)
+else:
+    DATABASE_URL = os.environ.get('DATABASE_URL')
+    db_from_env = dj_database_url.config(default=DATABASE_URL, ssl_require=True)
+    DATABASES['default'].update(db_from_env)
+    logging.basicConfig(
+        level = logging.DEBUG,
+        format = '''%(levelname)s %(asctime)s %(pathname)s:%(funcName)s 行数:%(lineno)s:%(lineno)s
+        %(message)s'''
+        # filename = 'logs/debug.log',
+        # filemode = 'a'
+    )
+    INSTALLED_APPS += [
+        'cloudinary',
+        'cloudinary_storage',
+    ]
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': os.environ['CLOUD_NAME'],
+        'API_KEY':  os.environ['CLOUDINARY_API_KEY'],
+        'API_SECRET': os.environ['CLOUDINARY_API_SECRET']
+    }

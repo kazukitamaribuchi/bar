@@ -10,6 +10,7 @@ import VueSession from 'vue-session'
 import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 import VueApexCharts from 'vue-apexcharts'
 import truncate from '@/filters/truncate'
+import dispNone from '@/filters/dispNone'
 import priceLocaleString from '@/filters/priceLocaleString'
 
 import 'vuesax/dist/vuesax.css'
@@ -33,6 +34,7 @@ Vue.use(Vuesax)
 
 Vue.use(VueSession)
 Vue.filter('truncate', truncate)
+Vue.filter('dispNone', dispNone)
 Vue.filter('priceLocaleString', priceLocaleString)
 
 new Vue({

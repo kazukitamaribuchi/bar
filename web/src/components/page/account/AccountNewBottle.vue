@@ -40,13 +40,54 @@
                     </v-col>
 
                     <v-col cols="12">
-                        <v-col cols="6" class="pa-0">
-                            <vs-button
-                                @click="showBottleSelectDialog"
-                            >
+                        <vs-button
+                            @click="showBottleSelectDialog"
+                        >
                             ボトル選択
-                            </vs-button>
-                        </v-col>
+                        </vs-button>
+                    </v-col>
+
+                    <v-col cols="12">
+                        <div v-if="bottleInfo.selectedBottle == null">
+                            <p class="bottle_product_name ma-0 pa-0">
+                                対象のボトルは存在しません。
+                            </p>
+                        </div>
+                        <v-row
+                            v-else
+                            align="center"
+                            class="py-3"
+                        >
+                            <v-col
+                                cols="2"
+                                class="pa-0"
+                            >
+                                <v-avatar
+                                    size="50px"
+                                >
+                                    <img
+                                        alt="Avatar"
+                                        src="http://localhost:8000/media/upload/酒6.png"
+                                    >
+                                </v-avatar>
+                            </v-col>
+                            <v-col
+                                cols="10"
+                                class="pa-0"
+                            >
+                                <p class="bottle_product_name ma-0 pa-0">
+                                    {{ bottleInfo.selectedBottle.name }}
+                                </p>
+                            </v-col>
+                        </v-row>
+                        <vs-button
+                            v-if="bottleInfo.selectedBottle != null"
+                            @click="bottleInfo.selectedBottle = null"
+                            border
+                            danger
+                        >
+                            クリア
+                        </vs-button>
                     </v-col>
 
                     <!-- <v-col cols="12">
@@ -61,11 +102,11 @@
                     <v-col cols="12">
                         <div>開封日</div>
                         <v-switch
-                            v-model="visitTimeSwitch"
+                            v-model="todaySwitch"
                             label="本日"
                         ></v-switch>
                         <v-menu
-                            v-if="!visitTimeSwitch"
+                            v-if="!todaySwitch"
                             ref="menu"
                             v-model="menu"
                             :close-on-content-click="false"
@@ -76,7 +117,7 @@
                         >
                             <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                    v-model="bottleInfo.open_date"
+                                    v-model="bottleInfo.openDate"
                                     label="日付"
                                     prepend-icon="mdi-calendar"
                                     readonly
@@ -85,7 +126,7 @@
                                 ></v-text-field>
                             </template>
                             <v-date-picker
-                                v-model="date"
+                                v-model="bottleInfo.openDate"
                                 no-title
                                 scrollable
                             >
@@ -190,7 +231,6 @@
     import SearchCustomerInfo from '@/components/account/SearchCustomerInfo'
     import BottleSelectDialog from '@/components/account/dialog/BottleSelectDialog'
     const nowD = dayjs().format('YYYY-MM-DD')
-    const nowT = dayjs().format('hh:mm')
 
     export default {
         name: 'AccountNewBottleItem',
@@ -213,10 +253,8 @@
             menu: false,
             menu2: false,
             dialog: false,
-            openDate: '',
-            visitTimeSwitch: true,
+            todaySwitch: true,
             date: nowD,
-            time: nowT,
         }),
         beforeCreate () {
         },
@@ -252,7 +290,19 @@
                 })
             },
             register () {
-                const data = this.bottleInfo
+                let data = {}
+                data.customerType = 1
+                data.customerNo = this.bottleInfo.customerNo
+                data.selectedBottle = this.bottleInfo.selectedBottle
+                data.remarks = this.bottleInfo.remarks
+
+                let openDate = this.bottleInfo.openDate
+
+                if (!this.todaySwitch) {
+                    openDate = this.date
+                }
+
+                data.openDate = openDate
 
                 this.$axios({
                     method: 'POST',
@@ -292,7 +342,8 @@
                 }
             },
             selectBottle (item) {
-
+                console.log('selectBottle', item)
+                this.bottleInfo.selectedBottle = item
             },
             showBottleSelectDialog () {
                 this.$refs.bottleSelectDialog.open(this.bottleInfo.selectedBottle)
@@ -322,5 +373,10 @@
         border-bottom: 1px solid rgba(213, 213, 213, 0.9);
         padding-bottom: 0px;
         margin-bottom: 10px;
+    }
+
+    .bottle_product_name {
+        font-size: 13px;
+        color: rgba(100, 100, 100, 0.8);
     }
 </style>

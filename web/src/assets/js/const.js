@@ -554,6 +554,10 @@ class Const {
             Incorrect: this.COMMON_ERROR_MSG[1],
         }
     }
+
+    KANA_FILTER_VAL_ALL = [
+        'ア', 'カ', 'サ', 'タ', 'ナ', 'ハ', 'マ', 'ヤ', 'ラ', 'ワ', 'All',
+    ]
 }
 
 export { Const }

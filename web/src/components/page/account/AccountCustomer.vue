@@ -59,7 +59,7 @@
                 検索条件を入力してください。
             </v-card-text>
             <v-card-text v-else-if="searchResult.results.length == 0">
-                検索結果が0件です。
+                検索結果は0件です。
             </v-card-text>
             <v-card-text v-else>
                 <v-row class="mb-3">
@@ -292,6 +292,8 @@
                 if (this.searchInfo.customerNo != '') {
                     params.customer_no = this.searchInfo.customerNo
                 }
+
+                params.delete_flg = false
 
                 this.searchLoading = true
                 this.$axios({

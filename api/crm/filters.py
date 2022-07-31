@@ -53,6 +53,7 @@ class CustomerFilter(django_filter.FilterSet):
 
     name = django_filter.CharFilter(method="name_filter")
     customer_no = django_filter.CharFilter(method="customer_no_filter")
+    delete_flg = django_filter.BooleanFilter(method="delete_flg_filter")
 
     class Meta:
         model = MCustomer
@@ -68,11 +69,17 @@ class CustomerFilter(django_filter.FilterSet):
         res = queryset.filter(card__customer_no=value)
         return res
 
+    def delete_flg_filter(self, queryset, name, value):
+        res = queryset.filter(delete_flg=value)
+        return res
+
 
 class BottleFilter(django_filter.FilterSet):
 
     name = django_filter.CharFilter(method="name_filter")
     customer_no = django_filter.CharFilter(method="customer_no_filter")
+    end_flg = django_filter.BooleanFilter(method="end_flg_filter")
+    delete_flg = django_filter.BooleanFilter(method="delete_flg_filter")
 
     class Meta:
         model = BottleManagement
@@ -86,4 +93,12 @@ class BottleFilter(django_filter.FilterSet):
     def customer_no_filter(self, queryset, name, value):
         logger.debug(queryset)
         res = queryset.filter(customer__card__customer_no=value)
+        return res
+
+    def end_flg_filter(self, queryset, name, value):
+        res = queryset.filter(end_flg=value)
+        return res
+
+    def delete_flg_filter(self, queryset, name, value):
+        res = queryset.filter(delete_flg=value)
         return res

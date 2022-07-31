@@ -40,6 +40,17 @@ import Vuetify, {
     VTimePicker,
     VTextarea,
     VProgressCircular,
+    VToolbar,
+    VToolbarTitle,
+    VTabs,
+    VTab,
+    VTabsSlider,
+    VTabsItems,
+    VTabItem,
+    VSystemBar,
+    VAppBar,
+    VAppBarNavIcon,
+    VNavigationDrawer,
 } from 'vuetify/lib'
 
 
@@ -86,6 +97,17 @@ Vue.use(Vuetify, {
         VTimePicker,
         VTextarea,
         VProgressCircular,
+        VToolbar,
+        VToolbarTitle,
+        VTabs,
+        VTab,
+        VTabsSlider,
+        VTabsItems,
+        VTabItem,
+        VSystemBar,
+        VAppBar,
+        VAppBarNavIcon,
+        VNavigationDrawer,
     }
 })
 

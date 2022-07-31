@@ -4,6 +4,11 @@
             @kanaFilter="kanaFilter"
         />
         <v-row>
+            <v-col v-if="items.length == 0">
+                <v-card-subtitle>
+                    対象の商品は存在しません。
+                </v-card-subtitle>
+            </v-col>
             <v-col
                 cols="12"
                 v-for="(item, i) in items"
@@ -240,9 +245,11 @@ export default {
             const middle = this.$route.params.middle
             const small = this.$route.params.small
             const selectedProductList = _.cloneDeep(this.selectedProduct)
-            const copyItems = _.cloneDeep(this.productByCategory[large][middle][small])
+            let copyItems = _.cloneDeep(this.productByCategory[large][middle][small])
 
-            console.log('key', key)
+            if (key != 10) {
+                copyItems = copyItems.filter(item => item.filter_key == key)
+            }
 
             this.items = copyItems.map(function(ele) {
                 const idx = selectedProductList.findIndex(e => e.id == ele.id)

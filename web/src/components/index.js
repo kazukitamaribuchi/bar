@@ -28,3 +28,6 @@ export { default as AccountCustomer } from './page/account/AccountCustomer'
 export { default as AccountOrderClose } from './page/account/AccountOrderClose'
 export { default as AccountOrderHistory } from './page/account/AccountOrderHistory'
 export { default as AccountBottle } from './page/account/AccountBottle'
+
+export { default as KitchenHome } from './page/kitchen/KitchenHome'
+export { default as KitchenLogin } from './page/kitchen/KitchenLogin'

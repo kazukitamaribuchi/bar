@@ -1,16 +1,17 @@
 <template>
     <v-container fluid :class="{'pa-0': paddingOff}">
-        <v-row class="kana_filter_btn_wrap">
+        <v-row class="bottle_category_filter_btn_wrap">
+
             <v-col
-                cols="2"
-                sm="2"
-                md="1"
+                cols="4"
+                sm="4"
+                md="2"
                 v-for="(item, i) in items"
                 :key="i"
-                class="kana_filter_btn_area"
+                class="bottle_category_filter_btn_area"
             >
                 <div
-                    class="kana_filter_btn"
+                    class="bottle_category_filter_btn"
                     @click="filter(item)"
                 >
                     {{ item.name }}
@@ -25,7 +26,7 @@
 import { mapGetters } from 'vuex'
 
 export default {
-    name: 'KanaFilterBtnItem',
+    name: 'BottleCategoryFilterItem',
     props: {
         paddingOff: {
             type: Boolean,
@@ -35,18 +36,12 @@ export default {
     },
     data: () => ({
         items: [
-            { name: 'ア', key: 0 },
-            { name: 'カ', key: 1 },
-            { name: 'サ', key: 2 },
-            { name: 'タ', key: 3 },
-            { name: 'ナ', key: 4 },
-            { name: 'ハ', key: 5 },
-            { name: 'マ', key: 6 },
-            { name: 'ヤ', key: 7 },
-            { name: 'ラ', key: 8 },
-            { name: 'ワ', key: 9 },
-            { name: 'All', key: 10 },
-        ],
+            { name: 'シャンパン', key: 0 },
+            { name: 'ウイスキー', key: 1 },
+            { name: '焼酎', key: 2 },
+            { name: 'ワイン', key: 3 },
+            { name: 'All', key: null },
+        ]
     }),
     computed: {
         ...mapGetters([
@@ -54,7 +49,7 @@ export default {
     },
     methods: {
         filter (item) {
-            this.$emit('kanaFilter', item.key)
+            this.$emit('bottleCategoryFilter', item.key)
         }
     }
 }
@@ -62,32 +57,28 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .kana_filter_btn_wrap {
+    .bottle_category_filter_btn_wrap {
 
-        .kana_filter_btn_area {
-            height: 60px;
-            // width: 50px;
+        .bottle_category_filter_btn_area {
+            height: 57px;
             padding: 0px;
-            // border: 1px solid blue;
 
-            .kana_filter_btn {
+            .bottle_category_filter_btn {
                 cursor: pointer;
                 width: 90%;
                 height: 90%;
                 margin: auto;
                 border: 1px solid rgba(96, 96, 96, 0.5);
-                border-radius: 4px;
-                box-shadow: 2px 1px 2px rgba(236, 236, 236, 0.4);
+                border-collapse: collapse;
+                // border-radius: 4px;
+                box-shadow: 2px 2px 3px rgba(136, 136, 136, 0.4);
+                border-radius: 20px;
                 line-height: 50px;
                 text-align: center;
                 color: rgba(100, 100, 100, 0.9);
-                font-size: 13px;
+                font-size: 11px;
             }
         }
 
-    }
-
-    .paddingOff {
-        padding: 0;
     }
 </style>
