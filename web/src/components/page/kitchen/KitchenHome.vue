@@ -45,9 +45,9 @@
                             v-for="(item, i) in befItems"
                             :key="i"
                             xs="12"
-                            sm="6"
-                            md="3"
-                            lg="3"
+                            sm="12"
+                            md="12"
+                            lg="12"
                             class="px-1 py-1 col_order_area"
                         >
                         <!-- style="border: 1px solid blue;" -->

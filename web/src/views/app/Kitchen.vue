@@ -38,16 +38,52 @@ export default {
         if (!this.isAuth) {
             this.$router.push({ name: 'KitchenLogin' })
         }
+
+        const scheme = window.location.protocol === 'https:' ? 'wss' : 'ws'
+        const hostName = process.env.NODE_ENV !== 'production' ? process.env.VUE_APP_BASE_URL : window.location.host
+        // const hostName = 'localhost:8000'
+        console.log('process.env.NODE_ENV', process.env.NODE_ENV)
+        console.log('window.location.host', window.location.host)
+        console.log('process.env.VUE_APP_BASE_URL', process.env.VUE_APP_BASE_URL)
+        const url = scheme + '://' + hostName + '/ws/order/' + this.$store.state.loginUser + '/'
+
+        if (this.ws === undefined || this.ws.readyState !== 1) {
+            this.ws = new WebSocket(url)
+            console.log('this.ws', this.ws)
+        }
+
+        this.ws.onmessage = e => {
+            var receiveData = JSON.parse(e.data)
+            console.log('ソケット結果受信', receiveData)
+            // let event = (receiveData.type === Con.WS_TYPE_NOTIFICATION) ? 'Info' : 'Message'
+            // this.$eventHub.$emit('cntUpInfo', event)
+        }
+
+        // this.$axios.get('/api/info/getInfoCnt/')
+        // .then(res => {
+        //     console.log(res)
+        //     this.items[Con.SIDEBAR_INDEX.Info].info_content = res.data.info_count
+        //     this.items[Con.SIDEBAR_INDEX.Message].info_content = res.data.msg_count
+        // })
+        // .catch(e => {
+        //     console.log(e)
+        // })
     },
     beforeUpdate () {
     },
     update () {
     },
     beforeDestroy () {
+        this.closeWs()
     },
     destoryd () {
     },
     methods: {
+        closeWs () {
+            if (this.ws !== undefined && this.ws.readyState !== 3) {
+                this.ws.close()
+            }
+        }
     }
 }
 </script>

@@ -24,8 +24,8 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'tk)y1cu0@sqzogczfe222q6fn8w499n!+*@9pkbh(@ojtr(zjj'
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = 'tk)y1cu0@sqzogczfe222q6fn8w499n!+*@9pkbh(@ojtr(zjj'
+# SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -42,9 +42,7 @@ if os.environ['DJANGO_ENV'] == 'production':
 else:
     # 開発
     DEBUG = True
-    ALLOWED_HOSTS = [
-        '*',
-    ]
+    ALLOWED_HOSTS = ['*']
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
@@ -61,7 +59,7 @@ INSTALLED_APPS = [
     'rest_framework_jwt',
     'django_filters',
     'crm.apps.CrmConfig',
-    'corsheaders',
+    # 'corsheaders',
     'webpack_loader',
     'ws.apps.WsConfig',
     'channels',
@@ -114,13 +112,14 @@ CHANNEL_LAYERS = {
         # },
     },
 }
+
+
 if not DEBUG:
     CHANNEL_LAYERS['default'].update({
         'CONFIG': {
             'hosts':[os.environ.get('REDIS_URL', 'redis://localhost:6379')],
         },
     })
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-row v-if="!loading" style="margin: 0 1px;" class="pa-1">
+        <v-row v-if="!loading" style="margin: 0 1px;">
             <v-col
                 v-if="salesHeaderList.length == 0"
                 cols="12"
@@ -11,58 +11,119 @@
                 v-else
                 v-for="(item, i) in salesHeaderList"
                 :key="i"
-                class="px-1"
                 cols="12"
+                xs="6"
+                sm="6"
+                md="3"
+
                 @click="toPage(item)"
             >
                 <v-card
-                    class="sales-header"
+                    class="sales_header_card"
                 >
-                    <v-card-title class="h6 my-0 pb-1 text-center">
-                        伝票No : {{ item.id }}
-                    </v-card-title>
+                    <div class="sales_header_title text-subtitle-2">
+                        <span>Sales No. {{ item.id }}</span><span class="sales_header_seat_name">席:{{ dispSeat(item.seat) }}</span>
+                    </div>
 
-                    <v-divider class="mx-5 my-1">
-                    </v-divider>
+                    <v-list-item two-line>
+                        <v-list-item-content>
+                            <v-list-item-subtitle>基本料金</v-list-item-subtitle>
+                            <v-list-item-title class="sales_header_info_content">{{ item.basic_plan_type.name }}</v-list-item-title>
+                        </v-list-item-content>
+                        <v-list-item-content>
+                            <v-list-item-subtitle>来店時間</v-list-item-subtitle>
+                            <v-list-item-title class="sales_header_info_content">{{ item.visit_time }}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
 
-                    <v-card-title class="subtitle-2 mt-0 pt-2 mb-0 pb-1">
-                        席情報
-                    </v-card-title>
-                    <v-card-text class="my-0 py-1">
-                        <div v-if="item.seat != null">
-                            席： <span style="float: inline-end">{{ item.seat.seat_name }}</span>
-                        </div>
-                        <div v-else>
-                            席： <span style="float: inline-end">指定無し</span>
-                        </div>
-                        <div>
-                            基本料金: <span style="float: inline-end">{{ item.basic_plan_type.name }}</span>
-                        </div>
-                        <div>
-                            来店時間: <span style="float: inline-end; font-size: 12px;">{{ item.visit_time }}</span>
-                        </div>
+                    <v-divider class="mx-2 my-1"/>
 
+                    <v-container fluid class="ma-0 px-4 pt-1">
+                        <v-row>
+                            <v-col
+                                cols="2"
+                            >
+                                <v-avatar
+                                    size="36px"
+                                >
+                                    <img
+                                        alt="Avatar"
+                                        src="http://localhost:8000/media/upload/男性1.jpg"
+                                    >
+                                </v-avatar>
+                            </v-col>
+                            <v-col
+                                cols="10"
+                                class="pt-1"
+                            >
+                                <div class="text-subtitle-1 py-0 my-0">
+                                    {{ item.customer.name }}
+                                </div>
+                                <div class="text-caption py-0 my-0">
+                                    {{ item.customer.age }} 歳 (誕生日 {{ item.customer.birthday }})
+                                </div>
+                            </v-col>
+                        </v-row>
+                    </v-container>
 
-                    </v-card-text>
-                    <v-divider class="mx-5 my-1">
-                    </v-divider>
-                    <v-card-title class="subtitle-2 mt-0 pt-2 mb-0 pb-1">
-                        顧客情報
-                    </v-card-title>
-                    <v-card-text class="my-0 py-1">
-                        <div>
-                            会員No： <span style="float: inline-end">{{ item.customer.customer_no }}</span>
-                        </div>
-                        <div>
-                            会員名： <span style="float: inline-end">{{ item.customer.name }}</span>
-                        </div>
-                        <div>
-                            ランク： <span style="float: inline-end">{{ item.customer.rank_name }}</span>
-                        </div>
-                        <div>
-                            来店人数： <span style="float: inline-end">{{ item.total_visitors }} (男{{ item.male_visitors }},女{{ item.female_visitors }})</span>
-                        </div>
-                    </v-card-text>
+                    <v-list-item two-line>
+                        <v-list-item-content>
+                            <v-list-item-subtitle>会員No</v-list-item-subtitle>
+                            <v-list-item-title class="sales_header_info_content">{{ item.customer.customer_no }}</v-list-item-title>
+                        </v-list-item-content>
+                        <v-list-item-content>
+                            <v-list-item-subtitle>ランク</v-list-item-subtitle>
+                            <v-list-item-title class="sales_header_info_content">{{ item.customer.rank_name }}</v-list-item-title>
+                        </v-list-item-content>
+                        <v-list-item-content>
+                            <v-list-item-subtitle>来店人数</v-list-item-subtitle>
+                            <v-list-item-title class="sales_header_info_content">{{ item.total_visitors }} (男{{ item.male_visitors }},女{{ item.female_visitors }})</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
+                    <v-list-item two-line>
+                        <v-list-item-content>
+                            <v-list-item-subtitle>要注意人物</v-list-item-subtitle>
+                            <v-list-item-title class="sales_header_info_content">{{ item.customer.caution_flg }}</v-list-item-title>
+                        </v-list-item-content>
+                        <v-list-item-content>
+                            <v-list-item-subtitle>来店数</v-list-item-subtitle>
+                            <v-list-item-title class="sales_header_info_content">{{ item.customer.total_visit }}</v-list-item-title>
+                        </v-list-item-content>
+                        <v-list-item-content>
+                            <v-list-item-subtitle>売上総額</v-list-item-subtitle>
+                            <v-list-item-title class="sales_header_info_content">{{ item.customer.total_sales }}円</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
+                    <v-divider class="mx-5 my-2"/>
+
+                    <div class="text-caption text-right pr-4">
+                        所有ボトル {{ item.customer.bottle.length }}件
+                    </div>
+
+                    <v-card
+                        v-for="(b, i) in item.customer.bottle"
+                        :key="i"
+                        flat
+                        class="pa-2"
+                    >
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>商品名</v-list-item-subtitle>
+                                <v-list-item-title class="sales_header_info_content pl-1">{{ b.product.name }}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-subtitle>開封日</v-list-item-subtitle>
+                                <v-list-item-title class="sales_header_info_content pl-1">{{ b.open_date }}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+
+                        <v-divider class="mx-5 my-2"/>
+
+                    </v-card>
                 </v-card>
             </v-col>
             <v-col cols="12" class="my-0 py-2">
@@ -181,14 +242,34 @@
                     })
                 }
             },
+            dispSeat (seat) {
+                if (seat == null) return '指定無し'
+                return seat.seat_name
+            }
         },
         mixins: [],
     }
 </script>
 <style lang="scss" scoped>
-    .sales-header {
+    .sales_header_card {
         cursor: pointer;
-        padding: 14px;
+        // padding: 14px;
         background-color: rgba(224, 224, 224, 0.5);
+
+        .sales_header_title {
+            height: 37px;
+            line-height: 37px;
+            // text-align: right;
+            background-color: rgb(52, 52, 52);
+            color: white;
+            padding: 0 20px;
+            .sales_header_seat_name {
+                font-size: 12px;
+                float: inline-end;
+            }
+        }
+        .sales_header_info_content {
+            font-size: 14px !important;
+        }
     }
 </style>

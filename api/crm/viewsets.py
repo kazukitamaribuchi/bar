@@ -1902,6 +1902,7 @@ class SalesViewSet(BaseModelViewSet):
                 delete_flg=False,
                 header__close_flg=False,
                 header__delete_flg=False,
+                product__category__large_category=2,
             ),
             many=True).data
         )
@@ -1941,7 +1942,7 @@ class SalesViewSet(BaseModelViewSet):
         )
 
 
-    @transaction.atomic
+    # @transaction.atomic
     @action(methods=['post'], detail=False)
     def add_sales_detail(self, request):
         """
@@ -1967,7 +1968,7 @@ class SalesViewSet(BaseModelViewSet):
                 logger.error('商品情報が取得出来ません。')
                 return Response(status=status.HTTP_400_BAD_REQUEST)
 
-            SalesDetail.objects.create(
+            detail = SalesDetail.objects.create(
                 header=sales_header,
                 product=product,
                 quantity=item['quantity'],
@@ -1975,6 +1976,7 @@ class SalesViewSet(BaseModelViewSet):
                 tax_free_flg=item['taxFree'],
                 order_time=order_time,
             )
+            detail.save()
 
         logger.debug('注文データ作成完了 sales_header:' + str(sales_header.id))
 
