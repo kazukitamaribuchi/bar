@@ -105,7 +105,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('172.17.0.1', 6379)],
+            "hosts": [('redis', 6379)],
         },
         # 'CONFIG': {
         #     'hosts':[os.environ.get('REDIS_URL', 'redis://localhost:6379')],
@@ -114,12 +114,12 @@ CHANNEL_LAYERS = {
 }
 
 
-if not DEBUG:
-    CHANNEL_LAYERS['default'].update({
-        'CONFIG': {
-            'hosts':[os.environ.get('REDIS_URL', 'redis://localhost:6379')],
-        },
-    })
+# if not DEBUG:
+#     CHANNEL_LAYERS['default'].update({
+#         'CONFIG': {
+#             'hosts':[os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+#         },
+#     })
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

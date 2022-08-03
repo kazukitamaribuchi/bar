@@ -55,19 +55,19 @@ export default {
         this.ws.onmessage = e => {
             var receiveData = JSON.parse(e.data)
             console.log('ソケット結果受信', receiveData)
-            // let event = (receiveData.type === Con.WS_TYPE_NOTIFICATION) ? 'Info' : 'Message'
-            // this.$eventHub.$emit('cntUpInfo', event)
+            switch (receiveData.type) {
+                case 0:
+                    // 新規オーダー
+                    this.$eventHub.$emit('addNewOrder', receiveData.content)
+                    break
+                case 99:
+                    // 伝票締め
+                    this.$eventHub.$emit('closeSalesHeader', receiveData.content)
+                    break
+                default:
+                    break
+            }
         }
-
-        // this.$axios.get('/api/info/getInfoCnt/')
-        // .then(res => {
-        //     console.log(res)
-        //     this.items[Con.SIDEBAR_INDEX.Info].info_content = res.data.info_count
-        //     this.items[Con.SIDEBAR_INDEX.Message].info_content = res.data.msg_count
-        // })
-        // .catch(e => {
-        //     console.log(e)
-        // })
     },
     beforeUpdate () {
     },

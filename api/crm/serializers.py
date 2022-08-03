@@ -792,13 +792,17 @@ class SalesDetailSerializer(DynamicFieldsModelSerializer):
 
     product = ProductSerializer()
     total_price = serializers.SerializerMethodField()
+    end_time = serializers.SerializerMethodField()
     order_time = serializers.SerializerMethodField()
+    disp_seat_name = serializers.SerializerMethodField()
+    header = serializers.SerializerMethodField()
 
     class Meta:
         model = SalesDetail
         fields = [
             'id',
             'product',
+            'header',
             # 'cast',
             'quantity',
             'fixed_price',
@@ -806,15 +810,37 @@ class SalesDetailSerializer(DynamicFieldsModelSerializer):
             'total_price',
             # 'total_tax_price',
             'end_flg',
+            'end_time',
             'order_time',
             'tax_free_flg',
+            'disp_seat_name',
         ]
+
+    def get_header(self, obj):
+        return SalesSerializer(
+            obj.header,
+            fields=[
+                'id',
+            ],
+        ).data
 
     def get_total_price(self, obj):
         return obj.fixed_price * obj.quantity
 
+    def get_end_time(self, obj):
+        if obj.end_time == None:
+            return '-'
+        return utc_to_jst(obj.end_time).strftime('%Y/%m/%d %H:%M')
+
     def get_order_time(self, obj):
+        if obj.order_time == None:
+            return '-'
         return utc_to_jst(obj.order_time).strftime('%Y/%m/%d %H:%M')
+
+    def get_disp_seat_name(self, obj):
+        if obj.header.seat == None:
+            return '席指定無し'
+        return obj.header.seat.seat_name
 
 
 class SubSalesDetailSerializer(DynamicFieldsModelSerializer):
@@ -826,6 +852,7 @@ class SubSalesDetailSerializer(DynamicFieldsModelSerializer):
     seat = SeatSerializer(source='header.seat')
     header_id = serializers.SerializerMethodField()
     disp_seat_name = serializers.SerializerMethodField()
+    header = serializers.SerializerMethodField()
 
     class Meta:
         model = SalesDetail
@@ -842,10 +869,19 @@ class SubSalesDetailSerializer(DynamicFieldsModelSerializer):
             'order_time',
             'seat',
             'header_id',
+            'header',
             'disp_order_time',
             'disp_seat_name',
             'tax_free_flg',
         ]
+
+    def get_header(self, obj):
+        return SalesSerializer(
+            obj.header,
+            fields=[
+                'id',
+            ],
+        ).data
 
     def get_total_price(self, obj):
         return obj.fixed_price * obj.quantity

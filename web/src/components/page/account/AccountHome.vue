@@ -58,7 +58,7 @@
 
 
 
-        <div class="account_home_title mb-0 mt-4">
+        <!-- <div class="account_home_title mb-0 mt-4">
             <v-card-title class="py-0">
                 Wait Order
             </v-card-title>
@@ -66,9 +66,6 @@
         <v-card
             flat
         >
-            <!-- <v-card-title class="account_home_title">
-                オーダー待ち状況
-            </v-card-title> -->
             <v-row
                 v-if="nonEndSalesDetail.length != 0"
                 class="mb-1 mx-1"
@@ -175,16 +172,6 @@
             <v-card-text
                 v-else
             >オーダー待ち無し</v-card-text>
-        </v-card>
-        <!-- <v-card
-            flat
-        >
-            <v-card-title class="account_home_title">
-                来店状況
-            </v-card-title>
-            <v-card-text>
-                無し
-            </v-card-text>
         </v-card> -->
 
         <v-snackbar

@@ -40,6 +40,7 @@ from .serializers import (
 )
 
 from .models import (
+    mUser,
     MCustomer,
     MCast,
     MRank,
@@ -726,6 +727,8 @@ class SalesViewSet(BaseModelViewSet):
         logger.debug('★create_sales_data')
         logger.debug(request.data)
 
+        user = mUser.objects.get(pk=1)
+
         customer_no = request.data['customer_no']
         customer = None
         if customer_no != None and customer_no != '':
@@ -792,6 +795,7 @@ class SalesViewSet(BaseModelViewSet):
             move_time=move_time,
             account_date=account_date,
             remarks=remarks,
+            user=user,
         )
 
         sales_service_detail_list = []
@@ -1787,6 +1791,8 @@ class SalesViewSet(BaseModelViewSet):
         logger.debug('★create_sales_data')
         logger.debug(request.data)
 
+        user = mUser.objects.get(pk=1)
+
         customer_no = request.data['customer_no']
         customer = None
         if customer_no != None and customer_no != '':
@@ -1837,6 +1843,7 @@ class SalesViewSet(BaseModelViewSet):
             visit_time=visit_time,
             basic_plan_type=service,
             remarks=remarks,
+            user=user,
         )
 
         return Response({
@@ -1887,14 +1894,15 @@ class SalesViewSet(BaseModelViewSet):
         return Response(
             SalesSerializer(SalesHeader.objects.filter(
                 close_flg=False,
+                delete_flg=False,
             ),
             many=True).data
         )
 
     @action(methods=['get'], detail=False)
-    def get_non_end_sales_detail(self, request):
+    def get_non_end_sales_food_detail(self, request):
         """
-        締めていない伝票の作っていない注文
+        締めていない伝票の食べ物で作っていない注文
         """
         return Response(
             SubSalesDetailSerializer(SalesDetail.objects.filter(
@@ -1903,14 +1911,14 @@ class SalesViewSet(BaseModelViewSet):
                 header__close_flg=False,
                 header__delete_flg=False,
                 product__category__large_category=2,
-            ),
+            ).order_by('order_time'),
             many=True).data
         )
 
     @action(methods=['get'], detail=False)
-    def get_end_sales_detail(self, request):
+    def get_end_sales_food_detail(self, request):
         """
-        締めていない伝票の消込済注文
+        締めていない伝票の食べ物の消込済注文
         """
         return Response(
             SubSalesDetailSerializer(SalesDetail.objects.filter(
@@ -1918,6 +1926,7 @@ class SalesViewSet(BaseModelViewSet):
                 delete_flg=False,
                 header__close_flg=False,
                 header__delete_flg=False,
+                product__category__large_category=2,
             ),
             many=True).data
         )
@@ -1925,20 +1934,35 @@ class SalesViewSet(BaseModelViewSet):
     @action(methods=['post'], detail=False)
     def end_sales_detail(self, request):
 
+        now = datetime.now().astimezone(timezone('Asia/Tokyo'))
+
         try:
             detail = SalesDetail.objects.get(pk=request.data['sales_detail_id'])
             detail.end_flg = True
+            detail.end_time = now
             detail.save()
         except:
             logger.error('商品明細の締めフラグ更新失敗')
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         return Response(
-            SubSalesDetailSerializer(SalesDetail.objects.filter(
-                end_flg=False,
-                header__close_flg=False,
-            ),
-            many=True).data
+            SalesDetailSerializer(detail).data
+        )
+
+    @action(methods=['post'], detail=False)
+    def not_end_sales_detail(self, request):
+
+        try:
+            detail = SalesDetail.objects.get(pk=request.data['sales_detail_id'])
+            detail.end_flg = False
+            detail.end_time = None
+            detail.save()
+        except:
+            logger.error('商品明細の締めフラグ更新失敗')
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(
+            SalesDetailSerializer(detail).data
         )
 
 

@@ -291,6 +291,11 @@ class SalesHeader(AbstractBaseModel):
         default=False,
     )
 
+    user = models.ForeignKey(
+        'crm.mUser',
+        on_delete=models.DO_NOTHING,
+    )
+
     def __str__(self):
         return '売上No.' + str(self.id) + ' ' + str(self.total_tax_sales) + '円'
 
@@ -512,6 +517,12 @@ class SalesDetail(AbstractBaseModel):
         # 作ったら更新 => 届けたら更新も必要？
         _('締めフラグ'),
         default=False,
+    )
+
+    end_time = models.DateTimeField(
+        _('締め時間'),
+        null=True,
+        blank=True,
     )
 
     order_time = models.DateTimeField(

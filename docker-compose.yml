@@ -24,3 +24,8 @@ services:
       - CHOKIDAR_USEPOLLING=true
     # depends_on:
     #   - api
+
+  redis:
+    image: redis:latest
+    ports:
+      - '6379:6379'
