@@ -5,15 +5,22 @@
     >
         <p class="text-center py-4 mb-0">新規入店</p>
     </v-card> -->
-    <vs-button
+    <v-btn
         block
+        depressed
+        color="success"
+        @click="toNewVisit"
+    ><i class='bx bx-id-card'></i> 新規入店</v-btn>
+    <!-- <vs-button
+        block
+        outlined
         success
         size="large"
         style="position: relative; left: -5px;"
         @click="toNewVisit"
     >
-        <i class='bx bx-home'></i> 新規入店
-    </vs-button>
+        <i class='bx bx-id-card'></i> 新規入店
+    </vs-button> -->
 </template>
 
 <script>

@@ -5,14 +5,20 @@
     >
         <p class="text-center py-4 mb-0">ホームへ</p>
     </v-card> -->
-    <vs-button
+    <v-btn
+        block
+        depressed
+        color="primary"
+        @click="toHome"
+    ><i class='bx bx-home'></i> ホームへ</v-btn>
+    <!-- <vs-button
         block
         size="large"
         style="position: relative; left: -5px;"
         @click="toHome"
     >
         <i class='bx bx-home'></i> ホームへ
-    </vs-button>
+    </vs-button> -->
 </template>
 
 <script>

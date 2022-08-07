@@ -1,25 +1,32 @@
 <template>
-    <vs-dialog
+    <v-dialog
         v-model="dialog"
+        fullscreen
     >
         <v-card
             class="pt-3"
             flat
+            v-if="salesData != null"
         >
-            <!-- <v-toolbar dark>
+            <v-toolbar
+                dark
+                color="primary"
+            >
                 <v-btn
+                    dark
                     icon
                     @click="dialog = false"
                 >
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
+                <v-toolbar-title>注文情報</v-toolbar-title>
+                <v-spacer></v-spacer>
             </v-toolbar>
 
-            <v-divider/> -->
 
-            <v-card-title>
+            <!-- <v-card-title>
                 注文情報
-            </v-card-title>
+            </v-card-title> -->
 
             <v-card-text class="text-right pb-0">
                 <span style="font-size: 13px; color: rgba(40, 40, 40, 0.8);">
@@ -87,7 +94,7 @@
                 >閉じる</v-btn>
             </v-card-actions>
         </v-card>
-    </vs-dialog>
+    </v-dialog>
 </template>
 
 <script>

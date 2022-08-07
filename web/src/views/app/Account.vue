@@ -1,8 +1,8 @@
 <template>
     <v-app>
-        <Header
+        <!-- <Header
             v-if="isAuth"
-        />
+        /> -->
         <router-view/>
         <v-overlay
             :value="humMenu"
@@ -53,9 +53,9 @@ export default {
 </script>
 
 <style lang="scss">
-    html.overflow-y-hidden {
-        overflow-y: auto !important;
-    }
+    // html.overflow-y-hidden {
+    //     overflow-y: auto !important;
+    // }
 
     // .humActive {
     //     background: yellow;

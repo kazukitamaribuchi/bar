@@ -6,19 +6,20 @@
         <v-col
             cols="3"
             class="pa-0 menu-area"
-            style="border-right: 1px solid rgba(200, 200, 200, 0.5);"
             @click="toHome"
         >
+        <!-- style="border-right: 1px solid rgba(200, 200, 200, 0.5);" -->
             <p class="text-center menu-text">
                 ホーム
+                <!-- <i class='bx bx-home'></i> -->
             </p>
         </v-col>
         <v-col
             cols="3"
             class="pa-0 menu-area"
-            style="border-right: 1px solid rgba(200, 200, 200, 0.5);"
             @click="showCustomerDetail"
         >
+        <!-- style="border-right: 1px solid rgba(200, 200, 200, 0.5);" -->
             <p class="text-center menu-text">
                 顧客情報
             </p>
@@ -26,9 +27,9 @@
         <v-col
             cols="3"
             class="pa-0 menu-area"
-            style="border-right: 1px solid rgba(200, 200, 200, 0.5);"
             @click="showOrderDetail"
         >
+        <!-- style="border-right: 1px solid rgba(200, 200, 200, 0.5);" -->
             <p class="text-center menu-text">
                 注文情報
             </p>
@@ -42,6 +43,10 @@
                 席情報
             </p>
         </v-col>
+
+        <v-divider
+            class="order_header_divider"
+        />
 
         <CustomerDetailDialog
             ref="customerDetailDialog"
@@ -65,8 +70,14 @@ import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
     name: 'ProductCategoryItem',
+    props: {
+        headerInfo: {
+            type: Object,
+            required: false,
+        }
+    },
     data: () => ({
-        headerInfo: null,
+        // headerInfo: null,
     }),
     components: {
         CustomerDetailDialog,
@@ -74,17 +85,6 @@ export default {
         SeatDetailDialog,
     },
     created () {
-        this.$axios({
-            method: 'get',
-            url: `/api/sales/${this.$route.params.id}/`
-        })
-        .then(res => {
-            console.log(res)
-            this.headerInfo = res.data
-        })
-        .catch(e => {
-            console.log(e)
-        })
     },
     computed: {
         ...mapGetters([
@@ -112,8 +112,8 @@ export default {
             this.$refs.seatDetailDialog.open(this.headerInfo)
         },
         updateSalesData (salesData) {
-            this.headerInfo = salesData
-        }
+            this.$emit('updateSalesData', salesData)
+        },
     }
 }
 </script>
@@ -126,5 +126,10 @@ export default {
 
     .menu-area {
         cursor: pointer;
+    }
+
+    .order_header_divider {
+        padding-top: 3px;
+        background-color: rgba(173, 173, 173, 0.5);
     }
 </style>

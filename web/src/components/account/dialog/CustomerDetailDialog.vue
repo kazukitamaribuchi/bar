@@ -1,25 +1,34 @@
 <template>
-    <vs-dialog
+    <v-dialog
         v-model="dialog"
+        fullscreen
     >
         <v-card
             class="pt-3"
             flat
+            v-if="customer != null"
         >
-            <!-- <v-toolbar dark>
+
+            <v-toolbar
+                dark
+                color="primary"
+            >
                 <v-btn
+                    dark
                     icon
                     @click="dialog = false"
                 >
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
+                <v-toolbar-title>顧客情報</v-toolbar-title>
+                <v-spacer></v-spacer>
             </v-toolbar>
 
-            <v-divider/> -->
+            <!-- <v-divider/> -->
 
-            <v-card-title>
+            <!-- <v-card-title>
                 顧客情報
-            </v-card-title>
+            </v-card-title> -->
 
             <!-- <v-divider/> -->
 
@@ -63,6 +72,36 @@
                     </v-list-item-content>
                 </v-list-item>
             </v-card-text>
+
+            <v-divider class="mx-5 my-2"/>
+
+            <div class="text-caption text-right pr-4">
+                所有ボトル {{ customer.bottle.length }}件
+            </div>
+
+            <v-card
+                v-for="(b, i) in customer.bottle"
+                :key="i"
+                flat
+                class="pa-2"
+            >
+                <v-list-item two-line>
+                    <v-list-item-content>
+                        <v-list-item-subtitle>商品名</v-list-item-subtitle>
+                        <v-list-item-title class="sales_header_info_content pl-1">{{ b.product.name }}</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item two-line>
+                    <v-list-item-content>
+                        <v-list-item-subtitle>開封日</v-list-item-subtitle>
+                        <v-list-item-title class="sales_header_info_content pl-1">{{ b.open_date }}</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+
+                <v-divider class="mx-5 my-2"/>
+
+            </v-card>
+
             <v-card-actions>
                 <v-btn
                     block
@@ -73,7 +112,7 @@
                 >閉じる</v-btn>
             </v-card-actions>
         </v-card>
-    </vs-dialog>
+    </v-dialog>
 </template>
 
 <script>

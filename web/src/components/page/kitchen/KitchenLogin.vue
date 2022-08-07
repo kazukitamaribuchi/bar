@@ -22,9 +22,9 @@
                     xs="10"
                     sm="8"
                     md="6"
-                    :key="center"
-                    :align-self="center"
                 >
+                <!-- :key="center"
+                :align-self="center" -->
                     <vs-input
                         class="my-3"
                         v-model="credentials.username"

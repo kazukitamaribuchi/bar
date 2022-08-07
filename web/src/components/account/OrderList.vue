@@ -24,7 +24,7 @@
                 @click="toProductDetail(item)"
             >
                 <v-row style="max-width: 100%; margin: 0 auto;">
-                    <v-col cols="4" class="pl-1 mt-5 pt-2">
+                    <v-col cols="4" class="pl-1 pt-2">
                         <v-img
                             v-if="item.thumbnail != null"
                             class="white--text align-end"
@@ -41,6 +41,13 @@
                             contain
                         >
                         </v-img>
+                        <v-chip
+                            v-if="item.isBottle"
+                            class="ml-7"
+                            color="success"
+                        >
+                            ボトル有
+                        </v-chip>
                     </v-col>
                     <v-col cols="8" class="pl-2 pt-0">
                         <v-row>
@@ -54,8 +61,8 @@
                                 >
                                     <label style="font-size: 12px; color: rgba(0, 0, 0, 0.64);">商品名</label>
                                     <p
-                                        style="font-size: 11px; line-height: 1.7;"
-                                        class="mb-0"
+                                        style="font-size: 15px; line-height: 1.7;"
+                                        class="mb-0 text-h7"
                                     >{{ item.name }}</p>
                                 </div>
                                 <div
@@ -135,13 +142,13 @@
             <v-card-title>
                 総計
             </v-card-title>
-            <v-card-text class="text-right">
+            <v-card-text class="text-right text-h6">
                 注文数 : <SelectedProductTotalCnt/>
             </v-card-text>
-            <v-card-text class="text-right">
+            <v-card-text class="text-right text-h6">
                 総計(税抜) : <SelectedProductTotalPrice/>
             </v-card-text>
-            <v-card-text class="text-right">
+            <v-card-text class="text-right text-h5">
                 総計(税込) : <SelectedProductTotalPrice :tax=true />
             </v-card-text>
         </v-card>
@@ -161,7 +168,10 @@ export default {
     name: 'OrderListItem',
     data: () => ({
         items: [],
+        headerInfo: {},
     }),
+    props: {
+    },
     components: {
         SpinButton,
         SelectedProductTotalCnt,
@@ -170,10 +180,29 @@ export default {
     beforeCreate () {
     },
     created () {
+
         const large = this.$route.params.large
         const middle = this.$route.params.middle
         const small = this.$route.params.small
-        this.items = _.cloneDeep(this.selectedProduct)
+
+        this.getHeaderInfo()
+        .then(res=> {
+            console.log('ちんこ')
+            const customerBottleList = _.cloneDeep(this.headerInfo.customer.bottle)
+            this.items = _.cloneDeep(this.selectedProductList).map(function(ele) {
+                const bottleIdx = customerBottleList.findIndex(e => e.id == ele.id)
+
+                if (bottleIdx != -1) {
+                    ele.isBottle = true
+                } else {
+                    ele.isBottle = false
+                }
+                return ele
+            })
+        })
+        .catch(e => {
+            this.items = _.cloneDeep(this.selectedProduct)
+        })
     },
     beforeMount () {
     },
@@ -226,6 +255,23 @@ export default {
             // const index = this.items.findIndex(s => s.id === payload.id)
             // Vue.set(this.items, index, payload)
         },
+        getHeaderInfo () {
+            return new Promise((resolve, reject) => {
+                this.$axios({
+                    method: 'get',
+                    url: `/api/sales/${this.$route.params.id}/`
+                })
+                .then(res => {
+                    console.log(res)
+                    this.headerInfo = res.data
+                    resolve(res.data)
+                })
+                .catch(e => {
+                    console.log(e)
+                    reject(e)
+                })
+            })
+        }
     }
 }
 </script>

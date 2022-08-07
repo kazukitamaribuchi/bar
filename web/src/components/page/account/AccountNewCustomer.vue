@@ -1,12 +1,10 @@
 <template>
     <div>
-        <i
-            @click="undo"
-            class='bx bx-undo undo-btn'
-        ></i>
-        <p class="text-center" style="font-size: 13px;">
-            会員登録
-        </p>
+        <AccountPageTitleArea
+            to="AccountHome"
+            title="会員登録"
+        />
+
         <v-card
             flat
         >
@@ -168,7 +166,7 @@
                         ></v-textarea>
                     </v-col>
 
-                    <vs-button
+                    <!-- <vs-button
                         block
                         success
                         size="large"
@@ -176,7 +174,7 @@
                         @click="register"
                     >
                         <i class='bx bxs-send'></i> 会員情報作成
-                    </vs-button>
+                    </vs-button> -->
 
                 </v-row>
             </v-container>
@@ -189,6 +187,14 @@
                     <p class="text-center py-4 mb-0">会員情報作成</p>
                 </v-card>
             </v-col> -->
+            <v-col cols="12" class="py-0">
+                <v-btn
+                    block
+                    depressed
+                    color="success"
+                    @click="register"
+                ><i class='bx bxs-send'></i> 会員情報作成</v-btn>
+            </v-col>
 
             <v-col cols="12">
                 <HomeButton/>
@@ -212,6 +218,7 @@
 
         <v-dialog
             v-model="dialog"
+            persistent
         >
             <v-card>
                 <v-card-title>
@@ -236,11 +243,13 @@
     import HomeButton from '@/components/account/HomeButton'
     const nowD = dayjs().format('YYYY-MM-DD')
     const nowT = dayjs().format('hh:mm')
+    import AccountPageTitleArea from '@/components/account/AccountPageTitleArea'
 
     export default {
         name: 'AccountNewCustomerItem',
         components: {
             HomeButton,
+            AccountPageTitleArea,
         },
         props: {
         },

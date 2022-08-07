@@ -1,5 +1,5 @@
 <template>
-    <b-container
+    <div
         id="home_wrap"
         fluid
     >
@@ -24,7 +24,7 @@
                 </div>
             </b-row>
         </div>
-    </b-container>
+    </div>
 </template>
 
 <script>

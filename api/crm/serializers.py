@@ -239,7 +239,10 @@ class CustomerSerializer(DynamicFieldsModelSerializer):
     def get_bottle(self, obj):
 
         return BottleSerializer(
-            obj.bottle_customer.filter(delete_flg=False),
+            obj.bottle_customer.filter(
+                delete_flg=False,
+                end_flg=False,
+            ),
             fields=[
                 'id',
                 'product',

@@ -1,12 +1,9 @@
 <template>
     <div>
-        <i
-            @click="undo"
-            class='bx bx-undo undo-btn'
-        ></i>
-        <p class="text-center" style="font-size: 13px; height: 30px;">
-            会員情報
-        </p>
+        <AccountPageTitleArea
+            to="AccountHome"
+            title="会員情報"
+        />
 
         <v-container>
 
@@ -205,12 +202,14 @@
     import dayjs from 'dayjs'
     import { mapGetters } from 'vuex'
     import HomeButton from '@/components/account/HomeButton'
+    import AccountPageTitleArea from '@/components/account/AccountPageTitleArea'
 
     export default {
         name: 'AccountCustomerItem',
         components: {
             CustomerDetailDialog,
             HomeButton,
+            AccountPageTitleArea,
         },
         props: {
         },

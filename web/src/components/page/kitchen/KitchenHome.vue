@@ -1,28 +1,26 @@
 <template>
     <div class="home_wrap">
-        <v-card>
-            <v-toolbar
-                color="blue-grey darken-3"
-                dark
-                flat
-            >
-                <v-app-bar-nav-icon
-                    @click.stop="drawer = !drawer"
-                ></v-app-bar-nav-icon>
-                    <v-tabs
-                        v-model="tab"
-                        centered
+        <v-toolbar
+            color="blue-grey darken-3"
+            dark
+            flat
+        >
+            <v-app-bar-nav-icon
+                @click.stop="drawer = !drawer"
+            ></v-app-bar-nav-icon>
+                <v-tabs
+                    v-model="tab"
+                    centered
+                >
+                    <v-tabs-slider color="yellow"></v-tabs-slider>
+                    <v-tab
+                        v-for="menuItem in menuItems"
+                        :key="menuItem"
                     >
-                        <v-tabs-slider color="yellow"></v-tabs-slider>
-                        <v-tab
-                            v-for="menuItem in menuItems"
-                            :key="menuItem"
-                        >
-                            {{ menuItem }}
-                        </v-tab>
-                    </v-tabs>
-            </v-toolbar>
-        </v-card>
+                        {{ menuItem }}
+                    </v-tab>
+                </v-tabs>
+        </v-toolbar>
         <v-tabs-items
             v-model="tab"
             class="order_area_wrap"
@@ -37,6 +35,11 @@
                 >
                     <v-row
                     >
+                        <!-- <v-col v-if="befItems.length  == 0">
+                            <v-card-title>
+                                未調理のオーダーは存在しません。
+                            </v-card-title>
+                        </v-col> -->
                         <v-col
                             v-for="(item, i) in befItems"
                             :key="i"
@@ -106,6 +109,11 @@
                 >
                     <v-row
                     >
+                        <!-- <v-col v-if="afItems.length  == 0">
+                            <v-card-title>
+                                調理済のオーダーは存在しません。
+                            </v-card-title>
+                        </v-col> -->
                         <v-col
                             v-for="(item, i) in afItems"
                             :key="i"
@@ -175,6 +183,24 @@
             absolute
             temporary
         >
+            <v-list-item>
+                <v-list-item-avatar>
+                    <v-img
+                        src="http://localhost:8000/media/upload/logo2.jpg"
+                    ></v-img>
+                </v-list-item-avatar>
+                <v-list-item-content>
+                    <v-list-item-title class="text-h6">
+                        alpha pos
+                    </v-list-item-title>
+                    <v-list-item-subtitle>
+                        menu
+                    </v-list-item-subtitle>
+                </v-list-item-content>
+            </v-list-item>
+
+            <v-divider></v-divider>
+
             <v-list
                 nav
                 dense
@@ -183,33 +209,29 @@
                     v-model="group"
                     active-class="deep-purple--text text--accent-4"
                 >
-                    <v-list-item>
-                        <v-list-item-title>Foo</v-list-item-title>
-                    </v-list-item>
-
-                    <v-list-item>
-                        <v-list-item-title>Bar</v-list-item-title>
-                    </v-list-item>
-
-                    <v-list-item>
-                        <v-list-item-title>Fizz</v-list-item-title>
-                    </v-list-item>
-
-                    <v-list-item>
-                        <v-list-item-title>Buzz</v-list-item-title>
+                    <v-list-item
+                        @click="showLogoutConfirmDialog"
+                    >
+                        <v-list-item-title>ログアウト</v-list-item-title>
                     </v-list-item>
                 </v-list-item-group>
             </v-list>
         </v-navigation-drawer>
+
+        <LogoutConfirmDialog
+            ref="logoutConfirmDialog"
+        />
     </div>
 </template>
 <script>
     import dayjs from 'dayjs'
     import { mapGetters, mapActions, mapMutations } from 'vuex'
+    import LogoutConfirmDialog from '@/components/kitchen/dialog/LogoutConfirmDialog'
 
     export default {
         name: 'KitchenHomeItem',
         components: {
+            LogoutConfirmDialog,
         },
         props: {
         },
@@ -225,6 +247,7 @@
             // afItems: [{},{},{},{},{},{},{},{}],
             befItems: [],
             afItems: [],
+            group: null,
         }),
         beforeCreate () {
         },
@@ -278,6 +301,37 @@
             setInterval(function() {
                 this.now = dayjs()
             }.bind(this), 1000)
+
+
+            const scheme = window.location.protocol === 'https:' ? 'wss' : 'ws'
+            const hostName = process.env.NODE_ENV !== 'production' ? process.env.VUE_APP_BASE_URL : window.location.host
+            // const hostName = 'localhost:8000'
+            console.log('process.env.NODE_ENV', process.env.NODE_ENV)
+            console.log('window.location.host', window.location.host)
+            console.log('process.env.VUE_APP_BASE_URL', process.env.VUE_APP_BASE_URL)
+            const url = scheme + '://' + hostName + '/ws/order/' + this.$store.state.loginUser + '/'
+
+            if (this.ws === undefined || this.ws.readyState !== 1) {
+                this.ws = new WebSocket(url)
+                console.log('this.ws', this.ws)
+            }
+
+            this.ws.onmessage = e => {
+                var receiveData = JSON.parse(e.data)
+                console.log('ソケット結果受信', receiveData)
+                switch (receiveData.type) {
+                    case 0:
+                        // 新規オーダー
+                        this.$eventHub.$emit('addNewOrder', receiveData.content)
+                        break
+                    case 99:
+                        // 伝票締め
+                        this.$eventHub.$emit('closeSalesHeader', receiveData.content)
+                        break
+                    default:
+                        break
+                }
+            }
         },
         beforeMount () {
         },
@@ -288,6 +342,7 @@
         update () {
         },
         beforeDestroy () {
+            this.closeWs()
         },
         destoryd () {
         },
@@ -318,14 +373,17 @@
                 })
             },
             getWaitTime (orderTime) {
-                let diff = this.now.diff(dayjs(orderTime), 'minute')
-                const hour = Math.floor(diff / 60)
-                const min = diff - (hour * 60)
-                let res = min + '分'
-                if (hour != 0) {
-                    res = hour + '時間' + res
+                if (this.now != null) {
+                    let diff = this.now.diff(dayjs(orderTime), 'minute')
+                    const hour = Math.floor(diff / 60)
+                    const min = diff - (hour * 60)
+                    let res = min + '分'
+                    if (hour != 0) {
+                        res = hour + '時間' + res
+                    }
+                    return res + '待ち'
                 }
-                return res + '待ち'
+                return '-'
             },
             orderDone (item) {
                 this.$axios({
@@ -378,6 +436,14 @@
                         席: ${header.disp_seat_name}
                     `
                 })
+            },
+            showLogoutConfirmDialog () {
+                this.$refs.logoutConfirmDialog.open()
+            },
+            closeWs () {
+                if (this.ws !== undefined && this.ws.readyState !== 3) {
+                    this.ws.close()
+                }
             }
         },
         mixins: [],

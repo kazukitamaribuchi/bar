@@ -29,10 +29,10 @@ export default {
             'selectedProduct'
         ]),
         stayHour () {
-            console.log('this.visitTime', this.visitTime)
-            console.log('this.leaveTime', this.leaveTime)
+            // console.log('this.visitTime', this.visitTime)
+            // console.log('this.leaveTime', this.leaveTime)
             const diff = dayjs(this.leaveTime).diff(dayjs(this.visitTime), 'minute')
-            console.log('diff', diff)
+            // console.log('diff', diff)
             const hour = Math.floor(diff / 60)
             const min = diff - (hour * 60)
             // console.log(hour + '時間' + min + '分', diff)

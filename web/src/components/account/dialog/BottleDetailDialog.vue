@@ -1,24 +1,28 @@
 <template>
-    <vs-dialog
+    <v-dialog
         v-model="dialog"
-        overflow-hidden
+        fullscreen
     >
         <v-card
             class="pt-3"
             flat
+            v-if="bottleData != null"
         >
-            <!-- <v-toolbar dark>
+            <v-toolbar
+                dark
+                color="primary"
+            >
                 <v-btn
                     icon
-                    @click="dialog = false"
+                    dark
+                    @click="close"
                 >
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
+                <v-toolbar-title>ボトル情報</v-toolbar-title>
             </v-toolbar>
 
-            <v-divider/> -->
-
-            <v-list-item>
+            <!-- <v-list-item>
                 <v-list-item-content>
                     <v-card-title>
                         ボトル情報
@@ -28,21 +32,6 @@
                     <v-card-actions
                         style="justify-content: end; height: 40px;"
                     >
-                        <!-- <vs-button
-                            circle
-                            icon
-                            success
-                        >
-                            <i class='bx bx-check'></i>
-                        </vs-button> -->
-                        <!-- <vs-button
-                            circle
-                            icon
-                            primary
-                            @click="updateDialog = true"
-                        >
-                            <i class='bx bx-edit'></i>
-                        </vs-button> -->
                         <vs-button
                             circle
                             icon
@@ -53,10 +42,7 @@
                         </vs-button>
                     </v-card-actions>
                 </v-list-item-content>
-            </v-list-item>
-            <!-- <v-card-title>
-                ボトル情報
-            </v-card-title> -->
+            </v-list-item> -->
 
             <v-card-text class="text-right pb-0">
                 <span style="font-size: 13px; color: rgba(40, 40, 40, 0.8);">
@@ -111,7 +97,7 @@
                     outlined
                     color="success"
                     @click="endConfirmDialog = true"
-                >空に更新</v-btn>
+                >消込</v-btn>
             </v-card-actions>
             <v-card-actions>
                 <v-btn
@@ -179,6 +165,7 @@
 
         <v-dialog
             v-model="updateSuccessDialog"
+            persistent
         >
             <v-card
                 class="pt-3"
@@ -200,6 +187,7 @@
 
         <v-dialog
             v-model="deleteSuccessDialog"
+            persistent
         >
             <v-card
                 class="pt-3"
@@ -233,7 +221,7 @@
                 >Close</v-btn>
             </template>
         </v-snackbar>
-    </vs-dialog>
+    </v-dialog>
 </template>
 
 <script>

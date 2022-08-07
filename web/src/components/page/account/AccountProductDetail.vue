@@ -1,24 +1,51 @@
 <template>
-    <div>
-        <div>
-            <i
-                @click="undo"
-                class='bx bx-undo undo-btn'
-            ></i>
-        </div>
-        <p class="text-center" style="font-size: 13px;">
-            {{ categoryName }}
-        </p>
-        <OrderHeader/>
-        <ProductDetailList/>
+    <v-dialog
+        v-model="dialog"
+        fullscreen
+        class="account_product_detail_wrap"
+        :class="{'selected_product_padding': isShowSelectedProductFooter}"
+    >
+        <v-card
+            flat
+        >
+            <v-toolbar
+                dark
+                color="primary"
+            >
+                <v-btn
+                    dark
+                    icon
+                    @click="dialog = false"
+                >
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+                <v-toolbar-title>{{ categoryName }}</v-toolbar-title>
+                <v-spacer></v-spacer>
+            </v-toolbar>
+        <!-- <AccountPageTitleArea
+            to="AccountOrder"
+            :title="categoryName"
+            :params="params"
+        />
+
+        <OrderHeader/> -->
+        <ProductDetailList
+            :large="large"
+            :middle="middle"
+            :small="small"
+            :headerInfo="headerInfo"
+            :key="updKey"
+        />
         <SelectedProductFooter
             v-if="selectedProduct != undefined && selectedProduct.length != 0"
         />
-    </div>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script>
 
+import AccountPageTitleArea from '@/components/account/AccountPageTitleArea'
 import OrderHeader from '@/components/account/OrderHeader'
 import { Const } from '@/assets/js/const'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
@@ -28,9 +55,21 @@ import SelectedProductFooter from '@/components/account/SelectedProductFooter'
 
 export default {
     name: 'AccountProductDetailItem',
+    props: {
+        headerInfo: {
+            type: Object,
+            required: false,
+        }
+    },
     data: () => ({
+        dialog: false,
+        large: 1,
+        middle: 0,
+        small: 0,
+        updKey: 0,
     }),
     components: {
+        AccountPageTitleArea,
         OrderHeader,
         ProductDetailList,
         SelectedProductFooter,
@@ -44,35 +83,43 @@ export default {
             'selectedProduct'
         ]),
         categoryName () {
-            const large = this.$route.params.large
-            const middle = this.$route.params.middle
-            const small = this.$route.params.small
-            return Con.PRODUCT_CATEGORY_DICT[large][middle][small]
-        }
+            // const large = this.$route.params.large
+            // const middle = this.$route.params.middle
+            // const small = this.$route.params.small
+            return Con.PRODUCT_CATEGORY_DICT[this.large][this.middle][this.small]
+        },
+        params () {
+            return {id: this.$route.params.id}
+        },
+        isShowSelectedProductFooter () {
+            if (this.selectedProduct != undefined && this.selectedProduct.length != 0) {
+                return true
+            }
+            return false
+        },
     },
     methods: {
         ...mapMutations([
         ]),
         ...mapActions([
         ]),
-        undo () {
-            this.$router.push({
-                name: 'AccountOrder',
-                params: {
-                    id: this.$route.params.id
-                }
-            })
+        open (item) {
+            this.large = item.large_category
+            this.middle = item.middle_category
+            this.small = item.small_category
+            this.updKey++
+            this.dialog = true
         },
+        close () {
+            this.dialog = false
+        },
+
     },
     mixins: [],
 }
 </script>
 <style lang="scss" scoped>
-    .undo-btn {
-        font-size: 25px;
-        cursor: pointer;
-        position: absolute;
-        top: 55px;
-        left: 20px;
+    .selected_product_padding {
+        padding-bottom: 120px;
     }
 </style>

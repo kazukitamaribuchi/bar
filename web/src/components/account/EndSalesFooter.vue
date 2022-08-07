@@ -32,10 +32,10 @@
             <p class="account_check_text">{{ accountCloseText }}</p>
         </v-col>
 
-        <vs-dialog
+        <v-dialog
             v-model="dialog"
         >
-            <div class="con-content">
+            <!-- <div class="con-content">
                 締め処理を行います。<br>
                 宜しいですか？
             </div>
@@ -53,8 +53,8 @@
                         @click="closeAccount"
                     >はい</vs-button>
                 </div>
-            </template>
-            <!-- <v-card>
+            </template> -->
+            <v-card>
                 <v-card-title>
                     締め処理を行います。<br>
                     宜しいですか？
@@ -82,8 +82,8 @@
                         </v-col>
                     </v-row>
                 </v-card-actions>
-            </v-card> -->
-        </vs-dialog>
+            </v-card>
+        </v-dialog>
     </v-row>
 </template>
 
@@ -174,6 +174,8 @@ export default {
         .account_detail {
             background-color: rgb(142, 142, 142);
             color: white;
+            padding-left: 30px;
+            padding-top: 15px;
         }
 
         .account_close_cancel {
@@ -181,8 +183,10 @@ export default {
             color: white;
             cursor: pointer;
             .account_close_cancel_text {
-                line-height: 75px;
+                line-height: 85px;
                 text-align: center;
+                padding-bottom: 0;
+                margin-bottom: 0;
             }
         }
 
@@ -199,8 +203,10 @@ export default {
             background-color: rgba(0, 78, 227, 0.7);
             color: white;
             .account_check_text {
-                line-height: 75px;
+                line-height: 85px;
                 text-align: center;
+                padding-bottom: 0;
+                margin-bottom: 0;
             }
         }
         .account_check:hover {

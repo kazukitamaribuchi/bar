@@ -1,15 +1,15 @@
 <template>
-    <div>
-        <div>
-            <i
-                @click="undo"
-                class='bx bx-undo undo-btn'
-            ></i>
-        </div>
-        <p class="text-center" style="font-size: 13px;">
-            注文内容
-        </p>
-        <OrderList/>
+    <div
+        class="account_order_check_wrap"
+        :class="{'selected_product_padding': isShowSelectedProductFooter}"
+    >
+        <AccountPageTitleArea
+            to="AccountOrder"
+            title="注文内容"
+        />
+
+        <OrderList
+        />
         <SelectedProductFooter
             v-show="selectedProduct != undefined && selectedProduct.length != 0"
         />
@@ -19,11 +19,15 @@
 <script>
 
 import OrderList from '@/components/account/OrderList'
+import AccountPageTitleArea from '@/components/account/AccountPageTitleArea'
 import SelectedProductFooter from '@/components/account/SelectedProductFooter'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
     name: 'AccountOrderCheckItem',
+    data: () => ({
+        // headerInfo: {},
+    }),
     mounted: function () {
         // if (this.$store.state.isAuth) {
         //     this.$router.push({name: 'AccountHome'})
@@ -33,31 +37,36 @@ export default {
     },
     components: {
         OrderList,
+        AccountPageTitleArea,
         SelectedProductFooter,
+    },
+    created () {
     },
     computed: {
         ...mapGetters([
             'selectedProduct',
-        ])
+        ]),
+        isShowSelectedProductFooter () {
+            if (this.selectedProduct != undefined && this.selectedProduct.length != 0) {
+                return true
+            }
+            return false
+        },
     },
     methods: {
-        undo () {
-            this.$router.push({
-                name: 'AccountOrder',
-                params: {
-                    id: this.$route.params.id
-                }
-            })
-        },
     }
 }
 </script>
 <style lang="scss" scoped>
-    .undo-btn {
-        font-size: 25px;
-        cursor: pointer;
-        position: absolute;
-        top: 55px;
-        left: 20px;
+    .account_order_check_wrap {
+        padding-bottom: 10px;
+        // min-height: 100vh;
+        // position: relative;
+        // padding-bottom: 120px;
+        // box-sizing: border-box;
+    }
+
+    .selected_product_padding {
+        padding-bottom: 100px;
     }
 </style>

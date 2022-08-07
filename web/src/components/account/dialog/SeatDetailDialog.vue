@@ -1,25 +1,28 @@
 <template>
-    <vs-dialog
+    <v-dialog
         v-model="dialog"
+        fullscreen
     >
         <v-card
             class="pt-3"
             flat
+            v-if="salesData != null"
         >
-            <!-- <v-toolbar dark>
+            <v-toolbar
+                dark
+                color="primary"
+            >
                 <v-btn
+                    dark
                     icon
                     @click="dialog = false"
                 >
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
+                <v-toolbar-title>席情報</v-toolbar-title>
+                <v-spacer></v-spacer>
             </v-toolbar>
 
-            <v-divider/> -->
-
-            <v-card-title>
-                席情報
-            </v-card-title>
 
             <v-card-text>
                 <v-list-item>
@@ -81,7 +84,7 @@
                 <v-list-item>
                     <v-row>
                         <v-col cols="6" class="pt-0">
-                            <label style="font-size:12px;">男性客数</label>
+                            <div style="font-size:12px;">男性客数</div>
                             <b-form-spinbutton
                                 inline
                                 v-model="salesData.male_visitors"
@@ -90,7 +93,7 @@
                             ></b-form-spinbutton>
                         </v-col>
                         <v-col cols="6" class="pt-0">
-                            <label style="font-size:12px;">女性客数</label>
+                            <div style="font-size:12px;">女性客数</div>
                             <b-form-spinbutton
                                 inline
                                 v-model="salesData.female_visitors"
@@ -115,24 +118,26 @@
             </v-card-text>
 
 
-            <v-btn
-                block
-                color="primary"
-                depressed
-                outlined
-                @click="update"
-                :loading="updateLoading"
-                class="my-3"
-            >更新</v-btn>
-            <v-btn
-                block
-                color="blue-grey"
-                outlined
-                @click="dialog = false"
-                dark
-            >
-                閉じる
-            </v-btn>
+            <v-card-text>
+                <v-btn
+                    block
+                    color="primary"
+                    depressed
+                    outlined
+                    @click="update"
+                    :loading="updateLoading"
+                    class="my-3"
+                >更新</v-btn>
+                <v-btn
+                    block
+                    color="blue-grey"
+                    outlined
+                    @click="dialog = false"
+                    dark
+                >
+                    閉じる
+                </v-btn>
+            </v-card-text>
             <!-- <v-card-actions>
                 <v-row class="ma-0">
                     <v-col class="ma-0">
@@ -206,7 +211,7 @@
                 </div>
             </template> -->
         </v-dialog>
-    </vs-dialog>
+    </v-dialog>
 </template>
 
 <script>
@@ -271,7 +276,11 @@
                 this.loading = true
                 this.salesData = salesData
                 this.basicPlanType = salesData.basic_plan_type.id
-                this.seatId = salesData.seat.id
+                if (salesData.seat != null) {
+                    this.seatId = salesData.seat.id
+                } else {
+                    this.seatId = 0
+                }
                 // this.$axios({
                 //     method: 'get',
                 //     url: `/api/sales/${salesData.id}/`

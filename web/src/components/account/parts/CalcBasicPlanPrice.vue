@@ -37,7 +37,7 @@
 
         <v-row
             v-for="n of 2"
-            :key=n
+            :key=n+100
             class="mt-3"
         >
             <v-col cols="1"></v-col>
@@ -140,11 +140,11 @@ export default {
 
         // あと延長の数
         // 基本料金によって区切りが違う(最初ののみ。後は1時間区切り)
-        const now = this.leaveTime
+        const now = dayjs(this.leaveTime)
         const diff = now.diff(dayjs(this.salesData.visit_time), 'minute')
 
         const diffMinute = diff - BASIC_PLAN_SEP_MINUTE[small]
-        console.log('diffMinute', diffMinute, BASIC_PLAN_SEP_MINUTE[small])
+        // console.log('diffMinute', diffMinute, BASIC_PLAN_SEP_MINUTE[small])
         let extentionNum = 0
         if (diffMinute > 0) {
             extentionNum = Math.ceil(diffMinute / 60)

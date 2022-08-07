@@ -49,6 +49,8 @@
 
 export default {
     name: 'SearchCustomerInfoItem',
+    props: {
+    },
     data: () => ({
         customerNo: '',
         customerInfo: null,

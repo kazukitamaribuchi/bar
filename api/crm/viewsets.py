@@ -1800,10 +1800,26 @@ class SalesViewSet(BaseModelViewSet):
                 customer = MCustomer.objects.get(card__customer_no=customer_no)
             except MCustomer.DoesNotExist:
                 logger.error('顧客情報が取得出来ません。')
-                return Response(status.status.HTTP_400_BAD_REQUEST)
+                return Response(status=status.HTTP_400_BAD_REQUEST)
         else:
             logger.error('会員IDが正しくありません')
-            return Response(status.status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        not_end_sales_header_list = SalesHeader.objects.filter(
+            customer=customer,
+            close_flg=False,
+        )
+
+        if len(not_end_sales_header_list) >= 1:
+            logger.error('会計していない同一会員の伝票が存在します。')
+            return Response(
+                {
+                    'msg': '会計していない同一会員の伝票が存在します。'
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+
 
         male_visitors = request.data['male_visitors']
         female_visitors = request.data['female_visitors']
@@ -1831,9 +1847,24 @@ class SalesViewSet(BaseModelViewSet):
         if seat_id != None and seat_id != '':
             try:
                 seat = MSeat.objects.get(pk=seat_id)
+
+                not_end_same_seat_sales_header_list = SalesHeader.objects.filter(
+                    seat=seat,
+                    close_flg=False,
+                )
+
+                if len(not_end_same_seat_sales_header_list) >= 1:
+                    logger.error('同一座席の伝票が存在します。')
+                    return Response(
+                        {
+                            'msg': '同一座席の伝票が存在します。'
+                        },
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
             except MSeat.DoesNotExist:
                 logger.error('座席情報が取得出来ません。')
                 return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
         header = SalesHeader.objects.create(
             customer=customer,
@@ -2085,12 +2116,20 @@ class SalesViewSet(BaseModelViewSet):
         open_date_str = request.data['leave_time']
         open_date = datetime.strptime(open_date_str, '%Y/%m/%d %H:%M').astimezone(timezone('Asia/Tokyo'))
 
+        for bottle_delete in request.data['bottle_delete_list']:
+            try:
+                bottle = BottleManagement.objects.get(pk=bottle_delete['id'])
+                bottle.delete()
+            except BottleManagement.DoesNotExist:
+                logger.error('ボトル情報の取得に失敗しました。')
+                pass
+
         for sales_detail in request.data['sales_detail']:
             if 'bottle' in sales_detail:
                 try:
                     product = MProduct.objects.get(pk=sales_detail['id'])
                 except MProduct.DoesNotExist:
-                    return Response(status.status.HTTP_400_BAD_REQUEST)
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
                 logger.debug('ボトル登録有')
                 BottleManagement.objects.create(
                     customer=customer,

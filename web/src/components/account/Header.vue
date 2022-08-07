@@ -1,16 +1,40 @@
 <template>
     <div id="header_wrap">
-        <div>
+        <!-- color="blue-grey darken-3"
+        dark -->
+        <v-toolbar
+            flat
+            height="45"
+        >
+            <v-toolbar-title>
+                Menu
+            </v-toolbar-title>
+            <v-spacer/>
+            <v-app-bar-nav-icon
+                @click.stop="drawer = !drawer"
+            ></v-app-bar-nav-icon>
+
+                <!-- <v-tabs
+                    v-model="tab"
+                    centered
+                >
+                    <v-tabs-slider color="yellow"></v-tabs-slider>
+                    <v-tab
+                        v-for="menuItem in menuItems"
+                        :key="menuItem"
+                    >
+                        {{ menuItem }}
+                    </v-tab>
+                </v-tabs> -->
+        </v-toolbar>
+
+        <!-- <div>
             <i
                 class='bx header-hum'
                 :class="{trans: menu, 'trans2': !menu, 'bx-menu': !menu, 'bx-x': menu}"
             ></i>
-            <!-- @click="menu = !menu" -->
+            @click="menu = !menu"
         </div>
-        <!-- <div class="header-title">
-            {{ headerTitle }}
-        </div> -->
-
         <transition name="slide-fade">
             <div
                 v-if="menu"
@@ -36,7 +60,48 @@
                         </v-list-item-group>
                 </v-list>
             </div>
-        </transition>
+        </transition> -->
+
+        <v-navigation-drawer
+            v-model="drawer"
+            absolute
+            temporary
+            left
+        >
+            <v-list-item>
+                <v-list-item-avatar>
+                    <v-img
+                        src="http://localhost:8000/media/upload/logo2.jpg"
+                    ></v-img>
+                </v-list-item-avatar>
+                <v-list-item-content>
+                    <v-list-item-title class="text-h6">
+                        alpha pos
+                    </v-list-item-title>
+                    <v-list-item-subtitle>
+                        menu
+                    </v-list-item-subtitle>
+                </v-list-item-content>
+            </v-list-item>
+
+            <v-divider></v-divider>
+
+            <v-list
+                nav
+                dense
+            >
+                <v-list-item-group
+                    v-model="group"
+                    active-class="deep-purple--text text--accent-4"
+                >
+                    <v-list-item
+                        @click="showLogoutConfirmDialog"
+                    >
+                        <v-list-item-title>ログアウト</v-list-item-title>
+                    </v-list-item>
+                </v-list-item-group>
+            </v-list>
+        </v-navigation-drawer>
 
         <LogoutConfirm
             ref="logoutConfirm"
@@ -83,6 +148,9 @@ export default {
                 click: 2
             },
         ],
+        tab: null,
+        drawer: false,
+        group: null,
     }),
     components: {
         LogoutConfirm,
@@ -130,7 +198,7 @@ export default {
         setting () {
             console.log('setting')
         },
-        logout () {
+        showLogoutConfirmDialog () {
             console.log('logout')
             this.$refs.logoutConfirm.open()
         },
@@ -148,7 +216,8 @@ export default {
     // border-bottom: 0.5px solid rgba(150, 150, 150, 0.5);
 
     height: 50px;
-    padding-bottom: 3px;
+    // margin-bottom: 10px;
+    padding-top: 5px;
 
     .header-title {
         height: 100%;

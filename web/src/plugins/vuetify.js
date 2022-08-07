@@ -13,6 +13,7 @@ import Vuetify, {
     VTextField,
     VList,
     VListItem,
+    VListItemAvatar,
     VListItemTitle,
     VListItemSubtitle,
     VListItemIcon,
@@ -51,6 +52,9 @@ import Vuetify, {
     VAppBar,
     VAppBarNavIcon,
     VNavigationDrawer,
+    VBottomNavigation,
+    VResponsive,
+    VChip,
 } from 'vuetify/lib'
 
 
@@ -69,6 +73,7 @@ Vue.use(Vuetify, {
         VTextField,
         VList,
         VListItem,
+        VListItemAvatar,
         VListItemTitle,
         VListItemSubtitle,
         VListItemIcon,
@@ -108,6 +113,9 @@ Vue.use(Vuetify, {
         VAppBar,
         VAppBarNavIcon,
         VNavigationDrawer,
+        VBottomNavigation,
+        VResponsive,
+        VChip,
     }
 })
 
