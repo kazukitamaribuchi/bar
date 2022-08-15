@@ -502,11 +502,13 @@ export default {
             //     birthday = [data.birthday_year, data.birthday_month, data.birthday_day].join('/')
             // }
             let birthday = ''
-            if (data.birthday != '' && data.birthday != null) {
+            if (data.birthday != '' && data.birthday != null && data.birthday != '-') {
                 birthday = data.birthday.replaceAll('-', '/')
             }
 
             const cautionFlg = (this.createCustomerData.cautionFlg.length != 0) ? true : false
+
+            console.log(birthday, data)
 
             this.$axios({
                 url: `/api/customer/${this.$route.params['id']}/`,

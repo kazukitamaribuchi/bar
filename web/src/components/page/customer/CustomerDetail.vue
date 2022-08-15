@@ -10,60 +10,13 @@
                     >
                         <b-container fluid>
                             <b-row>
-                                <b-col cols="5">
+                                <b-col cols="6" class="pb-0 mb-0">
                                     <b-card-title>
                                         顧客詳細
                                     </b-card-title>
-                                    <div style="display: flex; margin-left: 30px; margin-top: 30px;">
-                                        <div>
-                                            <img
-                                                src="@/assets/img/男性3.jpg"
-                                                class="customer_detail_customer_icon"
-                                            >
-                                        </div>
-                                        <div class="mt-3" style="margin-left: 15px;">
-                                            <b style="font-size: 20px;">
-                                                {{ customerData.name }}
-                                            </b>
-                                            <b-card-sub-title>
-                                                {{ getStrInData(customerData.name_kana) }}
-                                            </b-card-sub-title>
-                                        </div>
-                                    </div>
                                 </b-col>
-                                <b-col cols="2" style="padding-top: 70px;">
-                                    <b-card-sub-title>
-                                        会員No
-                                    </b-card-sub-title>
-                                    <b-card-text style="font-size: 24px;">
-                                        {{ getStrInData(customerData.customer_no) }}
-                                    </b-card-text>
-                                </b-col>
-                                <b-col cols="2" style="padding-top: 70px;">
-                                    <b-card-sub-title>
-                                        年齢
-                                    </b-card-sub-title>
-                                    <b-card-text style="font-size: 24px;">
-                                        {{ getStrInData(customerData.age) }} 歳
-                                    </b-card-text>
-                                </b-col>
-                                <!-- <b-col cols="2" style="padding-top: 70px;">
-                                    <b-card-sub-title>
-                                        誕生日
-                                    </b-card-sub-title>
-                                    <b-card-text style="font-size: 24px;">
-                                        {{ getStrInData(customerData.birthday) }}
-                                    </b-card-text>
-                                </b-col> -->
-                                <b-col cols="1" style="padding-top: 70px;">
-                                    <b-card-sub-title>
-                                        ランク
-                                    </b-card-sub-title>
-                                    <b-card-text style="font-size: 24px;">
-                                        {{ customerData.rank_name }}
-                                    </b-card-text>
-                                </b-col>
-                                <b-col cols="2" align-self="stretch">
+                                <b-col cols="4" class="pb-0 mb-0"/>
+                                <b-col cols="2" align-self="end" class="pb-0 mb-0">
                                     <b-button
                                         size="sm"
                                         @click="showEditCustomerDialog"
@@ -86,6 +39,74 @@
                                 </b-col>
                             </b-row>
                             <b-row>
+                                <b-col cols="5" class="pt-0 mt-0">
+                                    <!-- <b-card-title>
+                                        顧客詳細
+                                    </b-card-title> -->
+                                    <div style="display: flex; margin-left: 30px; margin-top: 30px;">
+                                        <div>
+                                            <img
+                                                src="@/assets/img/男性3.jpg"
+                                                class="customer_detail_customer_icon"
+                                            >
+                                        </div>
+                                        <div class="mt-3" style="margin-left: 15px;">
+                                            <b style="font-size: 20px;">
+                                                {{ customerData.name }}
+                                            </b>
+                                            <b-card-sub-title>
+                                                {{ getStrInData(customerData.name_kana) }}
+                                            </b-card-sub-title>
+                                        </div>
+                                    </div>
+                                </b-col>
+                                <b-col cols="2" class="pt-8">
+                                    <b-card-sub-title>
+                                        会員No
+                                    </b-card-sub-title>
+                                    <b-card-text style="font-size: 24px;">
+                                        {{ getStrInData(customerData.customer_no) }}
+                                    </b-card-text>
+                                </b-col>
+                                <b-col cols="2" class="pt-8">
+                                    <b-card-sub-title>
+                                        年齢
+                                    </b-card-sub-title>
+                                    <b-card-text style="font-size: 24px;">
+                                        {{ getStrInData(customerData.age) }} 歳
+                                    </b-card-text>
+                                </b-col>
+                                <b-col cols="2" class="pt-8">
+                                    <b-card-sub-title>
+                                        ランク
+                                    </b-card-sub-title>
+                                    <b-card-text style="font-size: 24px;">
+                                        {{ customerData.rank_name }}
+                                    </b-card-text>
+                                </b-col>
+                                <!-- <b-col cols="2" align-self="stretch">
+                                    <b-button
+                                        size="sm"
+                                        @click="showEditCustomerDialog"
+                                    >
+                                        <b-icon
+                                            icon="pencil"
+                                            aria-hidden="true"
+                                        ></b-icon> 編集
+                                    </b-button>
+                                    <b-button
+                                        size="sm"
+                                        style="position: relative; left: 10px;"
+                                        @click="showDeleteCustomerDetailDialog"
+                                    >
+                                        <b-icon
+                                            icon="trash"
+                                            aria-hidden="true"
+                                        ></b-icon> 削除
+                                    </b-button>
+                                </b-col> -->
+                            </b-row>
+                            <b-row>
                                 <b-tabs pill card fill>
                                     <b-tab
                                         title="詳細情報"
@@ -98,6 +119,12 @@
 
                                         <b-row>
                                             <b-col cols="7">
+                                                <b-card-sub-title class="mt-4" style="font-size: 15px;">
+                                                    住所
+                                                </b-card-sub-title>
+                                                <b-card-text style="font-size: 20px; white-space: pre-line;">
+                                                    {{ strAddress }}
+                                                </b-card-text>
                                                 <b-card-sub-title class="mt-3" style="font-size: 15px;">
                                                     会社
                                                 </b-card-sub-title>
@@ -113,17 +140,14 @@
                                                 <b-card-sub-title class="mt-4" style="font-size: 15px;">
                                                     要注意人物
                                                 </b-card-sub-title>
-                                                <b-card-title v-if="customerData.caution_flg" style="font-size: 20px; color: red;">
-                                                    要注意
-                                                </b-card-title>
-                                                <b-card-title v-else style="font-size: 20px;">
-                                                    -
+                                                <b-card-title style="font-size: 20px;">
+                                                    {{ strCaution }}
                                                 </b-card-title>
                                                 <b-card-sub-title class="mt-4" style="font-size: 15px;">
                                                     備考
                                                 </b-card-sub-title>
                                                 <b-card-text style="font-size: 20px; white-space: pre-line;">
-                                                    {{ customerData.remarks }}
+                                                    {{ strRemarks }}
                                                 </b-card-text>
                                             </b-col>
                                             <b-col cols="5">
@@ -174,22 +198,21 @@
                                                             text-variant="white"
                                                             style="min-height: 180px;"
                                                             class="bottle_card"
-                                                            @click="showBottleDetail(item)"
                                                         >
                                                         <div text-align="right" align="right">
                                                             <b-button
                                                                 size="sm"
                                                                 style="position: relative; left: -10px;"
-                                                                @click="showEditCustomerDialog"
+                                                                @click="showEndBottleDialog(item)"
                                                             >
                                                                 <b-icon
                                                                     icon="check-circle"
                                                                     aria-hidden="true"
-                                                                ></b-icon> 飲終
+                                                                ></b-icon> 消込
                                                             </b-button>
                                                             <b-button
                                                                 size="sm"
-                                                                @click="showDeleteCustomerDetailDialog"
+                                                                @click="showEditBottleDialog(item)"
                                                             >
                                                                 <b-icon
                                                                     icon="pencil"
@@ -199,7 +222,7 @@
                                                             <b-button
                                                                 size="sm"
                                                                 style="position: relative; left: 10px;"
-                                                                @click="showDeleteCustomerDetailDialog"
+                                                                @click="showDeleteBottleDetailDialog(item)"
                                                             >
                                                                 <b-icon
                                                                     icon="trash"
@@ -331,10 +354,6 @@
                                             </b-col>
 
                                         </b-row> -->
-                                    </b-tab>
-                                    <b-tab
-                                        title="指名データ"
-                                    >
                                     </b-tab>
                                     <b-tab
                                         title="売上データ"
@@ -491,6 +510,21 @@
         <DeleteCustomerDetailDialog
             ref="deleteCustomerDetailDialog"
         />
+
+        <EndBottleDetailDialog
+            ref="endBottleDetailDialog"
+            @deleteCustomerBottleDetail="deleteCustomerBottleDetail"
+        />
+
+        <CreateBottleDialog
+            ref="editBottleDialog"
+            @updateCustomerBottleDetail="updateCustomerBottleDetail"
+        />
+
+        <DeleteBottleDetailDialog
+            ref="deleteBottleDetailDialog"
+            @deleteCustomerBottleDetail="deleteCustomerBottleDetail"
+        />
     </div>
 </template>
 
@@ -500,6 +534,9 @@ import { mapGetters } from 'vuex'
 import _ from 'lodash'
 import utilsMixin from '@/mixins/utils'
 import DeleteCustomerDetailDialog from '@/components/common/dialog/DeleteCustomerDetailDialog'
+import EndBottleDetailDialog from '@/components/common/dialog/EndBottleDetailDialog'
+import CreateBottleDialog from '@/components/common/dialog/CreateBottleDialog'
+import DeleteBottleDetailDialog from '@/components/common/dialog/DeleteBottleDetailDialog'
 
 export default {
     name: 'CustomerDetailItem',
@@ -520,6 +557,9 @@ export default {
     components: {
         CreateCustomerDialog,
         DeleteCustomerDetailDialog,
+        EndBottleDetailDialog,
+        CreateBottleDialog,
+        DeleteBottleDetailDialog,
     },
     computed: {
         ...mapGetters([
@@ -575,6 +615,29 @@ export default {
             if (this.isDanger) return 'white'
             return 'black'
         },
+        strCaution () {
+            if (this.customerData != null
+                && this.customerData.caution_flg) {
+                    return '要注意'
+                }
+            return '-'
+        },
+        strRemarks () {
+            if (this.customerData != null
+                && this.customerData.remarks != ''
+                && this.customerData.remarks != null) {
+                    return this.customerData.remarks
+                }
+            return '-'
+        },
+        strAddress () {
+            if (this.customerData != null
+                && this.customerData.address != null
+                && this.customerData.address != '') {
+                    return this.customerData.address
+                }
+            return '-'
+        },
     },
     created () {
         // this.$axios({
@@ -596,8 +659,6 @@ export default {
         if (this.customer.find(c => c.id == id) == undefined) {
             this.customerData = {}
         }  else {
-
-
             this.customerData = _.cloneDeep(this.customer.find(c => c.id == id))
             const customerNo = this.customerData.customer_no
 
@@ -619,8 +680,9 @@ export default {
 
             this.customerOwnBottleList = customerOwnBottleList
             // this.customerBottleHistoryList = customerBottleHistoryList
-
         }
+
+        console.log('customerData', this.customerData)
     },
     beforeRouteUpdate (to, from, next) {
         if (from.name == 'CustomerDetail') {
@@ -667,6 +729,38 @@ export default {
         },
         showBottleDetail (item) {
             console.log('bottleDetail', item)
+        },
+        showEditBottleDialog (item) {
+            console.log('item', item)
+            if (item.delete_flg || item.end_flg) return
+            this.$refs.editBottleDialog.open(item)
+        },
+        showDeleteBottleDetailDialog (item) {
+            console.log('item', item)
+            this.$refs.deleteBottleDetailDialog.open(item)
+        },
+        showEndBottleDialog (item) {
+            console.log('item', item)
+            this.$refs.endBottleDetailDialog.open(item)
+        },
+        deleteCustomerBottleDetail (item) {
+            this.customerData.bottle = this.customerData.bottle.filter(b => b.id != item.id)
+            this.customerOwnBottleList = this.customerOwnBottleList.filter(b => b.id != item.id)
+        },
+        updateCustomerBottleDetail (item) {
+            console.log('updateCustomerBottleDetail', item)
+            this.customerData.bottle = item.customer.botttle
+            const customerNo = this.customerData.customer_no
+
+            const customerOwnBottleList = this.bottle.filter(function(b) {
+                if (b.customer != null
+                    && b.customer.customer_no == customerNo
+                    && (!b.end_flg && !b.waste_flg && !b.delete_flg)) {
+                    return true
+                }
+            })
+
+            this.customerOwnBottleList = customerOwnBottleList
         }
     },
     mixins: [

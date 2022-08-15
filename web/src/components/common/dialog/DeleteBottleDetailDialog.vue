@@ -34,6 +34,9 @@ export default {
         ...mapActions([
             'deleteBottleListAction',
         ]),
+        ...mapMutations([
+            'deleteCustomerBottle',
+        ]),
         open (data) {
             this.dialog = true
             this.bottleDetail = data
@@ -45,6 +48,10 @@ export default {
         deleteBottleDetail () {
             this.deleteBottleListAction(this.bottleDetail)
             // this.$router.push('/bottle')
+
+            // 顧客データが持つボトルデータも
+            this.deleteCustomerBottle(this.bottleDetail.id)
+            this.$emit('deleteCustomerBottleDetail', this.bottleDetail)
             this.close()
         }
     }

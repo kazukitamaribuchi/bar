@@ -32,7 +32,7 @@ export default {
     props: {
     },
     data: () => ({
-        alcoholHeader: Con.INPUT_SALES_DETAIL_PRODUCT_ALCOHOL_HEADER,
+        alcoholHeader: Con.INPUT_SALES_DETAIL_PRODUCT_BOTTLE_HEADER,
         selected: 0,
     }),
     computed: {

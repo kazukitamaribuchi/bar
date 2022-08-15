@@ -9,12 +9,12 @@
         <b-row>
             <b-col>
                 <AddBottleDialogHeader
-                    @update="productByCategoryList = $event"
+                    @update="updateProductByCategoryList"
                 />
                 <b-row>
                     <b-col
                         cols="2"
-                        v-for="(item, i) in productByCategoryList"
+                        v-for="(item, i) in dispItems"
                         :key=i
                     >
                     <!-- @click="selectProduct(item)" -->
@@ -67,6 +67,15 @@
 
         <template #modal-footer>
             <b-container fluid>
+
+                <b-pagination
+                    v-model="currentPage"
+                    :total-rows="rows"
+                    :per-page="perPage"
+                    aria-controls="my-table"
+                    align="center"
+                    @change="changePage"
+                ></b-pagination>
                 <!-- <b-row>
                     <b-col cols="6" class="add_bottle_footer_col">
                         <b-card-sub-title>選択商品</b-card-sub-title>
@@ -163,6 +172,11 @@ export default {
         editIdx: 0,
         editMode: false,
         editOpenDate: '',
+
+        currentPage: 1,
+        dispItems: [],
+        perPage: 12,
+        rows: 1,
     }),
     computed: {
         ...mapGetters([
@@ -186,7 +200,14 @@ export default {
     },
     methods: {
         open (data, idx) {
+
+            console.log('this.productByCategory', this.productByCategory)
             this.productByCategoryList = _.cloneDeep(this.productByCategory[1][0][0])
+
+            let slicedArray = this.divideArrIntoPieces(_.cloneDeep(this.productByCategoryList), 12)
+            this.dispItems = slicedArray[0]
+            this.rows = this.productByCategoryList.length
+
             this.dialog = true
             if (data) {
                 this.editIdx = idx
@@ -197,6 +218,25 @@ export default {
                 this.editMode = false
                 console.log('新規追加モード')
             }
+        },
+        updateProductByCategoryList (items) {
+            let slicedArray = this.divideArrIntoPieces(_.cloneDeep(items), 12)
+            this.rows = items.length
+            this.dispItems = slicedArray[0]
+            this.currentPage = 1
+        },
+        divideArrIntoPieces (arr,n){
+            var arrList = [];
+            var idx = 0;
+            while(idx < arr.length){
+                arrList.push(arr.splice(idx,idx+n));
+            }
+            return arrList;
+        },
+        changePage (pageNumber) {
+            this.currentPage = pageNumber
+            let items = this.divideArrIntoPieces(_.cloneDeep(this.productByCategoryList), 12)
+            this.dispItems = items[pageNumber-1]
         },
         close () {
             this.init()

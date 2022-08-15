@@ -237,6 +237,7 @@
                 }
             })
             .then(res => {
+                console.log(res)
                 this.setProductDayTotalSalesData(res.data)
             })
             .catch(e => {

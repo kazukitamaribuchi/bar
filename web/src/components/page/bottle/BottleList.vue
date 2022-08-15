@@ -1,7 +1,93 @@
 <template>
     <div id="bottle_list_wrap">
         <b-row class="mb-3">
-            <b-col cols="10">
+            <b-card class="bottle_list_filter_card">
+                <!-- <b-row style="color: white;"> -->
+                <b-card-title>
+                    ボトル検索
+                </b-card-title>
+                <b-row>
+                    <b-col lg="4" class="my-1">
+                        <b-form-group
+                            class="mb-0"
+                            v-slot="{ ariaDescribedby }"
+                        >
+                            <span>
+                                並び替え
+                            </span>
+                            <b-input-group class="sort">
+                                <b-form-select
+                                    id="sort-by-select"
+                                    v-model="sortBy"
+                                    :options="sortOptions"
+                                    :aria-describedby="ariaDescribedby"
+                                    class="w-75"
+                                >
+                                    <template #first>
+                                        <option value="">項目を選択してください</option>
+                                    </template>
+                                </b-form-select>
+
+                                <b-form-select
+                                    id="sort-by-select-asc"
+                                    v-model="sortDesc"
+                                    :disabled="!sortBy"
+                                    :aria-describedby="ariaDescribedby"
+                                    size="sm"
+                                    class="w-25"
+                                >
+                                    <option :value="false">昇順</option>
+                                    <option :value="true">降順</option>
+                                </b-form-select>
+                            </b-input-group>
+                        </b-form-group>
+                    </b-col>
+
+                    <b-col/>
+
+                    <b-col lg="4" class="my-1">
+                        <b-form-group
+                            class="mb-0"
+                        >
+                            <span>
+                                検索
+                            </span>
+                            <b-input-group size="sm">
+                                <b-form-input
+                                    id="filter-input"
+                                    v-model="filter"
+                                    type="search"
+                                    placeholder="キーワードを入力してください"
+                                ></b-form-input>
+
+                                <b-input-group-append>
+                                    <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+                                </b-input-group-append>
+                            </b-input-group>
+                        </b-form-group>
+                    </b-col>
+
+                    <b-col lg="2" class="my-1">
+                        <b-form-group
+                            v-model="sortDirection"
+                            class="mb-0"
+                            v-slot="{ ariaDescribedby }"
+                            label="検索項目"
+                        >
+                            <b-form-checkbox-group
+                                v-model="filterOn"
+                                :aria-describedby="ariaDescribedby"
+                                class="mt-1"
+                            >
+                                <!-- <b-form-checkbox value="product_name">商品名</b-form-checkbox> -->
+                                <b-form-checkbox value="customer_name">顧客名</b-form-checkbox>
+                            </b-form-checkbox-group>
+                        </b-form-group>
+                    </b-col>
+                </b-row>
+            </b-card>
+
+            <!-- <b-col cols="10">
                 <b-col cols="3">
                     <b-form-group
                         class="mb-0"
@@ -21,7 +107,7 @@
                         </b-input-group>
                     </b-form-group>
                 </b-col>
-            </b-col>
+            </b-col> -->
 
 
         </b-row>
@@ -36,17 +122,21 @@
                 :current-page="currentPage"
                 :filter="filter"
                 :filter-included-fields="filterOn"
+                :sort-by.sync="sortBy"
+                :sort-desc.sync="sortDesc"
+                :sort-direction="sortDirection"
+                @filtered="onFiltered"
             >
             <!-- @filterd="onFilterd" -->
 
-                <template #cell(customer_type)="data">
+                <!-- <template #cell(customer_type)="data">
                     <b-card-text v-if="data.value == 0">
                         非会員
                     </b-card-text>
                     <b-card-text v-else>
                         会員
                     </b-card-text>
-                </template>
+                </template> -->
 
                 <template #cell(custoner_no)="data">
                     <b-card-text v-if="data.value == null">
@@ -60,7 +150,7 @@
 
                 <template #cell(end_flg)="data">
                     <b-card-text v-if="data.value">
-                        空
+                        消込
                     </b-card-text>
                     <b-card-text v-else>
                         -
@@ -108,14 +198,14 @@
                     </b-button>
                 </template>
 
-                <template #cell(delete_flg)="data">
+                <!-- <template #cell(delete_flg)="data">
                     <b-card-text v-if="data.value">
                         削除
                     </b-card-text>
                     <b-card-text v-else>
                         -
                     </b-card-text>
-                </template>
+                </template> -->
 
                 <!-- <template #row-details="row">
                     <b-card>
@@ -174,9 +264,12 @@ export default {
         DeleteBottleDetailDialog,
     },
     data: () => ({
+        sortBy: '',
+        sortDesc: false,
+        sortDirection: 'asc',
         currentPage: 1,
         totalRows: 1,
-        perPage: 15,
+        perPage: 10,
         filter: null,
         filterOn: [],
         fields: [
@@ -190,11 +283,11 @@ export default {
                 sortable: true,
                 label: '商品名',
             },
-            {
-                key: 'customer_type',
-                sortable: true,
-                label: '会員区分',
-            },
+            // {
+            //     key: 'customer_type',
+            //     sortable: true,
+            //     label: '会員区分',
+            // },
             {
                 key: 'customer.customer_no',
                 sortable: true,
@@ -213,23 +306,23 @@ export default {
             {
                 key: 'end_flg',
                 sortable: true,
-                label: '空',
+                label: '消込状態',
             },
             {
                 key: 'end_date',
                 sortable: true,
-                label: '飲終日付',
+                label: '消込日付',
             },
             // {
             //     key: 'waste_flg',
             //     sortable: true,
             //     label: '廃棄',
             // },
-            {
-                key: 'delete_flg',
-                sortable: true,
-                label: '削除済',
-            },
+            // {
+            //     key: 'delete_flg',
+            //     sortable: true,
+            //     label: '削除',
+            // },
             {
                 key: 'actions',
                 label: '更新'
@@ -240,6 +333,14 @@ export default {
         ...mapGetters([
             'bottle'
         ]),
+        sortOptions() {
+            // Create an options list from our fields
+            return this.fields
+                .filter(f => f.sortable)
+                .map(f => {
+                    return { text: f.label, value: f.key }
+                })
+        },
     },
     created () {
         this.totalRows = this.bottle.length
@@ -327,5 +428,58 @@ export default {
             background-color: $theme-color;
             height: 25rem;
         }
+
+
+
+        .bottle_list_filter_card {
+            background-color: $theme-color;
+            color: white;
+            margin-bottom: 20px;
+
+            .customer_sort_input_group {
+            }
+
+            #sort-by-select {
+                // color: white !important;
+                color: rgba(50, 50, 50, 0.7) !important;
+                // background-color: $theme-color !important;
+                background-color: white !important;
+                border: 1px solid rgba(200, 200, 200, 0.5);
+                padding: 8px 10px;
+                border-radius: 4px 0 0 4px;
+                // font-size: 12px;
+                transition: 0.5s;
+            }
+            #sort-by-select:first-child {
+                font-size: 0.875rem;
+            }
+
+            #sort-by-select-asc {
+                // color: white !important;
+                color: rgba(50, 50, 50, 0.7) !important;
+                // background-color: $theme-color !important;
+                background-color: white !important;
+                border: 1px solid rgba(200, 200, 200, 0.5);
+                padding: 8px 10px;
+                border-radius: 0 4px 4px 0;
+                transition: 0.5s;
+            }
+
+        }
+
+        .table-dark {
+            background-color: $theme-color;
+            --bs-table-bg: $theme-color;
+        }
+
+        select:disabled {
+            opacity: 0.5 !important;
+            color: #6c757d !important;
+            background-color: #e9ecef !important;
+            transition: 0.5s;
+        }
     }
+
+
+
 </style>

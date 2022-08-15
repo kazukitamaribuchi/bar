@@ -10,7 +10,7 @@ export default {
     name: 'IsAuthItem',
     mounted: function () {
         if (this.$store.state.isAuth) {
-            this.$router.push({name: 'Home'})
+            this.$router.push({name: 'CustomerList'})
         } else {
             this.$router.push({name: 'Login'})
         }

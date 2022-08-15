@@ -236,6 +236,25 @@
         beforeCreate () {
         },
         created () {
+            // this.$axios({
+            //     method: 'GET',
+            //     url: '/api/sales/get_day_sales_analytics/',
+            //     params: {
+            //         target_date: this.targetDate,
+            //         range: this.range,
+            //     }
+            // })
+            // .then(res => {
+            //     this.setDaySalesData(res.data)
+            // })
+            // .catch(e => {
+            //     console.log(e)
+            // })
+        },
+        beforeMount () {
+            // console.log('before mount')
+        },
+        mounted () {
             this.$axios({
                 method: 'GET',
                 url: '/api/sales/get_day_sales_analytics/',
@@ -250,11 +269,6 @@
             .catch(e => {
                 console.log(e)
             })
-        },
-        beforeMount () {
-            // console.log('before mount')
-        },
-        mounted () {
             // console.log('mount')
         },
         beforeUpdate () {

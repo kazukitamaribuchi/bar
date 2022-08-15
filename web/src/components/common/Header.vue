@@ -8,13 +8,13 @@
         </b-col>
         <b-col cols="8">
             <b-nav align="right">
-                <InputSales/>
+                <!-- <InputSales/> -->
                 <InputCustomer/>
-                <InputCast/>
+                <!-- <InputCast/> -->
                 <!-- <InputAttendance/> -->
                 <!-- <InputBooking/> -->
                 <InputBottle/>
-                <Settings/>
+                <!-- <Settings/> -->
                 <Logout/>
             </b-nav>
         </b-col>

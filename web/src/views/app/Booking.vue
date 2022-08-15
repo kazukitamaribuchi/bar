@@ -1,7 +1,6 @@
 <template>
-    <b-container
+    <div
         id="booking_wrap"
-        fluid
     >
         <Header/>
         <b-row class="content_wrap">
@@ -13,7 +12,7 @@
                 <router-view/>
             </div>
         </b-row>
-    </b-container>
+    </div>
 </template>
 
 <script>

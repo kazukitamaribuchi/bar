@@ -1,7 +1,7 @@
 <template>
     <b-modal
         v-model="dialog"
-        title="ボトルデータ空状態更新"
+        title="ボトルデータ消込状態更新"
         @ok="endBottleDetail"
         ok-title="はい"
         cancel-title="キャンセル"
@@ -12,7 +12,7 @@
                     {{ confirmText }}
                 </b-card-text>
             </b-col>
-            <b-col cols="6" v-if="!this.bottleDetail.end_flg">
+            <!-- <b-col cols="6" v-if="!this.bottleDetail.end_flg">
                 <b-card-sub-title
                     class="form_required"
                 >
@@ -23,14 +23,14 @@
                     placeholder="日付を選択してください"
                     class="mt-1"
                 ></b-form-datepicker>
-            </b-col>
+            </b-col> -->
         </b-row>
     </b-modal>
 </template>
 
 <script>
 import _ from 'lodash'
-import { mapMutations, mapActions } from 'vuex'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 import dayjs from 'dayjs'
 const now = dayjs().format('YYYY-MM-DD')
 
@@ -43,17 +43,23 @@ export default {
         bottleDetail: {},
     }),
     computed: {
+        ...mapGetters([
+            'customer',
+        ]),
         confirmText () {
             if (this.bottleDetail.end_flg) {
-                return 'ボトルの空状態を元の状態へ更新しますか？'
+                return 'ボトルデータの消込を解除します。よろしいですか？'
             } else {
-                return 'ボトルを空状態に更新しますか？'
+                return 'ボトルデータの消込を行います。よろしいですか？'
             }
         }
     },
     methods: {
         ...mapActions([
             'endBottleListAction',
+        ]),
+        ...mapMutations([
+            'deleteCustomerBottle',
         ]),
         open (data) {
             this.dialog = true
@@ -70,7 +76,13 @@ export default {
             this.bottleDetail = {}
         },
         endBottleDetail () {
+            console.log('this.bottleDetail', this.bottleDetail)
             this.endBottleListAction(this.bottleDetail)
+
+            // 顧客データが持つボトルデータも
+            this.deleteCustomerBottle(this.bottleDetail.id)
+
+            this.$emit('deleteCustomerBottleDetail', this.bottleDetail)
             this.close()
         }
     }

@@ -146,7 +146,7 @@ export default {
                 this.initState()
                 this.credentials = {
                 }
-                this.$router.push({name: 'Home'})
+                this.$router.push({name: 'CustomerList'})
             })
             .catch(e => {
                 console.log(e)

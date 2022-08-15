@@ -3,6 +3,7 @@ import { CustomerList, CustomerDetail } from '@/components/index'
 
 const routes = {
     path: '/customer',
+    name: 'Home',
     component: Customer,
     children: [
         {

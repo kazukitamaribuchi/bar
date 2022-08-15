@@ -223,9 +223,16 @@ export default {
         const copyItems = _.cloneDeep(this.productByCategory[this.large][this.middle][this.small])
         // let slicedArray = this.divideArrIntoPieces(copyItems, 5)
         // this.items = copyItems
+
+
+        console.log('selectedProductList', selectedProductList)
+        console.log('customerBottleList', customerBottleList)
+        console.log('copyItems', copyItems)
+
+
         let items = copyItems.map(function(ele) {
             const selectedIdx = selectedProductList.findIndex(e => e.id == ele.id)
-            const bottleIdx = customerBottleList.findIndex(e => e.id == ele.id)
+            const bottleIdx = customerBottleList.findIndex(e => e.product.id == ele.id)
             if (selectedIdx != -1) {
                 ele.quantity = selectedProductList[selectedIdx].quantity
             } else {
@@ -333,9 +340,13 @@ export default {
                 copyItems = copyItems.filter(item => item.filter_key == key)
             }
 
+            console.log('selectedProductList', selectedProductList)
+            console.log('customerBottleList', customerBottleList)
+            console.log('copyItems', copyItems)
+
             let items = copyItems.map(function(ele) {
                 const selectedIdx = selectedProductList.findIndex(e => e.id == ele.id)
-                const bottleIdx = customerBottleList.findIndex(e => e.id == ele.id)
+                const bottleIdx = customerBottleList.findIndex(e => e.product.id == ele.id)
                 if (selectedIdx != -1) {
                     ele.quantity = selectedProductList[selectedIdx].quantity
                 } else {

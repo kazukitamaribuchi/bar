@@ -18,6 +18,8 @@ from datetime import (
     timedelta,
 )
 
+from dateutil.relativedelta import relativedelta
+
 from pytz import timezone
 
 from .serializers import (
@@ -113,10 +115,15 @@ PRODUCT_CATEGORY = {
     }
 }
 
-OPEN_HOUR = 20
-OPEN_MINUTE = 30
-CLOSE_HOUR = 7
-CLOSE_MINUTE = 0
+# OPEN_HOUR = 20
+# OPEN_MINUTE = 30
+# CLOSE_HOUR = 7
+# CLOSE_MINUTE = 0
+OPEN_HOUR = 00
+OPEN_MINUTE = 00
+CLOSE_HOUR = 23
+CLOSE_MINUTE = 59
+
 
 
 
@@ -220,6 +227,37 @@ class CustomerViewSet(BaseModelViewSet):
         #
         # return Response(self.get_serializer(customer).data, status=status.HTTP_200_OK)
 
+    def destroy(self, request, pk=None):
+        logger.debug("★DELETE")
+        logger.debug(request.data)
+        logger.debug(pk)
+
+        instance = self.get_object()
+        logger.debug(instance)
+
+        instance.delete_flg = True
+        instance.save()
+        return Response(CustomerSerializer(instance).data, status=status.HTTP_200_OK)
+
+
+    @action(methods=['get'], detail=False)
+    def get_all_customer(self, reuqest):
+
+        customers = self.get_queryset().filter(
+            delete_flg=False,
+        )
+
+        res = {
+            'customers': CustomerSerializer(customers, many=True).data,
+            'count': customers.count(),
+        }
+
+        return Response(
+            res,
+            status=status.HTTP_200_OK
+        )
+
+
     @action(methods=['post'], detail=False)
     def get_customer_no_duplicate(self, request):
         """
@@ -243,19 +281,74 @@ class CustomerViewSet(BaseModelViewSet):
     def get_customer_age(self, request):
 
         res = [
-            MCustomer.objects.filter(age__gte=bottom*10+10, age__lte=top).count() for bottom, top in enumerate(range(19, 90, 10))
+            MCustomer.objects.filter(age__gte=bottom*10+10, age__lte=top, delete_flg=False).count() for bottom, top in enumerate(range(19, 110, 10))
         ]
 
         return Response({'status': 'success', 'data': res}, status=status.HTTP_200_OK)
+
 
     @action(methods=['get'], detail=False)
     def get_customer_rank(self, request):
 
         res = [
-            MCustomer.objects.filter(rank=rank).count() for rank in range(1, 6)
+            MCustomer.objects.filter(rank=rank, delete_flg=False).count() for rank in range(1, 6)
         ]
 
         return Response({'status': 'success', 'data': res}, status=status.HTTP_200_OK)
+
+    @action(methods=['get'], detail=False)
+    def get_customer_cnt(self, request):
+
+        res = {
+            'cnt': MCustomer.objects.filter(delete_flg=False).count()
+        }
+
+        return Response(res, status=status.HTTP_200_OK)
+
+    @action(methods=['get'], detail=False)
+    def get_active_customer_cnt(self, request):
+
+        today = datetime.now(timezone('Asia/Tokyo'))
+
+        customerCnt = MCustomer.objects.filter(delete_flg=False).count()
+
+        # 期間指定は将来的にする？設定などで持つ？とりあえず2ヶ月でいいかな
+        two_month_ago = today - relativedelta(months=2)
+
+        logger.debug(SalesHeader.objects.filter(
+            Q(delete_flg=False) &
+            Q(customer__delete_flg=False) &
+            Q(close_flg=True) &
+            Q(visit_time__range=[two_month_ago, today])
+        ).values(
+            'customer'
+        ))
+
+        activeCustomer = SalesHeader.objects.filter(
+            Q(delete_flg=False) &
+            Q(customer__delete_flg=False) &
+            Q(close_flg=True) &
+            Q(visit_time__range=[two_month_ago, today])
+        ).values(
+            'customer'
+        ).annotate(
+            cnt=models.Count('customer')
+        ).order_by('-cnt')
+
+        logger.debug('activeCustomer')
+        logger.debug(activeCustomer)
+
+        activeCustomerCnt = len(activeCustomer)
+        nonActiveCustomerCnt = customerCnt - activeCustomerCnt
+
+        res = {
+            'totalCustomerCnt': customerCnt,
+            'activeCustomerCnt': activeCustomerCnt,
+            'nonActiveCustomerCnt': nonActiveCustomerCnt,
+        }
+
+        return Response(res, status=status.HTTP_200_OK)
+
 
     @action(methods=['get'], detail=False)
     def get_customer_exist(self, request):
@@ -512,6 +605,26 @@ class BottleViewSet(BaseModelViewSet):
     #     instance.save()
     #     serializer = self.get_serializer(instance).data
     #     return Response(serializer, status=status.HTTP_200_OK)
+
+    @action(methods=['get'], detail=False)
+    def get_all_bottle(self, reuqest):
+        """
+        画面表示用の削除フラグを省いた全件ページング無で取得
+        """
+
+        bottle = self.get_queryset().filter(
+            delete_flg=False,
+        )
+
+        res = {
+            'bottle': BottleSerializer(bottle, many=True).data,
+            'count': bottle.count(),
+        }
+
+        return Response(
+            res,
+            status=status.HTTP_200_OK
+        )
 
     @transaction.atomic
     @action(methods=['post'], detail=False)
@@ -1165,8 +1278,8 @@ class SalesViewSet(BaseModelViewSet):
 
         target_date_str = request.query_params['target_date'].split('-')
         target_date_year = int(target_date_str[0])
-        target_date_hour = int(target_date_str[1])
-        target_date_minute = int(target_date_str[2])
+        target_date_month = int(target_date_str[1])
+        target_date_day = int(target_date_str[2])
 
         # このrangeは繰り返しのcnt
         r = int(request.query_params['range'])
@@ -1175,15 +1288,16 @@ class SalesViewSet(BaseModelViewSet):
 
         start_time = datetime(
             target_date_year,
-            target_date_hour,
-            target_date_minute,
+            target_date_month,
+            target_date_day,
             OPEN_HOUR,
             OPEN_MINUTE,
         ).astimezone(timezone('Asia/Tokyo'))
 
         for i in range(1, r+1):
 
-            end_date = start_time + timedelta(days=1)
+            # end_date = start_time + timedelta(days=1)
+            end_date = start_time
             end_time = datetime(
                 end_date.year,
                 end_date.month,
@@ -1193,14 +1307,17 @@ class SalesViewSet(BaseModelViewSet):
             ).astimezone(timezone('Asia/Tokyo'))
 
             data = SalesHeader.objects.filter(
-                visit_time__range=[
-                    start_time,
-                    end_time,
-                ],
-                leave_time__range=[
-                    start_time,
-                    end_time,
-                ]).aggregate(total=models.Sum('total_tax_sales'))
+                Q(customer__delete_flg=False) &
+                Q(delete_flg=False) &
+                Q(close_flg=True) &
+                Q(leave_time__range=[start_time, end_time])
+                # visit_time__range=[
+                #     start_time,
+                #     end_time],
+                # leave_time__range=[
+                #     start_time,
+                #     end_time]
+                ).aggregate(total=models.Sum('total_tax_sales'))
 
             res.append({
                 'date': start_time.strftime('%Y-%m-%d'),
@@ -1246,7 +1363,8 @@ class SalesViewSet(BaseModelViewSet):
 
         for i in range(1, r+1):
 
-            end_date = start_time + timedelta(days=1)
+            end_date = start_time
+            # end_date = start_time + timedelta(days=1)
             end_time = datetime(
                 end_date.year,
                 end_date.month,
@@ -1256,14 +1374,19 @@ class SalesViewSet(BaseModelViewSet):
             ).astimezone(timezone('Asia/Tokyo'))
 
             data = SalesHeader.objects.filter(
-                visit_time__range=[
-                    start_time,
-                    end_time,
-                ],
-                leave_time__range=[
-                    start_time,
-                    end_time,
-                ]).aggregate(total=models.Count('customer'))
+                Q(customer__delete_flg=False) &
+                Q(delete_flg=False) &
+                Q(close_flg=True) &
+                Q(leave_time__range=[start_time,end_time])
+                # visit_time__range=[
+                #     start_time,
+                #     end_time,
+                # ],
+                # leave_time__range=[
+                #     start_time,
+                #     end_time,
+                # ]
+                ).aggregate(total=models.Count('customer'))
 
             res.append({
                 'date': start_time.strftime('%Y-%m-%d'),
@@ -1286,23 +1409,24 @@ class SalesViewSet(BaseModelViewSet):
             => 2021/12/31 ・・・ 2021/12/31 20:30 ~ 2022/1/1 07:00
         """
 
-        # logger.debug('★')
-        # logger.debug(request.query_params)
+        logger.debug('★')
+        logger.debug(request.query_params)
 
         target_date_str = request.query_params['target_date'].split('-')
         target_date_year = int(target_date_str[0])
-        target_date_hour = int(target_date_str[1])
-        target_date_minute = int(target_date_str[2])
+        target_date_month = int(target_date_str[1])
+        target_date_day = int(target_date_str[2])
 
         range = int(request.query_params['range'])
 
         start_time = datetime(
             target_date_year,
-            target_date_hour,
-            target_date_minute,
+            target_date_month,
+            target_date_day,
             OPEN_HOUR,
             OPEN_MINUTE,
         ).astimezone(timezone('Asia/Tokyo'))
+        # end_date = start_time + timedelta(days=range-1)
         end_date = start_time + timedelta(days=range)
         end_time = datetime(
             end_date.year,
@@ -1312,18 +1436,23 @@ class SalesViewSet(BaseModelViewSet):
             CLOSE_MINUTE,
         ).astimezone(timezone('Asia/Tokyo'))
 
+        # logger.debug('start')
+        # logger.debug(start_time)
+        # logger.debug('end')
+        # logger.debug(end_time)
+
         data = SalesHeader.objects.filter(
-            visit_time__range=[
-                start_time,
-                end_time,
-            ],
-            leave_time__range=[
-                start_time,
-                end_time,
-            ]).values(
+            Q(customer__delete_flg=False) &
+            Q(delete_flg=False) &
+            Q(close_flg=True) &
+            Q(leave_time__range=[start_time,end_time])
+            # (Q(visit_time__range=[start_time,end_time]) |
+            # Q(leave_time__range=[start_time,end_time]))
+            ).values(
                 'customer'
             ).annotate(
-                total=models.Sum('total_tax_sales')
+                total=models.Sum('total_tax_sales'),
+                total_visit=models.Count('total_tax_sales')
             ).order_by('-total')
 
         serializer = CustomerSalesSerializer(data, many=True)
@@ -1407,16 +1536,16 @@ class SalesViewSet(BaseModelViewSet):
             # logger.debug(request.query_params['target_date'] + 'の売上総計を取得します。')
             target_date_str = request.query_params['target_date'].split('-')
             target_date_year = int(target_date_str[0])
-            target_date_hour = int(target_date_str[1])
-            target_date_minute = int(target_date_str[2])
+            target_date_month = int(target_date_str[1])
+            target_date_day = int(target_date_str[2])
             result_target_date = target_date_str
 
             range = int(request.query_params['range'])
 
             start_time = datetime(
                 target_date_year,
-                target_date_hour,
-                target_date_minute,
+                target_date_month,
+                target_date_day,
                 OPEN_HOUR,
                 OPEN_MINUTE,
             ).astimezone(timezone('Asia/Tokyo'))
@@ -1430,20 +1559,30 @@ class SalesViewSet(BaseModelViewSet):
                 CLOSE_MINUTE,
             ).astimezone(timezone('Asia/Tokyo'))
 
+            logger.debug('start')
+            logger.debug(start_time)
+            logger.debug('end')
+            logger.debug(end_time)
+
             data = SalesHeader.objects.filter(
-                visit_time__range=[
-                    start_time,
-                    end_time,
-                ],
-                leave_time__range=[
-                    start_time,
-                    end_time,
-                ]).aggregate(
+                Q(customer__delete_flg=False) &
+                Q(delete_flg=False) &
+                Q(close_flg=True) &
+                Q(leave_time__range=[start_time, end_time])
+                # visit_time__range=[
+                #     start_time,
+                #     end_time,],
+                # leave_time__range=[
+                #     start_time,
+                #     end_time]
+                ).aggregate(
                     total_price=models.Sum('total_tax_sales'),
                 )
         else:
             # logger.debug('全期間の売上総計を取得します')
-            data = SalesHeader.objects.aggregate(
+            data = SalesHeader.objects.filter(
+                close_flg=True,
+            ).aggregate(
                 total_price=models.Sum('total_tax_sales'),
             )
 
@@ -1468,20 +1607,21 @@ class SalesViewSet(BaseModelViewSet):
             # logger.debug(request.query_params['target_date'] + 'の来店数を取得します。')
             target_date_str = request.query_params['target_date'].split('-')
             target_date_year = int(target_date_str[0])
-            target_date_hour = int(target_date_str[1])
-            target_date_minute = int(target_date_str[2])
+            target_date_month = int(target_date_str[1])
+            target_date_day = int(target_date_str[2])
             result_target_date = target_date_str
 
             range = int(request.query_params['range'])
 
             start_time = datetime(
                 target_date_year,
-                target_date_hour,
-                target_date_minute,
+                target_date_month,
+                target_date_day,
                 OPEN_HOUR,
                 OPEN_MINUTE,
             ).astimezone(timezone('Asia/Tokyo'))
             end_date = start_time + timedelta(days=range)
+            # end_date = start_time
             end_time = datetime(
                 end_date.year,
                 end_date.month,
@@ -1494,19 +1634,27 @@ class SalesViewSet(BaseModelViewSet):
             logger.debug('end : ' + end_time.strftime('%Y-%m-%d %H:%M'))
 
             data = SalesHeader.objects.filter(
-                visit_time__range=[
-                    start_time,
-                    end_time,
-                ],
-                leave_time__range=[
-                    start_time,
-                    end_time,
-                ]).annotate(
+                Q(customer__delete_flg=False) &
+                Q(delete_flg=False) &
+                Q(close_flg=True) &
+                Q(leave_time__range=[start_time, end_time])
+
+                # visit_time__range=[
+                #     start_time,
+                #     end_time,
+                # ],
+                # leave_time__range=[
+                #     start_time,
+                #     end_time,
+                # ]
+                ).annotate(
                     models.Count('customer')
                 ).values('customer').count()
         else:
             # logger.debug('全期間の来店数を取得します')
-            data = SalesHeader.objects.values(
+            data = SalesHeader.objects.filter(
+                close_flg=True
+            ).values(
                 'customer'
             ).annotate(
                 models.Count('customer')
@@ -1537,16 +1685,16 @@ class SalesViewSet(BaseModelViewSet):
             # logger.debug(request.query_params['target_date'] + 'の基本料金比率を取得します。')
             target_date_str = request.query_params['target_date'].split('-')
             target_date_year = int(target_date_str[0])
-            target_date_hour = int(target_date_str[1])
-            target_date_minute = int(target_date_str[2])
+            target_date_month = int(target_date_str[1])
+            target_date_day = int(target_date_str[2])
             result_target_date = target_date_str
 
             range = int(request.query_params['range'])
 
             start_time = datetime(
                 target_date_year,
-                target_date_hour,
-                target_date_minute,
+                target_date_month,
+                target_date_day,
                 OPEN_HOUR,
                 OPEN_MINUTE,
             ).astimezone(timezone('Asia/Tokyo'))
@@ -1563,14 +1711,19 @@ class SalesViewSet(BaseModelViewSet):
             logger.debug('end : ' + end_time.strftime('%Y-%m-%d %H:%M'))
 
             data = SalesHeader.objects.filter(
-                visit_time__range=[
-                    start_time,
-                    end_time,
-                ],
-                leave_time__range=[
-                    start_time,
-                    end_time,
-                ]).values(
+                Q(customer__delete_flg=False) &
+                Q(delete_flg=False) &
+                Q(close_flg=True) &
+                Q(leave_time__range=[start_time,end_time])
+                # visit_time__range=[
+                #     start_time,
+                #     end_time,
+                # ],
+                # leave_time__range=[
+                #     start_time,
+                #     end_time,
+                # ]
+                ).values(
                     'basic_plan_type'
                 ).annotate(
                     total=models.Count('basic_plan_type')
@@ -1600,83 +1753,69 @@ class SalesViewSet(BaseModelViewSet):
         })
 
     @action(methods=['get'], detail=False)
-    def get_appoint_ratio_analytics(self, request):
+    def get_sales_by_every_time_analytics(self, request):
         """
-        指定した日の指名比率
-        ・target_date
-            => 2022/6/18 ・・・ 2022/6/18 20:30 ~ 2022/6/19 07:00
-            => 2021/12/31 ・・・ 2021/12/31 20:30 ~ 2022/1/1 07:00
-
-            日付指定なしならば全期間
+        時間帯毎の来店数、売上の取得
+            →期間広いと大変だからとりあえず、1日指定のみ
         """
-
-        result_target_date = '全期間'
 
         if 'target_date' in request.query_params:
-            # logger.debug(request.query_params['target_date'] + 'の指名比率を取得します。')
             target_date_str = request.query_params['target_date'].split('-')
             target_date_year = int(target_date_str[0])
-            target_date_hour = int(target_date_str[1])
-            target_date_minute = int(target_date_str[2])
-            result_target_date = target_date_str
+            target_date_month = int(target_date_str[1])
+            target_date_day = int(target_date_str[2])
 
-            range = int(request.query_params['range'])
+            res = []
 
-            start_time = datetime(
-                target_date_year,
-                target_date_hour,
-                target_date_minute,
-                OPEN_HOUR,
-                OPEN_MINUTE,
-            ).astimezone(timezone('Asia/Tokyo'))
-            end_date = start_time + timedelta(days=range)
-            end_time = datetime(
-                end_date.year,
-                end_date.month,
-                end_date.day,
-                CLOSE_HOUR,
-                CLOSE_MINUTE,
-            ).astimezone(timezone('Asia/Tokyo'))
+            for hour in range(0, 24):
+                start_time = datetime(
+                    target_date_year,
+                    target_date_month,
+                    target_date_day,
+                    hour,
+                    0
+                ).astimezone(timezone('Asia/Tokyo'))
+                end_time = datetime(
+                    target_date_year,
+                    target_date_month,
+                    target_date_day,
+                    hour,
+                    59
+                ).astimezone(timezone('Asia/Tokyo'))
 
-            logger.debug('open : ' + start_time.strftime('%Y-%m-%d %H:%M'))
-            logger.debug('end : ' + end_time.strftime('%Y-%m-%d %H:%M'))
-
-            data = SalesHeader.objects.filter(
-                visit_time__range=[
-                    start_time,
-                    end_time,
-                ],
-                leave_time__range=[
-                    start_time,
-                    end_time,
-                ]).values(
-                    'appoint'
-                ).annotate(
-                    total=models.Count('appoint')
+                data = SalesHeader.objects.filter(
+                    Q(customer__delete_flg=False) &
+                    Q(delete_flg=False) &
+                    Q(close_flg=True) &
+                    Q(visit_time__gte=start_time) &
+                    Q(visit_time__lte=end_time)
+                ).aggregate(
+                    total=Coalesce(models.Sum('total_tax_sales'), 0),
+                    total_visit=models.Count('customer')
                 )
-        else:
-            # logger.debug('全期間の指名比率を取得します')
-            data = SalesHeader.objects.values(
-                    'appoint'
-                ).annotate(
-                    total=models.Count('appoint')
-                )
+                # .values(
+                #     'customer'
+                # ).annotate(
+                #     total=models.Sum('total_tax_sales'),
+                #     total_visit=models.Count('total_tax_sales')
+                # )
 
-        # if len(data) == 0:
-        #     data = [{'basic_plan_type':0, 'total': 0}, {'basic_plan_type':0, 'total': 0}]
-        # if len(data) == 1:
-        #     type = 0
-        #     if data[0]['basic_plan_type'] == 0:
-        #         type = 1
-        #     data.({'basic_plan_type': type, 'total': 0})
+                # res.append({
+                #     hour: CustomerSalesSerializer(data, many=True).data
+                # })
+                res.append({
+                    hour: data
+                })
 
-        # 一旦0件でも1件も変える可能性があるやつで・・querysetに突っ込み方が分からん
-        # 取得方法考えるか、突っ込み方考える
-        return Response({
-            'status': 'success',
-            'target_date': '-'.join(result_target_date),
-            'data': data
-        })
+            logger.debug('res')
+            logger.debug(res)
+
+
+            return Response(res, status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
 
     @action(methods=['get'], detail=False)
     def get_customer_day_stay_hour_analytics(self, request):
@@ -1705,14 +1844,19 @@ class SalesViewSet(BaseModelViewSet):
         ).astimezone(timezone('Asia/Tokyo'))
 
         data = SalesHeader.objects.filter(
-            visit_time__range=[
-                start_time,
-                end_time,
-            ],
-            leave_time__range=[
-                start_time,
-                end_time,
-            ])
+            Q(customer__delete_flg=False) &
+            Q(delete_flg=False) &
+            Q(close_flg=True) &
+            Q(leave_time__range=[start_time,end_time])
+            # visit_time__range=[
+            #     start_time,
+            #     end_time,
+            # ],
+            # leave_time__range=[
+            #     start_time,
+            #     end_time,
+            # ]
+            )
 
         # logger.debug(data)
 
@@ -1739,15 +1883,15 @@ class SalesViewSet(BaseModelViewSet):
 
         target_date_str = request.query_params['target_date'].split('-')
         target_date_year = int(target_date_str[0])
-        target_date_hour = int(target_date_str[1])
-        target_date_minute = int(target_date_str[2])
+        target_date_month = int(target_date_str[1])
+        target_date_day = int(target_date_str[2])
 
         range = int(request.query_params['range'])
 
         start_time = datetime(
             target_date_year,
-            target_date_hour,
-            target_date_minute,
+            target_date_month,
+            target_date_day,
             OPEN_HOUR,
             OPEN_MINUTE,
         ).astimezone(timezone('Asia/Tokyo'))
@@ -1761,19 +1905,24 @@ class SalesViewSet(BaseModelViewSet):
         ).astimezone(timezone('Asia/Tokyo'))
 
         data = SalesHeader.objects.filter(
-            visit_time__range=[
-                start_time,
-                end_time,
-            ],
-            leave_time__range=[
-                start_time,
-                end_time,
-            ],
-            sales_detail__isnull=False
+            Q(customer__delete_flg=False) &
+            Q(delete_flg=False) &
+            Q(close_flg=True) &
+            Q(leave_time__range=[start_time, end_time]) &
+            Q(sales_detail__isnull=False)
+            # visit_time__range=[
+            #     start_time,
+            #     end_time,
+            # ],
+            # leave_time__range=[
+            #     start_time,
+            #     end_time,
+            # ],
+            # sales_detail__isnull=False
             ).values(
                 'sales_detail__product',
             ).annotate(
-                total=models.Sum('sales_detail__total_tax_price'),
+                total=models.Sum('sales_detail__fixed_price'),
                 total_cnt=models.Count('sales_detail__product')
             ).order_by('-total')[:20]
 
@@ -1784,6 +1933,39 @@ class SalesViewSet(BaseModelViewSet):
             'target_date': start_time.strftime('%Y-%m-%d'),
             'data': serializer.data,
         })
+
+
+    @action(methods=['get'], detail=False)
+    def get_total_customer_sales_ranking(self, request):
+        """
+        指定した期間の指定した分だけの顧客の売上ランキングを取得
+        """
+
+        length = 10 if 'length' not in request.query_params else request.query_params['length']
+
+
+        if 'target_date' in request.query_params:
+            pass
+        else:
+            res = SalesHeader.objects.filter(
+                Q(delete_flg=False) &
+                Q(customer__delete_flg=False) &
+                Q(close_flg=True) &
+                Q(delete_flg=False)
+            ).values(
+                'customer'
+            ).annotate(
+                total=models.Sum('total_tax_sales'),
+                total_visit=models.Count('total_tax_sales')
+            ).order_by('-total')[:length]
+
+            rank = {
+                'salesRanking': CustomerSalesSerializer(res, many=True).data
+            }
+
+            return Response(rank, status=status.HTTP_200_OK)
+
+
 
     @transaction.atomic
     @action(methods=['post'], detail=False)
@@ -2124,18 +2306,25 @@ class SalesViewSet(BaseModelViewSet):
                 logger.error('ボトル情報の取得に失敗しました。')
                 pass
 
+        # 締め時のボトル登録は1本のみで良いよな？・・・
+
+        registered_bottle_list = []
+
         for sales_detail in request.data['sales_detail']:
-            if 'bottle' in sales_detail:
-                try:
-                    product = MProduct.objects.get(pk=sales_detail['id'])
-                except MProduct.DoesNotExist:
-                    return Response(status=status.HTTP_400_BAD_REQUEST)
-                logger.debug('ボトル登録有')
-                BottleManagement.objects.create(
-                    customer=customer,
-                    open_date=open_date,
-                    product=product,
-                )
+            if 'bottle' in sales_detail and sales_detail['bottle'] == True:
+                if sales_detail['product']['id'] not in registered_bottle_list:
+                    try:
+                        product = MProduct.objects.get(pk=sales_detail['product']['id'])
+                    except MProduct.DoesNotExist:
+                        return Response(status=status.HTTP_400_BAD_REQUEST)
+                    logger.debug('ボトル登録有')
+                    logger.debug('商品のid')
+                    logger.debug(sales_detail['id'])
+                    BottleManagement.objects.create(
+                        customer=customer,
+                        open_date=open_date,
+                        product=product,
+                    )
 
         for sales_service_detail in request.data['sales_service_detail']:
             logger.debug(sales_service_detail)
@@ -2159,6 +2348,7 @@ class SalesViewSet(BaseModelViewSet):
             )
 
         header.close_flg = True
+        header.leave_time = datetime.now(timezone('Asia/Tokyo'))
         header.save()
 
         # 顧客のランク更新
@@ -2167,7 +2357,8 @@ class SalesViewSet(BaseModelViewSet):
         ).aggregate(total=Coalesce(models.Sum('total_tax_sales'), 0))['total']
         update_customer_rank(customer, total_sales_for_rank)
 
-        return Response(status=status.HTTP_200_OK)
+        return Response(SalesSerializer(header).data,
+                        status=status.HTTP_200_OK)
 
 
 class BookingViewSet(BaseModelViewSet):

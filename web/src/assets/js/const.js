@@ -384,10 +384,14 @@ class Const {
         { text: 'シャンパン', largeCategory: 1, middleCategory: 0, smallCategory: 0 },
         { text: 'ウイスキー', largeCategory: 1, middleCategory: 0, smallCategory: 1 },
         { text: '焼酎', largeCategory: 1, middleCategory: 0, smallCategory: 2 },
-        { text: 'ワイン（赤）', largeCategory: 1, middleCategory: 0, smallCategory: 3 },
-        { text: 'ワイン（白）', largeCategory: 1, middleCategory: 0, smallCategory: 4 },
-        { text: '顧客ドリンク', largeCategory: 1, middleCategory: 0, smallCategory: 5 },
-        { text: 'キャストドリンク', largeCategory: 1, middleCategory: 0, smallCategory: 6 },
+        { text: 'ワイン', largeCategory: 1, middleCategory: 0, smallCategory: 3 },
+        { text: 'ドリンク', largeCategory: 1, middleCategory: 0, smallCategory: 4 },
+    ]
+    INPUT_SALES_DETAIL_PRODUCT_BOTTLE_HEADER = [
+        { text: 'シャンパン', largeCategory: 1, middleCategory: 0, smallCategory: 0 },
+        { text: 'ウイスキー', largeCategory: 1, middleCategory: 0, smallCategory: 1 },
+        { text: '焼酎', largeCategory: 1, middleCategory: 0, smallCategory: 2 },
+        { text: 'ワイン', largeCategory: 1, middleCategory: 0, smallCategory: 3 },
     ]
     INPUT_SALES_DETAIL_PRODUCT_NON_ALCOHOL_HEADER = [
         { text: 'ノンアルコール', largeCategory: 1, middleCategory: 1, smallCategory: 0 }
@@ -402,7 +406,7 @@ class Const {
         { text: 'サラダ', largeCategory: 2, middleCategory: 1, smallCategory: 0 }
     ]
     INPUT_SALES_DETAIL_PRODUCT_ZENSAI_HEADER = [
-        { text: '前菜', largeCategory: 2, middleCategory: 2, smallCategory: 0 }
+        { text: '一品物', largeCategory: 2, middleCategory: 2, smallCategory: 0 }
     ]
     INPUT_SALES_DETAIL_PRODUCT_AGEMONO_HEADER = [
         { text: '揚げ物', largeCategory: 2, middleCategory: 3, smallCategory: 0 }
@@ -414,7 +418,6 @@ class Const {
         1: {
             0: {
                 0: 'シャンパン1',
-                // 1: 'シャンパン2',
                 1: 'ウイスキー',
                 2: '焼酎',
                 3: 'ワイン',

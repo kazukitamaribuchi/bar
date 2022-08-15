@@ -92,13 +92,13 @@ export default {
                 text: '売上管理',
                 active: 1,
             },
-            {
-                icon: 'person-square',
-                link: 'CastList',
-                type: 'Page',
-                text: 'キャスト管理',
-                active: 2,
-            },
+            // {
+            //     icon: 'person-square',
+            //     link: 'CastList',
+            //     type: 'Page',
+            //     text: 'キャスト管理',
+            //     active: 2,
+            // },
             // {
             //     icon: 'calendar2-date',
             //     link: 'AttendanceList',

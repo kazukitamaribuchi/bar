@@ -739,6 +739,7 @@ class BottleSerializer(DynamicFieldsModelSerializer):
 
     # b-tableで区分によって表示する方法分からんからここで渡す 2022/06/25
     customer_name = serializers.SerializerMethodField()
+    product_name = serializers.SerializerMethodField()
     product = ProductSerializer()
 
     def __init__(self, *args, **kwargs):
@@ -761,7 +762,8 @@ class BottleSerializer(DynamicFieldsModelSerializer):
             'non_member_name',
             'customer_type',
             'customer_name',
-            'remarks'
+            'remarks',
+            'product_name'
         ]
 
     def get_deadline(self, obj):
@@ -788,6 +790,9 @@ class BottleSerializer(DynamicFieldsModelSerializer):
         if (obj.customer == None):
             return obj.non_member_name
         return obj.customer.name
+
+    def get_product_name(self, obj):
+        return obj.product.name
 
 
 
@@ -1088,10 +1093,20 @@ class SalesSerializer(DynamicFieldsModelSerializer):
 class CustomerSalesSerializer(serializers.Serializer):
 
     customer = serializers.SerializerMethodField()
-    total = serializers.IntegerField()
+    total = serializers.IntegerField(default=0)
+    total_visit = serializers.IntegerField(default=0)
 
     def get_customer(self, obj):
-        return CustomerSerializer(MCustomer.objects.get(pk=obj['customer'])).data
+        return CustomerSerializer(
+            MCustomer.objects.get(pk=obj['customer']),
+            fields=[
+                'id',
+                'name',
+                'age',
+                'rank_name',
+                'customer_no',
+            ]
+        ).data
 
 
 class ProductSalesSerializer(serializers.Serializer):

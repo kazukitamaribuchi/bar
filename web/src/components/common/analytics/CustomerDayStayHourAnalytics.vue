@@ -103,7 +103,7 @@
                         show: true,
                         format: 'dd MMM',
                         formatter: function (val) {
-                            return dayjs(val).format('YYYY年MM月DD日 HH時MM分')
+                            return dayjs(val).format('YYYY年MM月DD日 HH時mm分')
                         },
                     },
                     y: {
@@ -141,6 +141,24 @@
         beforeCreate () {
         },
         created () {
+            // this.$axios({
+            //     method: 'GET',
+            //     url: '/api/sales/get_customer_day_stay_hour_analytics/',
+            //     params: {
+            //         target_date: this.targetDate,
+            //     }
+            // })
+            // .then(res => {
+            //     this.setCustomerDayStayHourData(res.data)
+            // })
+            // .catch(e => {
+            //     console.log(e)
+            // })
+        },
+        beforeMount () {
+            // console.log('before mount')
+        },
+        mounted () {
             this.$axios({
                 method: 'GET',
                 url: '/api/sales/get_customer_day_stay_hour_analytics/',
@@ -149,16 +167,12 @@
                 }
             })
             .then(res => {
+                console.log('get_customer_day_stay_hour_analytics', res)
                 this.setCustomerDayStayHourData(res.data)
             })
             .catch(e => {
                 console.log(e)
             })
-        },
-        beforeMount () {
-            // console.log('before mount')
-        },
-        mounted () {
             // console.log('mount')
         },
         beforeUpdate () {
@@ -189,11 +203,16 @@
                 let series = []
                 for (const i in data) {
                     categories.push(data[i].customer.name)
+                    let visitTime = dayjs(data[i].visit_time).valueOf()
+                    let leaveTime = dayjs(data[i].leave_time).valueOf()
+                    if (visitTime == leaveTime) {
+                        leaveTime += 60000
+                    }
                     series.push({
                         x: data[i].customer.name,
                         y: [
-                            dayjs(data[i].visit_time).valueOf(),
-                            dayjs(data[i].leave_time).valueOf(),
+                            visitTime,
+                            leaveTime,
                         ],
                         fillColor: colors[c]
                     })
@@ -206,6 +225,7 @@
                 this.categories = categories
                 this.customerDayStayHourSeries[0].data = series
                 this.loading = false
+                console.log('this.customerDayStayHourSeries', this.customerDayStayHourSeries)
             }
         },
         mixins: [],

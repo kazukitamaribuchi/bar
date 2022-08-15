@@ -34,7 +34,7 @@
                             </span>
                         </b-card-title>
 
-                        <b-row>
+                        <!-- <b-row>
                             <b-col cols="6">
                                 <b-card-sub-title>会員タイプ</b-card-sub-title>
                                 <b-form-group style="min-height: 40px;">
@@ -54,7 +54,7 @@
                                     <span style="color: red;">*</span> : 必須項目
                                 </b-card-sub-title>
                             </b-col>
-                        </b-row>
+                        </b-row> -->
                         <b-row v-if="createBottleData.customerType == 0">
                             <b-col cols="4">
                                 <b-form-group
@@ -261,12 +261,13 @@
                                                     v-model="createBottleData.openDate"
                                                     placeholder="開封日を選択してください"
                                                     class="mt-1"
+                                                    style="font-size: 15px;"
                                                 ></b-form-datepicker>
                                                 <b-card-text v-else>
                                                     -
                                                 </b-card-text>
                                             </b-col>
-                                            <b-col cols="2" style="margin-top: 8px;"  align-self="stretch" v-if="selectedBottle != null">
+                                            <b-col cols="2" style="margin-top: 20px;"  align-self="stretch" v-if="selectedBottle != null">
                                                 <b-button
                                                     size="sm"
                                                     variant="outline-primary"
@@ -508,7 +509,7 @@ export default {
     data: () => ({
         createBottleData: {
             customerNo: '',
-            customerType: 0,
+            customerType: 1,
             nonMemberName: '',
             openDate: now,
             remarks: '',
@@ -679,6 +680,8 @@ export default {
                 console.log(res)
                 this.updateBottleList(res.data.data)
                 this.$emit('update', res.data)
+
+                this.$emit('updateCustomerBottleDetail', res.data.data)
                 this.close()
             })
             .catch(e => {
@@ -691,7 +694,7 @@ export default {
             this.createBottleData = {
                 customerNo: '',
                 nonMemberName: '',
-                customerType: 0,
+                customerType: 1,
                 remarks: '',
             }
             this.customerNoError = ''

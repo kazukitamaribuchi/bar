@@ -20,6 +20,13 @@ const customerMutations = {
     setCustomerTopActive (state, payload) {
         state.customerTopActive = payload
     },
+    deleteCustomerBottle (state, payload) {
+        if (state.customer != undefined
+                && state.customer.bottle != undefined) {
+            const index = state.customer.bottle.findIndex(s => s.id === payload.id)
+            if (index !== -1) state.customer.bottle = state.customer.bottle.filter((_, i) => i !== index)
+        }
+    }
 }
 
 export default customerMutations

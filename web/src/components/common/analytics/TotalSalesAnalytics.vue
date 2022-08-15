@@ -156,6 +156,30 @@
         created () {
             // console.log('target_date', this.targetDate)
             // console.log('range', this.range)
+
+            // this.$axios({
+            //     method: 'GET',
+            //     url: '/api/sales/get_total_sales_analytics/',
+            //     params: {
+            //         target_date: this.targetDate,
+            //         range: this.range,
+            //     }
+            // })
+            // .then(res => {
+            //     this.setTotalSalesData(res.data)
+            //     console.log('setTotalSalesData', res)
+            // })
+            // .catch(e => {
+            //     console.log(e)
+            // })
+        },
+        beforeMount () {
+            // console.log('before mount')
+        },
+        mounted () {
+            // console.log('mount')
+            // console.log('targetDate', this.targetDate)
+            // console.log('range', this.range)
             this.$axios({
                 method: 'GET',
                 url: '/api/sales/get_total_sales_analytics/',
@@ -171,12 +195,6 @@
             .catch(e => {
                 console.log(e)
             })
-        },
-        beforeMount () {
-            // console.log('before mount')
-        },
-        mounted () {
-            // console.log('mount')
         },
         beforeUpdate () {
             // console.log('before update')

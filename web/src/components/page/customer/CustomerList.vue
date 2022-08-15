@@ -1,6 +1,5 @@
 <template>
     <div id="customer_list_wrap">
-
         <b-row>
             <b-tabs card>
                 <b-tab
@@ -17,8 +16,13 @@
                                             <b-card-text class="mb-1">
                                                 総会員数
                                             </b-card-text>
-                                            <b-row>
-                                                <b-col cols="8">
+                                            <b-row v-if="loadCustomerCnt">
+                                                <b-skeleton-img
+                                                ></b-skeleton-img>
+                                            </b-row>
+
+                                            <b-row v-else>
+                                                <b-col cols="7">
                                                     <VueApexCharts
                                                         width="150"
                                                         height="150"
@@ -27,7 +31,7 @@
                                                         :series="totalCustomerSeries"
                                                     />
                                                 </b-col>
-                                                <b-col cols="4" align="right" class="pt-4 ml-0 pl-0">
+                                                <b-col cols="5" align="right" class="pt-4">
                                                     <b-card-title>
                                                         {{ totalCustomer }}
                                                     </b-card-title>
@@ -45,8 +49,12 @@
                                             <b-card-text class="mb-1">
                                                 アクティブ会員
                                             </b-card-text>
-                                            <b-row>
-                                                <b-col cols="8">
+                                            <b-row v-if="loadActiveCustomerCnt">
+                                                <b-skeleton-img
+                                                ></b-skeleton-img>
+                                            </b-row>
+                                            <b-row v-else>
+                                                <b-col cols="7">
                                                     <VueApexCharts
                                                         width="150"
                                                         height="150"
@@ -55,9 +63,9 @@
                                                         :series="activeCustomerSeries"
                                                     />
                                                 </b-col>
-                                                <b-col cols="4" align="right" class="pt-4">
+                                                <b-col cols="5" align="right" class="pt-4">
                                                     <b-card-title>
-                                                        5
+                                                        {{ totalActiveCustomer }}
                                                     </b-card-title>
                                                     <b-card-sub-title>
                                                         customers
@@ -73,8 +81,12 @@
                                             <b-card-text class="mb-1">
                                                 ノンアクティブ会員
                                             </b-card-text>
-                                            <b-row>
-                                                <b-col cols="8">
+                                            <b-row v-if="loadNonActivceCustomerCnt">
+                                                <b-skeleton-img
+                                                ></b-skeleton-img>
+                                            </b-row>
+                                            <b-row v-else>
+                                                <b-col cols="7" class="px-0">
                                                     <VueApexCharts
                                                         width="150"
                                                         height="150"
@@ -83,9 +95,9 @@
                                                         :series="nonActiveCustomerSeries"
                                                     />
                                                 </b-col>
-                                                <b-col cols="4" align="right" class="pt-4">
+                                                <b-col cols="5" align="right" class="pt-4">
                                                     <b-card-title>
-                                                        6
+                                                        {{ totalNonActiveCustomer}}
                                                     </b-card-title>
                                                     <b-card-sub-title>
                                                         customers
@@ -148,18 +160,23 @@
                             </b-row>
                         </b-col>
                         <b-col cols="4">
+                            <b-skeleton-img
+                                v-if="loadCustomerSalesRanking"
+                                class="customer_list_area customer_list_area3"
+                            ></b-skeleton-img>
                             <b-card
+                                v-else
                                 class="customer_list_area customer_list_area3"
                                 header="売上ランキング"
                                 header-bg-variant="dark"
                                 header-text-variant="white"
                                 header-class="customer_list_area3_header"
                             >
-                                <b-row class="customer_list_area3_top mb-2">
-                                    <b-col cols="3">
-                                        Rank
+                                <b-row class="customer_list_area3_top">
+                                    <b-col cols="2">
+
                                     </b-col>
-                                    <b-col cols="5">
+                                    <b-col cols="6">
                                         名前
                                     </b-col>
                                     <!-- <b-col align="right">
@@ -172,33 +189,37 @@
                                 <b-row
                                     v-for="(item, i) in customerSalesRanking"
                                     :key=i
-                                    class="customer_list_area3_middle pt-2 mb-0"
+                                    class="customer_list_area3_middle customer_sales_ranking"
+                                    @click="toCustomerDetail(item)"
                                 >
-                                    <b-col cols="3">
+                                    <b-col cols="2">
                                         <b-card-text>{{ i + 1 }}</b-card-text>
                                     </b-col>
-                                    <b-col cols="4" class="mt-0 pt-0 mb-0 pb-0">
-                                        {{ item.name }}
-                                        <b-card-sub-title
+                                    <b-col cols="6">
+                                        <b-card-text
+                                        >
+                                            {{ item.customer.name }}
+                                        </b-card-text>
+                                        <!-- <b-card-sub-title
                                             style="font-size: 12px;"
                                             class="pt-1"
-                                        >年齢 : {{ item.age }}  ランク : {{ item.rank }}</b-card-sub-title>
+                                        >年齢 : {{ item.customer.age }}  ランク : {{ item.customer.rank_name }}</b-card-sub-title> -->
                                     </b-col>
                                     <!-- <b-col align="right">
                                         <b-card-text>{{ item.total_visit }}回</b-card-text>
                                     </b-col> -->
                                     <b-col align="right">
                                         <b-icon icon="currency-yen"></b-icon>
-                                        <b>{{ item.sales }}</b>
+                                        <b>{{ item.total }}</b>
                                     </b-col>
                                 </b-row>
-                                <b-row>
+                                <!-- <b-row>
                                     <b-button
                                         style="padding: 20px;"
                                         block
                                         variant="dark"
                                     >More Detail</b-button>
-                                </b-row>
+                                </b-row> -->
                             </b-card>
                         </b-col>
                     </b-row>
@@ -210,111 +231,93 @@
                     :active=!topActive
                     @click="setCustomerTopActive(1)"
                 >
-                <b-card>
-                    <!-- <b-row style="color: white;"> -->
-                    <b-row>
-                        <b-col lg="6" class="my-1">
-                            <b-form-group
-                                label="Sort"
-                                label-for="sort-by-select"
-                                label-cols-sm="3"
-                                label-align-sm="right"
-                                label-size="sm"
-                                class="mb-0"
-                                v-slot="{ ariaDescribedby }"
-                            >
-                                <b-input-group size="sm">
-                                    <b-form-select
-                                        id="sort-by-select"
-                                        v-model="sortBy"
-                                        :options="sortOptions"
-                                        :aria-describedby="ariaDescribedby"
-                                        class="w-75"
-                                    >
-                                        <template #first>
-                                            <option value="">-- none --</option>
-                                        </template>
-                                    </b-form-select>
-
-                                    <b-form-select
-                                        v-model="sortDesc"
-                                        :disabled="!sortBy"
-                                        :aria-describedby="ariaDescribedby"
-                                        size="sm"
-                                        class="w-25"
-                                    >
-                                        <option :value="false">Asc</option>
-                                        <option :value="true">Desc</option>
-                                    </b-form-select>
-                                </b-input-group>
-                            </b-form-group>
-                        </b-col>
-                        <b-col lg="6" class="my-1">
-                            <b-form-group
-                                label="Initial sort"
-                                label-for="initial-sort-select"
-                                label-cols-sm="3"
-                                label-align-sm="right"
-                                label-size="sm"
-                                class="mb-0"
-                            >
-                                <b-form-select
-                                    id="initial-sort-select"
-                                    v-model="sortDirection"
-                                    :options="['asc', 'desc', 'last']"
-                                    size="sm"
-                                ></b-form-select>
-                            </b-form-group>
-                        </b-col>
-
-                        <b-col lg="6" class="my-1">
-                            <b-form-group
-                                label="Filter"
-                                label-for="filter-input"
-                                label-cols-sm="3"
-                                label-align-sm="right"
-                                label-size="sm"
-                                class="mb-0"
-                            >
-                                <b-input-group size="sm">
-                                    <b-form-input
-                                        id="filter-input"
-                                        v-model="filter"
-                                        type="search"
-                                        placeholder="Type to Search"
-                                    ></b-form-input>
-
-                                    <b-input-group-append>
-                                        <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-                                    </b-input-group-append>
-                                </b-input-group>
-                            </b-form-group>
-                        </b-col>
-
-                        <b-col lg="6" class="my-1">
-                            <b-form-group
-                                v-model="sortDirection"
-                                label="Filter On"
-                                description="Leave all unchecked to filter on all data"
-                                label-cols-sm="3"
-                                label-align-sm="right"
-                                label-size="sm"
-                                class="mb-0"
-                                v-slot="{ ariaDescribedby }"
-                            >
-                                <b-form-checkbox-group
-                                    v-model="filterOn"
-                                    :aria-describedby="ariaDescribedby"
-                                    class="mt-1"
+                    <b-card class="customer_list_filter_card">
+                        <!-- <b-row style="color: white;"> -->
+                        <b-card-title>
+                            顧客検索
+                        </b-card-title>
+                        <b-row>
+                            <b-col lg="4" class="my-1">
+                                <b-form-group
+                                    class="mb-0"
+                                    v-slot="{ ariaDescribedby }"
                                 >
-                                    <b-form-checkbox value="name">Name</b-form-checkbox>
-                                    <b-form-checkbox value="age">Age</b-form-checkbox>
-                                    <b-form-checkbox value="isActive">Active</b-form-checkbox>
-                                </b-form-checkbox-group>
-                            </b-form-group>
-                        </b-col>
-                    </b-row>
-                </b-card>
+                                    <span>
+                                        並び替え
+                                    </span>
+                                    <b-input-group class="sort">
+                                        <b-form-select
+                                            id="sort-by-select"
+                                            v-model="sortBy"
+                                            :options="sortOptions"
+                                            :aria-describedby="ariaDescribedby"
+                                            class="w-75"
+                                        >
+                                            <template #first>
+                                                <option value="">項目を選択してください</option>
+                                            </template>
+                                        </b-form-select>
+
+                                        <b-form-select
+                                            id="sort-by-select-asc"
+                                            v-model="sortDesc"
+                                            :disabled="!sortBy"
+                                            :aria-describedby="ariaDescribedby"
+                                            size="sm"
+                                            class="w-25"
+                                        >
+                                            <option :value="false">昇順</option>
+                                            <option :value="true">降順</option>
+                                        </b-form-select>
+                                    </b-input-group>
+                                </b-form-group>
+                            </b-col>
+
+                            <b-col/>
+
+                            <b-col lg="4" class="my-1">
+                                <b-form-group
+                                    class="mb-0"
+                                >
+                                    <span>
+                                        検索
+                                    </span>
+                                    <b-input-group size="sm">
+                                        <b-form-input
+                                            id="filter-input"
+                                            v-model="filter"
+                                            type="search"
+                                            placeholder="キーワードを入力してください"
+                                        ></b-form-input>
+
+                                        <b-input-group-append>
+                                            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+                                        </b-input-group-append>
+                                    </b-input-group>
+                                </b-form-group>
+                            </b-col>
+
+                            <b-col lg="2" class="my-1">
+                                <b-form-group
+                                    v-model="sortDirection"
+                                    class="mb-0"
+                                    v-slot="{ ariaDescribedby }"
+                                    label="検索項目"
+                                >
+                                    <b-form-checkbox-group
+                                        v-model="filterOn"
+                                        :aria-describedby="ariaDescribedby"
+                                        class="mt-1"
+                                    >
+                                        <b-form-checkbox value="name">名前</b-form-checkbox>
+                                        <b-form-checkbox value="age">年齢</b-form-checkbox>
+                                        <b-form-checkbox value="customer_no">会員No</b-form-checkbox>
+                                        <b-form-checkbox value="birthday">誕生日</b-form-checkbox>
+                                    </b-form-checkbox-group>
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
+                    </b-card>
                     <!-- <b-row class="mb-3">
                         <b-col cols="10">
                             <b-col cols="3">
@@ -339,7 +342,7 @@
                         </b-col>
                     </b-row> -->
 
-                    <b-row>
+                    <!-- <b-row> -->
                         <b-table
                             hover
                             :items="customer"
@@ -443,7 +446,7 @@
 
                             <template #cell(caution_flg)="data">
                                 <b v-if="data.value == true">
-                                    <b class="text-danger">要注意</b>
+                                    <b>要注意</b>
                                 </b>
                                 <b v-else>
                                     -
@@ -451,7 +454,7 @@
                             </template>
 
                         </b-table>
-                    </b-row>
+                    <!-- </b-row> -->
                     <b-row>
                         <b-col cols="5">
                             <b-card-sub-title>
@@ -664,6 +667,8 @@ export default {
             labels: ['total'],
         },
         totalCustomer: 0,
+        totalActiveCustomer: 0,
+        totalNonActiveCustomer: 0,
         customerAgeSeries: [{
             name: '年齢',
             data: []
@@ -704,10 +709,10 @@ export default {
             },
 
             xaxis: {
-                categories: ["10代", "20代", "30代", "40代", "50代", "60代", "70代", "80代"],
+                categories: ["10代", "20代", "30代", "40代", "50代", "60代", "70代", "80代", "90代", "100代"],
                 labels: {
                     style: {
-                        colors: ["#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff"],
+                        colors: ["#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff"],
                         fontSize: '10px',
                     },
                 },
@@ -1043,84 +1048,25 @@ export default {
               }
             }]
         },
+        loadCustomerSalesRanking: true,
         customerSalesRanking: [
-            {
-                name: '田中道彦',
-                sales: 99999999,
-                age: '45',
-                rank: 'black',
-                total_visit: 144,
-            },
-            {
-                name: '田中三郎',
-                sales: 99999999,
-                age: '45',
-                rank: 'black',
-                total_visit: 122,
-            },
-            {
-                name: '田中五郎',
-                sales: 999999,
-                age: '45',
-                rank: 'black',
-                total_visit: 114,
-            },
-            {
-                name: '田中一郎',
-                sales: 99999,
-                age: '45',
-                rank: 'black',
-                total_visit: 10,
-            },
-            {
-                name: '山口達也',
-                sales: 99999,
-                age: '45',
-                rank: 'black',
-                total_visit: 33,
-            },
-            // {
-            //     name: '田中道彦',
-            //     sales: 99999,
-            //     age: '45',
-            //     rank: 'black',
-            // },
-            // {
-            //     name: '田中三郎',
-            //     sales: 99999,
-            //     age: '45',
-            //     rank: 'black',
-            // },
-            // {
-            //     name: '田中五郎',
-            //     sales: 99999,
-            //     age: '45',
-            //     rank: 'black',
-            // },
-            // {
-            //     name: '田中一郎',
-            //     sales: 99999,
-            //     age: '45',
-            //     rank: 'black',
-            // },
-            // {
-            //     name: '山口達也',
-            //     sales: 99999,
-            //     age: '45',
-            //     rank: 'black',
-            // },
         ],
         loadCustomerAge: true,
         loadCustomerRank: true,
+        loadCustomerCnt: true,
+        loadActiveCustomerCnt: true,
+        loadNonActivceCustomerCnt: true,
+
         currentPage: 1,
         totalRows: 1,
-        perPage: 15,
+        perPage: 10,
         pageOptions: [5, 10, 15, { value: 100, text: "Show a lot" }],
         sortBy: '',
         sortDesc: false,
         sortDirection: 'asc',
         filter: null,
         filterOn: [],
+        dispCustomers: [],
     }),
     components: {
         // ListView,
@@ -1130,6 +1076,8 @@ export default {
         ...mapGetters([
             'customer',
             'customerTopActive',
+            'initStatus',
+            'currentTime',
         ]),
         sortOptions() {
             // Create an options list from our fields
@@ -1146,13 +1094,13 @@ export default {
         //     return this.customer.length
         // },
         totalCustomerSeries () {
-            return [this.customer.length]
+            return [this.totalCustomer]
         },
         activeCustomerSeries () {
-            return [5]
+            return [this.totalActiveCustomer]
         },
         nonActiveCustomerSeries () {
-            return [6]
+            return [this.totalNonActiveCustomer]
         },
         topActive () {
             if (this.customerTopActive == undefined || this.customerTopActive == 0) {
@@ -1162,16 +1110,42 @@ export default {
         }
     },
     created () {
+        if (!this.$store.state.isAuth) {
+            this.$router.push('/')
+        }
+
+        if (!this.initStatus) {
+            this.appInitAction()
+            .then(res => {
+                this.getCurrentTime()
+                this.setInitStatus(true)
+            })
+            .catch(e => {
+                console.log(e)
+            })
+        }
+
+        this.getAllCustomer()
         this.getCustomerRank()
         this.getCustomerAge()
-        this.totalCustomer = this.customer.length
-        this.totalRows = this.customer.length
+        this.getCustomerSalesRanking()
+        // this.getCustomerCnt()
+        this.getActiveCustomerCnt()
+        // this.totalCustomer = this.customer.length
+        // this.totalRows = this.customer.length
     },
     mounted () {
     },
     methods: {
         ...mapMutations([
-            'setCustomerTopActive'
+            'setCustomerTopActive',
+            'setCustomerList',
+            'setInitStatus',
+        ]),
+        ...mapActions([
+            'getCustomerList',
+            'appInitAction',
+            'getCurrentTime',
         ]),
         showCustomerDetail (data) {
             // 1回クリック時
@@ -1193,6 +1167,14 @@ export default {
                 }
             })
         },
+        toCustomerDetail (item) {
+            this.$router.push({
+                name: 'CustomerDetail',
+                params: {
+                    id: item.customer.id
+                }
+            })
+        },
         // rowClass (item, type) {
         //     if (!item || type !== 'row') return
         //     if (item.caution_flg == true) return 'table-danger'
@@ -1204,6 +1186,8 @@ export default {
         // Trigger pagination to update the number of buttons/pages due to filtering
             this.totalRows = filteredItems.length
             this.currentPage = 1
+
+            console.log('onFilterd', filteredItems)
         },
         getCustomerAge () {
             this.$axios({
@@ -1232,7 +1216,76 @@ export default {
                 console.log(e)
                 this.loadCustomerRank = false
             })
-        }
+        },
+        // getCustomerCnt () {
+        //     this.$axios({
+        //         method: 'GET',
+        //         url: '/api/customer/get_customer_cnt/',
+        //     })
+        //     .then(res => {
+        //         console.log(res.data)
+        //         this.totalCustomer = res.data.cnt
+        //         this.totalRows = res.data.cnt
+        //     })
+        //     .catch(e => {
+        //         console.log(e)
+        //         this.loadCustomerCnt = false
+        //     })
+        // },
+        getActiveCustomerCnt () {
+            this.$axios({
+                method: 'GET',
+                url: '/api/customer/get_active_customer_cnt/',
+            })
+            .then(res => {
+                // console.log(res.data)
+                this.totalActiveCustomer = res.data.activeCustomerCnt
+                this.totalNonActiveCustomer = res.data.nonActiveCustomerCnt
+
+                // this.loadCustomerCnt = false
+                this.loadActiveCustomerCnt = false
+                this.loadNonActivceCustomerCnt = false
+            })
+            .catch(e => {
+                console.log(e)
+                // this.loadCustomerCnt = false
+                this.loadActiveCustomerCnt = false
+                this.loadNonActivceCustomerCnt = false
+            })
+        },
+        getCustomerSalesRanking () {
+            this.$axios({
+                method: 'GET',
+                url: '/api/sales/get_total_customer_sales_ranking/',
+            })
+            .then(res => {
+                // console.log(res.data)
+                this.customerSalesRanking = res.data.salesRanking
+                this.loadCustomerSalesRanking = false
+            })
+            .catch(e => {
+                console.log(e)
+                this.loadCustomerSalesRanking = false
+            })
+        },
+        getAllCustomer () {
+            this.$axios({
+                method: 'GET',
+                url: '/api/customer/get_all_customer/',
+            })
+            .then(res => {
+                // console.log(res.data)
+                this.setCustomerList(res.data.customers)
+                const count = res.data.count
+                this.totalRows = count
+                this.totalCustomer = count
+                this.loadCustomerCnt = false
+            })
+            .catch(e => {
+                console.log(e)
+                this.loadCustomerCnt = false
+            })
+        },
     }
 }
 </script>
@@ -1265,8 +1318,8 @@ export default {
         .customer_list_area1 {
             height: 220px;
             .customer_list_area1_container {
-                padding-left: 1rem !important;
-                padding-right: 1rem !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
             }
         }
 
@@ -1286,10 +1339,13 @@ export default {
             }
             .customer_list_area3_middle {
                 background-color: rgba(35, 33, 38, 0.5);
-                border-bottom: 1px solid rgba(50, 50, 50, 0.5);
-                height: 4.3rem;
-                box-shadow: 1px 2px 1px rgba(10, 10, 10, 0.4);
-                margin-top: 10px;
+                border-bottom: 1px solid rgba(150, 150, 150, 0.5);
+                height: 3rem;
+                // box-shadow: 1px 2px 1px rgba(10, 10, 10, 0.4);
+                // margin-top: 10px;
+            }
+            .customer_sales_ranking {
+                cursor: pointer;
             }
         }
 
@@ -1336,6 +1392,54 @@ export default {
     .input-group-text {
         height: 100%;
         border-radius: 5px 0 0 5px !important;
+    }
+
+    .customer_list_filter_card {
+        background-color: $theme-color;
+        color: white;
+        margin-bottom: 20px;
+
+        .customer_sort_input_group {
+        }
+
+        #sort-by-select {
+            // color: white !important;
+            color: rgba(50, 50, 50, 0.7) !important;
+            // background-color: $theme-color !important;
+            background-color: white !important;
+            border: 1px solid rgba(200, 200, 200, 0.5);
+            padding: 8px 10px;
+            border-radius: 4px 0 0 4px;
+            // font-size: 12px;
+            transition: 0.5s;
+        }
+        #sort-by-select:first-child {
+            font-size: 0.875rem;
+        }
+
+        #sort-by-select-asc {
+            // color: white !important;
+            color: rgba(50, 50, 50, 0.7) !important;
+            // background-color: $theme-color !important;
+            background-color: white !important;
+            border: 1px solid rgba(200, 200, 200, 0.5);
+            padding: 8px 10px;
+            border-radius: 0 4px 4px 0;
+            transition: 0.5s;
+        }
+
+    }
+
+    .table-dark {
+        background-color: $theme-color;
+        --bs-table-bg: $theme-color;
+    }
+
+    select:disabled {
+        opacity: 0.5 !important;
+        color: #6c757d !important;
+        background-color: #e9ecef !important;
+        transition: 0.5s;
     }
 
 </style>

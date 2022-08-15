@@ -1,19 +1,19 @@
 <template>
-    <div id="customer_day_sales_analytics">
+    <div id="day_sales_every_hour_analytics">
         <!-- <b-card class="customer_day_sales_analytics_area"> -->
             <b-skeleton-img
                 v-if="loading"
-                height="380px"
+                height="290px"
             ></b-skeleton-img>
             <div v-else>
                 <b-card-text class="mb-1 mt-1">
-                    顧客別売上
+                    時間別売上
                 </b-card-text>
                 <VueApexCharts
                     :height=height
-                    type="bar"
-                    :options="customerDaySalesChartOptions"
-                    :series="customerDaySalesSeries"
+                    type="line"
+                    :options="daySalesEveryHourChartOptions"
+                    :series="daySalesEveryHourSeries"
                 />
             </div>
         <!-- </b-card> -->
@@ -31,14 +31,14 @@
     const now = dayjs().format('YYYY-MM-DD')
 
     export default {
-        name: 'CustomerDaySalesAnalyticsItem',
+        name: 'DaySalesEveryHourAnalyticsItem',
         components: {
         },
         props: {
             height: {
                 type: Number,
                 required: false,
-                default: 330,
+                default: 270,
             },
             targetDate: {
                 type: String,
@@ -52,7 +52,7 @@
             }
         },
         data: () => ({
-            customerDaySalesChartOptions: {
+            daySalesEveryHourChartOptions: {
                 // title: {
                 //     text: '顧客別売上',
                 //     align: 'left',
@@ -64,15 +64,13 @@
                 //     },
                 // },
                 chart: {
-                  type: 'bar',
-                  height: 350,
-                  stacked: true,
+                  type: 'line',
                   toolbar: {
                       show: false,
                   },
-                  // zoom: {
-                  //   enabled: true
-                  // }
+                  zoom: {
+                    enabled: false
+                  }
                 },
                 // responsive: [{
                 //   breakpoint: 480,
@@ -84,21 +82,18 @@
                 //     }
                 //   }
                 // }],
-                plotOptions: {
-                    bar: {
-                        horizontal: false,
-                        borderRadius: 10,
-                        dataLabels: {
-                            position: 'bottom', // top, center, bottom
-                        },
-                    },
-                },
+                // plotOptions: {
+                //     bar: {
+                //         horizontal: false,
+                //         borderRadius: 10,
+                //         dataLabels: {
+                //             position: 'bottom', // top, center, bottom
+                //         },
+                //     },
+                // },
                 xaxis: {
-                    categories: ['斎藤一', '斎藤一1', '斎藤一2', '斎藤一3', '斎藤一4', '斎藤一5'],
-                    // title: {
-                    //     text: '顧客名'
-                    // },
-                    position: 'top',
+                    type: 'datetime',
+                    // position: 'top',
                     axisBorder: {
                         show: false
                     },
@@ -117,14 +112,21 @@
                             }
                         }
                     },
-                    // tooltip: {
-                    //     enabled: true,
-                    // }
+                    tooltip: {
+                        enabled: true,
+                    },
                     labels: {
                         style: {
                             fontSize: '12px',
                             colors: ["#ffffff"]
-                        }
+                        },
+                        datetimeFormatter: {
+                            year: 'yyyy年',
+                            month: "M月",
+                            day: 'M月dd日',
+                            hour: 'HH:mm',
+                        },
+                        datetimeUTC: false,
                     }
                 },
                 yaxis: {
@@ -133,10 +135,16 @@
                             fontSize: '12px',
                             colors: ["#ffffff"]
                         }
-                    }
+                    },
+                    title: {
+                        text: "来店数",
+                        style: {
+                            color: '#008FFB',
+                        }
+                    },
                 },
                 dataLabels: {
-                    enabled: true,
+                    enabled: false,
                     formatter: function (val) {
                         return val.toLocaleString() + "円";
                     },
@@ -146,25 +154,57 @@
                         colors: ["#ffffff"]
                     }
                 },
-                legend: {
-                    position: 'right',
-                    offsetX: 0,
-                    offsetY: 50
+                stroke: {
+                    curve: 'straight',
                 },
+                labels: ['01 Jan 2001', '02 Jan 2001', '03 Jan 2001', '04 Jan 2001', '05 Jan 2001', '06 Jan 2001', '07 Jan 2001', '08 Jan 2001', '09 Jan 2001', '10 Jan 2001', '11 Jan 2001', '12 Jan 2001'],
+                
+                // title: {
+                //     text: 'Fundamental Analysis of Stocks',
+                //     align: 'left'
+                // },
+                // subtitle: {
+                //     text: 'Price Movements',
+                //     align: 'left'
+                // },
+
+                // legend: {
+                //     position: 'right',
+                //     offsetX: 0,
+                //     offsetY: 50
+                // },
+                // fill: {
+                //     opacity: 0.9
+                // },
                 fill: {
-                    opacity: 0.9
+                    type: 'gradient',
+                    gradient: {
+                        shade: 'dark',
+                        gradientToColors: [ '#FDD835'],
+                        shadeIntensity: 1,
+                        type: 'horizontal',
+                        opacityFrom: 1,
+                        opacityTo: 1,
+                        stops: [0, 100, 100, 100]
+                    },
                 },
                 tooltip: {
                     theme: 'dark',
                     followCursor: true
                     // fillSeriesColor: true,
-                }
+                },
                 // colors: ['#546E7A']
             },
-            customerDaySalesSeries: [
+            daySalesEveryHourSeries: [
                 {
-                    name: '売上',
-                    data: [44, 55, 41, 67, 22, 43]
+                    name: 'Blog',
+                    type: 'column',
+                    data: [440, 505, 414, 671, 227, 413, 201, 352, 752, 320, 257, 160]
+                },
+            {
+                    name: '',
+                    type: 'line',
+                    data: [23, 42, 35, 27, 43, 22, 17, 31, 22, 22, 12, 16]
                 }
             ],
             loading: true,
@@ -172,40 +212,26 @@
         beforeCreate () {
         },
         created () {
-            // this.$axios({
-            //     method: 'GET',
-            //     url: '/api/sales/get_customer_day_sales_analytics/',
-            //     params: {
-            //         target_date: this.targetDate,
-            //         range: this.range,
-            //     }
-            // })
-            // .then(res => {
-            //     this.setCustomerDaySalesData(res.data)
-            // })
-            // .catch(e => {
-            //     console.log(e)
-            // })
+            this.$axios({
+                method: 'GET',
+                url: '/api/sales/get_sales_by_every_time_analytics/',
+                params: {
+                    // target_date: this.targetDate,
+                    target_date: '2022-08-14',
+                }
+            })
+            .then(res => {
+                this.setDaySalesEveryHourData(res.data)
+            })
+            .catch(e => {
+                console.log(e)
+            })
         },
         beforeMount () {
             // console.log('before mount')
         },
         mounted () {
             // console.log('mount')
-            this.$axios({
-                method: 'GET',
-                url: '/api/sales/get_customer_day_sales_analytics/',
-                params: {
-                    target_date: this.targetDate,
-                    range: this.range,
-                }
-            })
-            .then(res => {
-                this.setCustomerDaySalesData(res.data)
-            })
-            .catch(e => {
-                console.log(e)
-            })
         },
         beforeUpdate () {
             // console.log('before update')
@@ -222,19 +248,19 @@
         computed: {
         },
         methods: {
-            setCustomerDaySalesData (item) {
+            setDaySalesEveryHourData (item) {
                 const data = item.data
                 let series = []
-                let categories = []
+                let labels = []
                 let colors = []
                 for (const i in data) {
+                    labels.push(data[i].date)
                     series.push(data[i].total)
-                    categories.push(data[i].customer.name)
                     colors.push('#ffffff')
                 }
-                this.customerDaySalesSeries[0].data = series
-                this.customerDaySalesChartOptions.xaxis.categories = categories
-                this.customerDaySalesChartOptions.xaxis.labels.style.colors = colors
+                this.daySalesEveryHourSeries[0].data = series
+                this.daySalesEveryHourChartOptions.labels = labels
+                this.daySalesEveryHourChartOptions.xaxis.labels.style.colors = colors
                 this.loading = false
             }
         },
@@ -242,7 +268,7 @@
     }
 </script>
 <style lang="scss" scoped>
-    #customer_day_sales_analytics {
+    #day_sales_every_hour_analytics {
         max-height: 100%;
     //     .customer_day_sales_analytics_area {
     //         max-height: 100%;
