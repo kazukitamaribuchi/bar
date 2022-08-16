@@ -529,6 +529,11 @@ class SalesDetail(AbstractBaseModel):
         _('注文時間'),
     )
 
+    bottle_register = models.BooleanField(
+        _('ボトル登録したか'),
+        default=False,
+    )
+
     def __str__(self):
         product_name = self.product.name
         return '売上No.' + str(self.header.id) + ' ' + product_name

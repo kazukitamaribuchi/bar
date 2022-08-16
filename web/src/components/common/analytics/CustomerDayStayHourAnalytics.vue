@@ -167,7 +167,7 @@
                 }
             })
             .then(res => {
-                console.log('get_customer_day_stay_hour_analytics', res)
+                // console.log('get_customer_day_stay_hour_analytics', res)
                 this.setCustomerDayStayHourData(res.data)
             })
             .catch(e => {
@@ -225,7 +225,7 @@
                 this.categories = categories
                 this.customerDayStayHourSeries[0].data = series
                 this.loading = false
-                console.log('this.customerDayStayHourSeries', this.customerDayStayHourSeries)
+                // console.log('this.customerDayStayHourSeries', this.customerDayStayHourSeries)
             }
         },
         mixins: [],

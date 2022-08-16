@@ -173,18 +173,9 @@
                                 header-class="customer_list_area3_header"
                             >
                                 <b-row class="customer_list_area3_top">
-                                    <b-col cols="2">
-
-                                    </b-col>
-                                    <b-col cols="6">
-                                        名前
-                                    </b-col>
-                                    <!-- <b-col align="right">
-                                        来店回数
-                                    </b-col> -->
-                                    <b-col align="right">
-                                        総売上
-                                    </b-col>
+                                    <b-col cols="2"/>
+                                    <b-col cols="6">名前</b-col>
+                                    <b-col align="right">総売上</b-col>
                                 </b-row>
                                 <b-row
                                     v-for="(item, i) in customerSalesRanking"
@@ -196,18 +187,10 @@
                                         <b-card-text>{{ i + 1 }}</b-card-text>
                                     </b-col>
                                     <b-col cols="6">
-                                        <b-card-text
-                                        >
+                                        <b-card-text>
                                             {{ item.customer.name }}
                                         </b-card-text>
-                                        <!-- <b-card-sub-title
-                                            style="font-size: 12px;"
-                                            class="pt-1"
-                                        >年齢 : {{ item.customer.age }}  ランク : {{ item.customer.rank_name }}</b-card-sub-title> -->
                                     </b-col>
-                                    <!-- <b-col align="right">
-                                        <b-card-text>{{ item.total_visit }}回</b-card-text>
-                                    </b-col> -->
                                     <b-col align="right">
                                         <b-icon icon="currency-yen"></b-icon>
                                         <b>{{ item.total }}</b>
@@ -223,7 +206,6 @@
                             </b-card>
                         </b-col>
                     </b-row>
-
                 </b-tab>
                 <b-tab
                     title="顧客一覧"
@@ -232,56 +214,45 @@
                     @click="setCustomerTopActive(1)"
                 >
                     <b-card class="customer_list_filter_card">
-                        <!-- <b-row style="color: white;"> -->
                         <b-card-title>
                             顧客検索
                         </b-card-title>
                         <b-row>
+                            <b-form-group v-slot="{ ariaDescribedby }">
+                                <b-form-radio-group
+                                    id="btn-radios-1"
+                                    v-model="searchTypeSelected"
+                                    :options="searchTypeOptions"
+                                    :aria-describedby="ariaDescribedby"
+                                    name="radios-btn-default"
+                                    buttons
+                                    @change="initFilterParams"
+                                ></b-form-radio-group>
+                            </b-form-group>
+
                             <b-col lg="4" class="my-1">
                                 <b-form-group
                                     class="mb-0"
-                                    v-slot="{ ariaDescribedby }"
+                                    v-if="searchTypeSelected==0"
                                 >
-                                    <span>
-                                        並び替え
-                                    </span>
-                                    <b-input-group class="sort">
-                                        <b-form-select
-                                            id="sort-by-select"
-                                            v-model="sortBy"
-                                            :options="sortOptions"
-                                            :aria-describedby="ariaDescribedby"
-                                            class="w-75"
-                                        >
-                                            <template #first>
-                                                <option value="">項目を選択してください</option>
-                                            </template>
-                                        </b-form-select>
-
-                                        <b-form-select
-                                            id="sort-by-select-asc"
-                                            v-model="sortDesc"
-                                            :disabled="!sortBy"
-                                            :aria-describedby="ariaDescribedby"
-                                            size="sm"
-                                            class="w-25"
-                                        >
-                                            <option :value="false">昇順</option>
-                                            <option :value="true">降順</option>
-                                        </b-form-select>
+                                    <b-input-group size="sm">
+                                        <b-form-input
+                                            id="filter-input"
+                                            v-model="searchNo"
+                                            type="search"
+                                            placeholder="会員Noを入力してください"
+                                            @input="inputSearchCustomerNo"
+                                        ></b-form-input>
+                                        <b-input-group-append>
+                                            <b-button :disabled="!filter" @click="initFilterParams">Clear</b-button>
+                                        </b-input-group-append>
                                     </b-input-group>
                                 </b-form-group>
-                            </b-col>
 
-                            <b-col/>
-
-                            <b-col lg="4" class="my-1">
                                 <b-form-group
                                     class="mb-0"
+                                    v-if="searchTypeSelected==1"
                                 >
-                                    <span>
-                                        検索
-                                    </span>
                                     <b-input-group size="sm">
                                         <b-form-input
                                             id="filter-input"
@@ -289,172 +260,141 @@
                                             type="search"
                                             placeholder="キーワードを入力してください"
                                         ></b-form-input>
-
                                         <b-input-group-append>
-                                            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+                                            <b-button :disabled="!filter" @click="initFilterParams">Clear</b-button>
                                         </b-input-group-append>
                                     </b-input-group>
                                 </b-form-group>
-                            </b-col>
 
-                            <b-col lg="2" class="my-1">
                                 <b-form-group
-                                    v-model="sortDirection"
                                     class="mb-0"
-                                    v-slot="{ ariaDescribedby }"
-                                    label="検索項目"
+                                    v-if="searchTypeSelected==2"
                                 >
-                                    <b-form-checkbox-group
-                                        v-model="filterOn"
-                                        :aria-describedby="ariaDescribedby"
-                                        class="mt-1"
-                                    >
-                                        <b-form-checkbox value="name">名前</b-form-checkbox>
-                                        <b-form-checkbox value="age">年齢</b-form-checkbox>
-                                        <b-form-checkbox value="customer_no">会員No</b-form-checkbox>
-                                        <b-form-checkbox value="birthday">誕生日</b-form-checkbox>
-                                    </b-form-checkbox-group>
+                                    <b-input-group>
+                                        <b-form-datepicker
+                                            id="filter-input"
+                                            v-model="searchDate"
+                                            placeholder="日付を選択してください"
+                                            @input="inputSearchAccountDate"
+                                        ></b-form-datepicker>
+                                        <b-input-group-append>
+                                            <b-button :disabled="!searchDate" @click="initFilterParams">Clear</b-button>
+                                        </b-input-group-append>
+                                    </b-input-group>
+                                </b-form-group>
+
+                                <b-form-group
+                                    class="mb-0"
+                                    v-if="searchTypeSelected==3"
+                                >
+                                    <b-input-group>
+                                        <b-form-input
+                                            id="filter-input"
+                                            v-model="searchDate"
+                                            type="date"
+                                            @input="inputSearchBirthdayDate"
+                                        ></b-form-input>
+                                        <b-input-group-append>
+                                            <b-button :disabled="!searchDate" @click="initFilterParams">Clear</b-button>
+                                        </b-input-group-append>
+                                    </b-input-group>
+                                </b-form-group>
+
+                                <b-form-group
+                                    class="mb-0"
+                                    v-if="searchTypeSelected==4"
+                                >
+                                    <b-input-group>
+                                        <b-form-group v-slot="{ ariaDescribedby }">
+                                            <b-form-radio-group
+                                                id="radio-group-1"
+                                                v-model="filter"
+                                                :options="searchRankOptions"
+                                                :aria-describedby="ariaDescribedby"
+                                                name="radio-options"
+                                            ></b-form-radio-group>
+                                        </b-form-group>
+                                    </b-input-group>
                                 </b-form-group>
                             </b-col>
                         </b-row>
                     </b-card>
-                    <!-- <b-row class="mb-3">
-                        <b-col cols="10">
-                            <b-col cols="3">
-                                <b-form-group
-                                    class="mb-0"
-                                    label="名前検索"
-                                    style="color: white;"
-                                >
-                                    <b-input-group size="sm">
-                                        <b-form-input
-                                            id="filter-input"
-                                            v-model="filter"
-                                            type="search"
-                                            placeholder="Name"
-                                        ></b-form-input>
-                                        <b-input-group-append>
-                                            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-                                        </b-input-group-append>
-                                    </b-input-group>
-                                </b-form-group>
-                            </b-col>
-                        </b-col>
-                    </b-row> -->
 
-                    <!-- <b-row> -->
-                        <b-table
-                            hover
-                            :items="customer"
-                            :fields="fields"
-                            :dark="true"
-                            caption-top
-                            selectable
-                            :per-page="perPage"
-                            :current-page="currentPage"
-                            :filter="filter"
-                            :filter-included-fields="filterOn"
-                            :sort-by.sync="sortBy"
-                            :sort-desc.sync="sortDesc"
-                            :sort-direction="sortDirection"
-                            @row-selected="onRowSelected"
-                            @filtered="onFiltered"
-                        >
-                        <!-- @filterd="onFilterd" -->
 
-                            <template #cell(rank_id)="data">
-                                <b v-if="data.value == 1">
-                                    <b-icon
-                                        icon="credit-card2-front-fill"
-                                    ></b-icon>
-                                    <b>
-                                        normal
-                                    </b>
-                                </b>
-                                <b v-else-if="data.value == 2">
-                                    <b-icon
-                                        icon="credit-card2-front-fill"
-                                        style="color: #c0c0c0;"
-                                    ></b-icon>
-
-                                    <b>
-                                        silver
-                                    </b>
-                                </b>
-                                <b v-else-if="data.value == 3">
-                                    <b-icon
-                                        icon="credit-card2-front-fill"
-                                        style="color: #e1f30c;"
-                                    ></b-icon>
-                                    <b>
-                                        gold
-                                    </b>
-                                </b>
-                                <b v-else-if="data.value == 4">
-                                    <b-icon
-                                        icon="credit-card2-front-fill"
-                                        style="color: rgb(98,98,98);"
-                                    ></b-icon>
-                                    <b>
-                                        platinum
-                                    </b>
-                                </b>
-                                <b v-else-if="data.value == 5">
-                                    <b-icon
-                                        icon="credit-card2-front"
-                                    ></b-icon>
-                                    <b>
-                                        black
-                                    </b>
-                                </b>
-                            </template>
-
-                            <template #cell(age)="data">
-                                <b v-if="data.value != ''">
-                                    {{ data.value }} 歳
-                                </b>
-                                <b v-else>
-                                    -
-                                </b>
-                            </template>
-
-                            <template #cell(birthday)="data">
-                                <b v-if="data.value != ''">
-                                    {{ data.value }}
-                                </b>
-                                <b v-else>
-                                    -
-                                </b>
-                            </template>
-
-                            <template #cell(total_visit)="data">
-                                <b>{{ data.value }}</b> <b>回</b>
-                            </template>
-
-                            <template #cell(total_sales)="data">
-                                <b>￥{{ data.value }}</b>
-                            </template>
-
-                            <template #cell(first_visit)="data">
-                                <b v-if="data.value != ''">
-                                    <b>{{ data.value }}</b>
-                                </b>
-                                <b v-else>
-                                    -
-                                </b>
-                            </template>
-
-                            <template #cell(caution_flg)="data">
-                                <b v-if="data.value == true">
-                                    <b>要注意</b>
-                                </b>
-                                <b v-else>
-                                    -
-                                </b>
-                            </template>
-
-                        </b-table>
-                    <!-- </b-row> -->
+                    <b-table
+                        hover
+                        :items="customer"
+                        :fields="fields"
+                        :dark="true"
+                        caption-top
+                        selectable
+                        :per-page="perPage"
+                        :current-page="currentPage"
+                        :filter="filter"
+                        :filter-included-fields="filterIncludedField"
+                        :filter-ignored-fields="filterIgnoreField"
+                        :sort-by.sync="sortBy"
+                        :sort-desc.sync="sortDesc"
+                        :sort-direction="sortDirection"
+                        @row-selected="onRowSelected"
+                        @filtered="onFiltered"
+                    >
+                        <template #cell(rank_id)="data">
+                            <b v-if="data.value == 1">
+                                <b-icon
+                                    icon="credit-card2-front-fill"
+                                ></b-icon>
+                                <b>normal</b>
+                            </b>
+                            <b v-else-if="data.value == 2">
+                                <!-- <b-icon
+                                    icon="credit-card2-front-fill"
+                                    style="color: #c0c0c0;"
+                                ></b-icon>
+                                <b>silver</b> -->
+                                <b-icon
+                                    icon="credit-card2-front-fill"
+                                    style="color: #e1f30c;"
+                                ></b-icon>
+                                <b>gold</b>
+                            </b>
+                            <b v-else-if="data.value == 3">
+                                <b-icon
+                                    icon="credit-card2-front-fill"
+                                    style="color: rgb(98,98,98);"
+                                ></b-icon>
+                                <b>platinum</b>
+                            </b>
+                            <b v-else-if="data.value == 4">
+                                <b-icon
+                                    icon="credit-card2-front"
+                                ></b-icon>
+                                <b>black</b>
+                            </b>
+                        </template>
+                        <template #cell(age)="data">
+                            <b v-if="data.value != ''">{{ data.value }} 歳</b>
+                            <b v-else>-</b>
+                        </template>
+                        <template #cell(birthday)="data">
+                            <b v-if="data.value != ''">{{ data.value }}</b>
+                            <b v-else>-</b>
+                        </template>
+                        <template #cell(total_visit)="data">
+                            <b>{{ data.value }}</b> <b>回</b>
+                        </template>
+                        <template #cell(total_sales)="data">
+                            <b>￥{{ data.value }}</b>
+                        </template>
+                        <template #cell(first_visit)="data">
+                            <b v-if="data.value != ''"><b>{{ data.value }}</b></b>
+                            <b v-else>-</b>
+                        </template>
+                        <template #cell(caution_flg)="data">
+                            <b v-if="data.value == true"><b>要注意</b></b>
+                            <b v-else>-</b>
+                        </template>
+                    </b-table>
                     <b-row>
                         <b-col cols="5">
                             <b-card-sub-title>
@@ -477,35 +417,12 @@
                 </b-tab>
             </b-tabs>
         </b-row>
-
-
-        <!-- <b-row>
-            <b-col cols="6">
-                <b-card class="customer_list_area customer_list_area4">
-                    <b-container fluid>
-                        <b-card-text class="mb-1">
-                            週間来店売上
-                        </b-card-text>
-                        <b-row>
-                            <VueApexCharts
-                                type="line"
-                                :options="weekVisitSalesChartOptions"
-                                :series="weekVisitSalesSeries"
-                            />
-                        </b-row>
-                    </b-container>
-                </b-card>
-            </b-col>
-        </b-row> -->
-
-
     </div>
 </template>
 
 <script>
 import CreateCustomerDialog from '@/components/common/dialog/CreateCustomerDialog'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
-// import ListView from '@/components/parts/ListView'/
 
 export default {
     name: 'CustomerListItem',
@@ -513,10 +430,15 @@ export default {
         selected: {},
         createCustomerDialog: false,
         fields: [
+            // {
+            //     key: 'id',
+            //     sortable: true,
+            //     label: 'ID',
+            // },
             {
-                key: 'id',
+                key: 'customer_no',
                 sortable: true,
-                label: 'ID',
+                label: '会員No',
             },
             {
                 key: 'name',
@@ -524,20 +446,10 @@ export default {
                 label: '名前',
             },
             {
-                key: 'customer_no',
-                sortable: true,
-                label: '会員No',
-            },
-            {
                 key: 'name_kana',
                 sortable: true,
                 label: '名前(カナ)',
             },
-            // {
-            //     key: 'rank_id',
-            //     sortable: true,
-            //     label: '会員ランク',
-            // },
             {
                 key: 'age',
                 sortable: true,
@@ -547,6 +459,11 @@ export default {
                 key: 'birthday',
                 sortable: true,
                 label: '誕生日',
+            },
+            {
+                key: 'rank_id',
+                sortable: true,
+                label: '会員ランク',
             },
             {
                 key: 'total_visit',
@@ -1049,8 +966,7 @@ export default {
             }]
         },
         loadCustomerSalesRanking: true,
-        customerSalesRanking: [
-        ],
+        customerSalesRanking: [],
         loadCustomerAge: true,
         loadCustomerRank: true,
         loadCustomerCnt: true,
@@ -1065,8 +981,27 @@ export default {
         sortDesc: false,
         sortDirection: 'asc',
         filter: null,
-        filterOn: [],
+        filterIncludedField: [],
+        filterIgnoreField: [],
         dispCustomers: [],
+        searchDate: null,
+        searchNo: null,
+        searchCustomerName: null,
+        searchTypeSelected: 0,
+        searchTypeOptions: [
+            { text: '会員No', value: 0 },
+            { text: '名称', value: 1 },
+            { text: '来店日', value: 2 },
+            { text: '誕生日', value: 3 },
+            { text: 'ランク', value: 4 },
+        ],
+        searchRank: [],
+        searchRankOptions: [
+            { text: 'ノーマル', value: 'ノーマル' },
+            { text: 'ゴールド', value: 'ゴールド' },
+            { text: 'プラチナ', value: 'プラチナ' },
+            { text: 'ブラック', value: 'ブラック' },
+        ],
     }),
     components: {
         // ListView,
@@ -1135,6 +1070,20 @@ export default {
         // this.totalRows = this.customer.length
     },
     mounted () {
+    },
+    watch: {
+        selectedRank(newValue, oldValue) {
+            if (newValue.length === 0) {
+                this.indeterminate = false
+                this.allRankSelected = false
+            } else if (newValue.length === this.rankList.length) {
+                this.indeterminate = false
+                this.allRankSelected = true
+            } else {
+                this.indeterminate = true
+                this.allRankSelected = false
+            }
+        }
     },
     methods: {
         ...mapMutations([
@@ -1285,6 +1234,25 @@ export default {
                 console.log(e)
                 this.loadCustomerCnt = false
             })
+        },
+        inputSearchAccountDate (item) {
+            this.filterIncludedField = ['first_visit']
+            this.filter = item.split('-').join('/')
+        },
+        inputSearchBirthdayDate (item) {
+            this.filterIncludedField = ['birthday']
+            this.filter = item.split('-').join('/')
+        },
+        inputSearchCustomerNo (item) {
+            this.filterIncludedField = ['customer_no']
+            this.filter = item
+        },
+        initFilterParams () {
+            this.filter = null
+            this.searchNo = null
+            this.searchDate = null
+            this.filterIncludedField = []
+            this.filterIgnoreField = []
         },
     }
 }

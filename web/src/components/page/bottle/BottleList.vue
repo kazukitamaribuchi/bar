@@ -7,109 +7,104 @@
                     ボトル検索
                 </b-card-title>
                 <b-row>
-                    <b-col lg="4" class="my-1">
-                        <b-form-group
-                            class="mb-0"
-                            v-slot="{ ariaDescribedby }"
-                        >
-                            <span>
-                                並び替え
-                            </span>
-                            <b-input-group class="sort">
-                                <b-form-select
-                                    id="sort-by-select"
-                                    v-model="sortBy"
-                                    :options="sortOptions"
-                                    :aria-describedby="ariaDescribedby"
-                                    class="w-75"
-                                >
-                                    <template #first>
-                                        <option value="">項目を選択してください</option>
-                                    </template>
-                                </b-form-select>
-
-                                <b-form-select
-                                    id="sort-by-select-asc"
-                                    v-model="sortDesc"
-                                    :disabled="!sortBy"
-                                    :aria-describedby="ariaDescribedby"
-                                    size="sm"
-                                    class="w-25"
-                                >
-                                    <option :value="false">昇順</option>
-                                    <option :value="true">降順</option>
-                                </b-form-select>
-                            </b-input-group>
-                        </b-form-group>
-                    </b-col>
-
-                    <b-col/>
+                    <b-form-group v-slot="{ ariaDescribedby }">
+                        <b-form-radio-group
+                            id="btn-radios-1"
+                            v-model="searchTypeSelected"
+                            :options="searchTypeOptions"
+                            :aria-describedby="ariaDescribedby"
+                            name="radios-btn-default"
+                            buttons
+                            @change="initFilterParams"
+                        ></b-form-radio-group>
+                    </b-form-group>
 
                     <b-col lg="4" class="my-1">
                         <b-form-group
                             class="mb-0"
+                            v-if="searchTypeSelected==0"
                         >
-                            <span>
-                                検索
-                            </span>
                             <b-input-group size="sm">
                                 <b-form-input
                                     id="filter-input"
-                                    v-model="filter"
+                                    v-model="searchNo"
                                     type="search"
-                                    placeholder="キーワードを入力してください"
+                                    placeholder="会員Noを入力してください"
+                                    @input="inputSearchCustomerNo"
                                 ></b-form-input>
-
                                 <b-input-group-append>
-                                    <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+                                    <b-button :disabled="!searchNo" @click="initFilterParams">Clear</b-button>
+                                </b-input-group-append>
+                            </b-input-group>
+                        </b-form-group>
+
+                        <b-form-group
+                            class="mb-0"
+                            v-if="searchTypeSelected==1"
+                        >
+                            <b-input-group size="sm">
+                                <b-button
+                                    size="sm"
+                                    @click="showAddBottleDialog"
+                                    class="mzt-3"
+                                    variant="primary"
+                                >
+                                    <b-icon
+                                        icon="plus-circle"
+                                        aria-hidden="true"
+                                    ></b-icon> ボトルを選択
+                                </b-button>
+
+                                <b>{{ searchSelectedBottle }}</b>
+
+                                <b-form-input
+                                    id="filter-input"
+                                    v-model="searchName"
+                                    type="search"
+                                    placeholder="商品名を入力してください"
+                                    @input="inputSearchProductName"
+                                ></b-form-input>
+                                <b-input-group-append>
+                                    <b-button :disabled="!searchName" @click="initFilterParams">Clear</b-button>
+                                </b-input-group-append>
+                            </b-input-group>
+                        </b-form-group>
+                        <b-form-group
+                            class="mb-0"
+                            v-if="searchTypeSelected==2"
+                        >
+                            <b-input-group size="sm">
+                                <b-form-input
+                                    id="filter-input"
+                                    v-model="searchName"
+                                    type="search"
+                                    placeholder="顧客名を入力してください"
+                                    @input="inputSearchCustomerName"
+                                ></b-form-input>
+                                <b-input-group-append>
+                                    <b-button :disabled="!searchName" @click="initFilterParams">Clear</b-button>
+                                </b-input-group-append>
+                            </b-input-group>
+                        </b-form-group>
+                        <b-form-group
+                            class="mb-0"
+                            v-if="searchTypeSelected==3"
+                        >
+                            <b-input-group>
+                                <b-form-datepicker
+                                    id="filter-input"
+                                    v-model="searchDate"
+                                    placeholder="日付を選択してください"
+                                    @input="inputSearchOpenDate"
+                                ></b-form-datepicker>
+                                <b-input-group-append>
+                                    <b-button :disabled="!searchDate" @click="initFilterParams">Clear</b-button>
                                 </b-input-group-append>
                             </b-input-group>
                         </b-form-group>
                     </b-col>
-
-                    <b-col lg="2" class="my-1">
-                        <b-form-group
-                            v-model="sortDirection"
-                            class="mb-0"
-                            v-slot="{ ariaDescribedby }"
-                            label="検索項目"
-                        >
-                            <b-form-checkbox-group
-                                v-model="filterOn"
-                                :aria-describedby="ariaDescribedby"
-                                class="mt-1"
-                            >
-                                <!-- <b-form-checkbox value="product_name">商品名</b-form-checkbox> -->
-                                <b-form-checkbox value="customer_name">顧客名</b-form-checkbox>
-                            </b-form-checkbox-group>
-                        </b-form-group>
-                    </b-col>
                 </b-row>
             </b-card>
-
-            <!-- <b-col cols="10">
-                <b-col cols="3">
-                    <b-form-group
-                        class="mb-0"
-                        label="顧客名検索"
-                        style="color: white;"
-                    >
-                        <b-input-group size="sm">
-                            <b-form-input
-                                id="filter-input"
-                                v-model="filter"
-                                type="search"
-                                placeholder="Name"
-                            ></b-form-input>
-                            <b-input-group-append>
-                                <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-                            </b-input-group-append>
-                        </b-input-group>
-                    </b-form-group>
-                </b-col>
-            </b-col> -->
-
-
         </b-row>
         <b-row>
             <b-table
@@ -121,13 +116,13 @@
                 :per-page="perPage"
                 :current-page="currentPage"
                 :filter="filter"
-                :filter-included-fields="filterOn"
+                :filter-included-fields="filterIncludedField"
+                :filter-ignored-fields="filterIgnoreField"
                 :sort-by.sync="sortBy"
                 :sort-desc.sync="sortDesc"
                 :sort-direction="sortDirection"
                 @filtered="onFiltered"
             >
-            <!-- @filterd="onFilterd" -->
 
                 <!-- <template #cell(customer_type)="data">
                     <b-card-text v-if="data.value == 0">
@@ -139,22 +134,13 @@
                 </template> -->
 
                 <template #cell(custoner_no)="data">
-                    <b-card-text v-if="data.value == null">
-                        -
-                    </b-card-text>
-                    <b-card-text v-else>
-                        ff
-                        <!-- {{ data.value }} -->
-                    </b-card-text>
+                    <b-card-text v-if="data.value == null">-</b-card-text>
+                    <b-card-text v-else>{{ data.value }}</b-card-text>
                 </template>
 
                 <template #cell(end_flg)="data">
-                    <b-card-text v-if="data.value">
-                        消込
-                    </b-card-text>
-                    <b-card-text v-else>
-                        -
-                    </b-card-text>
+                    <b-card-text v-if="data.value">消込</b-card-text>
+                    <b-card-text v-else>-</b-card-text>
                 </template>
 
                 <template #cell(actions)="row">
@@ -197,23 +183,6 @@
                         ></b-icon>
                     </b-button>
                 </template>
-
-                <!-- <template #cell(delete_flg)="data">
-                    <b-card-text v-if="data.value">
-                        削除
-                    </b-card-text>
-                    <b-card-text v-else>
-                        -
-                    </b-card-text>
-                </template> -->
-
-                <!-- <template #row-details="row">
-                    <b-card>
-                        <ul>
-                            <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
-                        </ul>
-                    </b-card>
-                </template> -->
             </b-table>
         </b-row>
         <b-row>
@@ -247,6 +216,11 @@
         <DeleteBottleDetailDialog
             ref="deleteBottleDetailDialog"
         />
+
+        <AddBottleDialog
+            ref="addBottleDialog"
+            @update="selectSearchBottle"
+        />
     </div>
 </template>
 
@@ -255,6 +229,7 @@ import { mapGetters, mapMutations, mapActions } from 'vuex'
 import EndBottleDetailDialog from '@/components/common/dialog/EndBottleDetailDialog'
 import CreateBottleDialog from '@/components/common/dialog/CreateBottleDialog'
 import DeleteBottleDetailDialog from '@/components/common/dialog/DeleteBottleDetailDialog'
+import AddBottleDialog from '@/components/common/dialog/AddBottleDialog'
 
 export default {
     name: 'BottleListItem',
@@ -262,6 +237,7 @@ export default {
         EndBottleDetailDialog,
         CreateBottleDialog,
         DeleteBottleDetailDialog,
+        AddBottleDialog
     },
     data: () => ({
         sortBy: '',
@@ -271,7 +247,19 @@ export default {
         totalRows: 1,
         perPage: 10,
         filter: null,
-        filterOn: [],
+        filterIncludedField: [],
+        filterIgnoreField: [],
+        searchDate: null,
+        searchNo: null,
+        searchName: null,
+        searchSelectedBottle: null,
+        searchTypeSelected: 0,
+        searchTypeOptions: [
+            { text: '会員No', value: 0 },
+            { text: '商品名', value: 1 },
+            { text: '顧客名', value: 2 },
+            { text: '開封日', value: 3 },
+        ],
         fields: [
             {
                 key: 'id',
@@ -279,7 +267,7 @@ export default {
                 label: 'id',
             },
             {
-                key: 'product.name',
+                key: 'product_name',
                 sortable: true,
                 label: '商品名',
             },
@@ -289,7 +277,7 @@ export default {
             //     label: '会員区分',
             // },
             {
-                key: 'customer.customer_no',
+                key: 'customer_no',
                 sortable: true,
                 label: '会員No',
             },
@@ -299,6 +287,11 @@ export default {
                 label: '顧客名',
             },
             {
+                key: 'customer_name_kana',
+                sortable: true,
+                label: '顧客名(カナ)',
+            },
+            {
                 key: 'open_date',
                 sortable: true,
                 label: '開封日',
@@ -306,7 +299,7 @@ export default {
             {
                 key: 'end_flg',
                 sortable: true,
-                label: '消込状態',
+                label: '消込',
             },
             {
                 key: 'end_date',
@@ -343,7 +336,8 @@ export default {
         },
     },
     created () {
-        this.totalRows = this.bottle.length
+        // this.totalRows = this.bottle.length
+        this.getAllBottle()
     },
     mounted () {
         console.log('this.bottle', this.bottle)
@@ -382,18 +376,65 @@ export default {
             this.currentPage = 1
         },
         showEditBottleDialog (row) {
-            console.log('row', row)
+            // console.log('row', row)
             if (row.item.delete_flg || row.item.end_flg) return
             this.$refs.editBottleDialog.open(row.item)
         },
         showDeleteBottleDetailDialog (row) {
-            console.log('row', row)
+            // console.log('row', row)
             this.$refs.deleteBottleDetailDialog.open(row.item)
         },
         showEndBottleDialog (row) {
-            console.log('row', row)
+            // console.log('row', row)
             this.$refs.endBottleDetailDialog.open(row.item)
         },
+        getAllBottle () {
+            this.$axios({
+                method: 'GET',
+                url: '/api/bottle/get_all_bottle/',
+            })
+            .then(res => {
+                // console.log(res.data)
+                this.setBottleList(res.data.bottle)
+                const count = res.data.count
+                this.totalRows = count
+            })
+            .catch(e => {
+                console.log(e)
+            })
+        },
+        inputSearchOpenDate (item) {
+            this.filterIncludedField = ['open_date']
+            this.filter = item.split('-').join('/')
+        },
+        inputSearchCustomerNo (item) {
+            this.filterIncludedField = ['customer_no']
+            this.filter = item
+        },
+        inputSearchProductName (item) {
+            this.filterIncludedField = ['product_name']
+            this.filter = item
+        },
+        inputSearchCustomerName (item) {
+            this.filterIncludedField = ['customer_name', 'customer_name_kana']
+            this.filter = item
+        },
+        initFilterParams () {
+            this.filter = null
+            this.searchNo = null
+            this.searchDate = null
+            this.searchName = null
+            this.filterIncludedField = []
+            this.filterIgnoreField = []
+        },
+        showAddBottleDialog () {
+            this.$refs.addBottleDialog.open()
+        },
+        selectSearchBottle (item) {
+            this.filterIncludedField = ['product_name']
+            this.filter = item.name
+            this.searchName = item.name
+        }
     }
 }
 </script>

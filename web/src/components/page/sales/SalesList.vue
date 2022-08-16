@@ -339,39 +339,125 @@
                     :active=!topActive
                     @click="setSalesTopActive(1)"
                 >
-                    <v-row>
-                        <b-table
-                            hover
-                            :items="sales"
-                            :fields="fields"
-                            dark
-                            caption-top
-                            selectable
-                            :per-page="perPage"
-                            :current-page="currentPage"
-                            :filter="filter"
-                            :filter-included-fields="filterOn"
-                            @row-selected="onRowSelected"
-                        >
-                            <template #cell(appoint)="data">
-                                <b v-if="data.value">
-                                    有
-                                </b>
-                                <b v-else>
-                                    フリー
-                                </b>
-                            </template>
+                    <b-card class="sales_list_filter_card">
+                        <!-- <b-row style="color: white;"> -->
+                        <b-card-title>
+                            売上検索
+                        </b-card-title>
+                        <b-row>
+                            <b-form-group v-slot="{ ariaDescribedby }">
+                                <b-form-radio-group
+                                    id="btn-radios-1"
+                                    v-model="searchTypeSelected"
+                                    :options="searchTypeOptions"
+                                    :aria-describedby="ariaDescribedby"
+                                    name="radios-btn-default"
+                                    buttons
+                                    @change="initFilterParams"
+                                ></b-form-radio-group>
+                            </b-form-group>
 
-                            <template #cell(douhan)="data">
-                                <b v-if="data.value">
-                                    有
-                                </b>
-                                <b v-else>
-                                    無
-                                </b>
-                            </template>
-                        </b-table>
-                    </v-row>
+                            <b-col lg="4" class="my-1">
+                                <b-form-group
+                                    class="mb-0"
+                                    v-if="searchTypeSelected==0"
+                                >
+                                    <b-input-group size="sm">
+                                        <b-form-input
+                                            id="filter-input"
+                                            v-model="searchNo"
+                                            type="search"
+                                            placeholder="会員Noを入力してください"
+                                            @input="inputSearchCustomerNo"
+                                        ></b-form-input>
+                                        <b-input-group-append>
+                                            <b-button :disabled="!searchNo" @click="initFilterParams">Clear</b-button>
+                                        </b-input-group-append>
+                                    </b-input-group>
+                                </b-form-group>
+
+                                <b-form-group
+                                    class="mb-0"
+                                    v-if="searchTypeSelected==1"
+                                >
+                                    <b-input-group size="sm">
+                                        <b-form-input
+                                            id="filter-input"
+                                            v-model="filter"
+                                            type="search"
+                                            placeholder="キーワードを入力してください"
+                                        ></b-form-input>
+                                        <b-input-group-append>
+                                            <b-button :disabled="!filter" @click="initFilterParams">Clear</b-button>
+                                        </b-input-group-append>
+                                    </b-input-group>
+                                </b-form-group>
+
+                                <b-form-group
+                                    class="mb-0"
+                                    v-if="searchTypeSelected==2"
+                                >
+                                    <b-input-group>
+                                        <b-form-datepicker
+                                            id="filter-input"
+                                            v-model="searchDate"
+                                            placeholder="日付を選択してください"
+                                            @input="inputSearchAccountDate"
+                                        ></b-form-datepicker>
+                                        <b-input-group-append>
+                                            <b-button :disabled="!searchDate" @click="initFilterParams">Clear</b-button>
+                                        </b-input-group-append>
+                                    </b-input-group>
+                                </b-form-group>
+
+                                <b-form-group
+                                    class="mb-0"
+                                    v-if="searchTypeSelected==3"
+                                >
+                                    <b-input-group size="sm">
+                                        <b-form-input
+                                            id="filter-input"
+                                            v-model="searchNo"
+                                            type="search"
+                                            placeholder="伝票Noを入力してください"
+                                            @input="inputSearchSalesNo"
+                                        ></b-form-input>
+                                        <b-input-group-append>
+                                            <b-button :disabled="!searchNo" @click="initFilterParams">Clear</b-button>
+                                        </b-input-group-append>
+                                    </b-input-group>
+                                </b-form-group>
+                            </b-col>
+
+                        </b-row>
+                    </b-card>
+                    <b-table
+                        hover
+                        :items="sales"
+                        :fields="fields"
+                        :dark="true"
+                        caption-top
+                        selectable
+                        :per-page="perPage"
+                        :current-page="currentPage"
+                        :filter="filter"
+                        :filter-included-fields="filterIncludedField"
+                        :filter-ignored-fields="filterIgnoreField"
+                        :sort-by.sync="sortBy"
+                        :sort-desc.sync="sortDesc"
+                        :sort-direction="sortDirection"
+                        @row-selected="onRowSelected"
+                        @filtered="onFiltered"
+                    >
+                        <template #cell(appoint)="data">
+                            <b v-if="data.value">有</b>
+                            <b v-else>フリー</b>
+                        </template>
+                        <template #cell(douhan)="data">
+                            <b v-if="data.value">有</b>
+                            <b v-else>無</b>
+                        </template>
+                    </b-table>
                 </b-tab>
             </b-tabs>
         </b-row>
@@ -871,35 +957,34 @@ export default {
                 }
             }
         },
-        currentPage: 1,
-        totalRows: 1,
-        perPage: 15,
-        filter: null,
-        filterOn: [],
         fields: [
             {
                 key: 'id',
-                label: '伝票NO'
+                label: '伝票No',
+                sortable: true,
             },
             {
-                key: 'account_date',
-                label: '来店日'
-            },
-            {
-                key: 'customer.customer_no',
+                key: 'customer_no',
                 label: '会員No',
+                sortable: true,
             },
             {
-                key: 'customer.name',
-                label: '顧客名'
+                key: 'customer_name',
+                label: '顧客名',
+                sortable: true,
             },
             {
-                key: 'total_sales',
-                label: '総計(税抜)'
+                key: 'customer_name_kana',
+                label: '顧客名(カナ)',
+                sortable: true,
             },
             {
-                key: 'total_tax_sales',
-                label: '総計(税込)'
+                key: 'total_visitors',
+                label: '来店人数',
+            },
+            {
+                key: 'basic_plan_type.name',
+                label: '料金プラン',
             },
             {
                 key: 'visit_time',
@@ -907,16 +992,18 @@ export default {
             },
             {
                 key: 'leave_time',
-                label: '退店時間'
+                label: '退店時間',
             },
             {
-                key: 'appoint',
-                label: '指名'
+                key: 'total_sales',
+                label: '総計(税抜)',
+                sortable: true,
             },
             {
-                key: 'douhan',
-                label: '同伴'
-            }
+                key: 'total_tax_sales',
+                label: '総計(税込)',
+                sortable: true,
+            },
         ],
         dResetKey: 0,
         yResetKey: 0,
@@ -925,6 +1012,26 @@ export default {
         mResetKey: 0,
         YResetKey: 0,
         activeTab: 0,
+        currentPage: 1,
+        totalRows: 1,
+        perPage: 10,
+        pageOptions: [5, 10, 15, { value: 100, text: "Show a lot" }],
+        sortBy: '',
+        sortDesc: false,
+        sortDirection: 'asc',
+        filter: null,
+        searchDate: null,
+        searchNo: null,
+        searchCustomerName: null,
+        searchTypeSelected: 0,
+        searchTypeOptions: [
+            { text: '会員No', value: 0 },
+            { text: '名称', value: 1 },
+            { text: '来店日', value: 2 },
+            { text: '伝票No', value: 3 },
+        ],
+        filterIncludedField: [],
+        filterIgnoreField: [],
     }),
     components: {
         InputSalesDialog,
@@ -981,14 +1088,17 @@ export default {
         yearAgo () {
             return this.target_day.subtract(1, 'y').format('YYYY-MM-DD')
         },
+        sortOptions() {
+            // Create an options list from our fields
+            return this.fields
+                .filter(f => f.sortable)
+                .map(f => {
+                    return { text: f.label, value: f.key }
+                })
+        },
     },
     created () {
-        this.getSalesList()
-        .then(res => {
-            this.setSalesList(res.data.results)
-        })
-        .catch(e => {
-        })
+        this.getAllSales()
     },
     mounted () {
         this.totalRows = this.sales.length
@@ -1010,10 +1120,48 @@ export default {
             })
         },
         activeTabs (after, before) {
-            console.log('activeTabs')
-            console.log('after', after)
-            console.log('before', before)
             this.activeTab = after
+        },
+        onFiltered(filteredItems) {
+            this.totalRows = filteredItems.length
+            this.currentPage = 1
+        },
+        getAllSales () {
+            this.$axios({
+                method: 'GET',
+                url: '/api/sales/get_all_sales/',
+            })
+            .then(res => {
+                // console.log(res.data)
+                this.setSalesList(res.data.sales)
+                const count = res.data.count
+                this.totalRows = count
+            })
+            .catch(e => {
+                console.log(e)
+            })
+        },
+        initFilterParams () {
+            this.filter = null
+            this.searchNo = null
+            this.searchDate = null
+            this.filterIncludedField = []
+            this.filterIgnoreField = []
+        },
+        inputSearchCustomerNo (item) {
+            console.log('inputSearchCustomerNo', item)
+            this.filterIncludedField = ['customer_no']
+            this.filter = item
+        },
+        inputSearchSalesNo (item) {
+            console.log('inputSearchSalesNo', item)
+            this.filterIncludedField = ['id']
+            this.filter = item
+        },
+        inputSearchAccountDate (item) {
+            console.log('inputSearchAccountDate', item)
+            this.filterIncludedField = ['account_date']
+            this.filter = item.split('-').join('/')
         },
     },
     mixins: [
@@ -1069,5 +1217,54 @@ export default {
                 height: 100%;
             }
         }
+    }
+
+
+    .sales_list_filter_card {
+        background-color: $theme-color;
+        color: white;
+        margin-bottom: 20px;
+
+        .customer_sort_input_group {
+        }
+
+        #sort-by-select {
+            // color: white !important;
+            color: rgba(50, 50, 50, 0.7) !important;
+            // background-color: $theme-color !important;
+            background-color: white !important;
+            border: 1px solid rgba(200, 200, 200, 0.5);
+            padding: 8px 10px;
+            border-radius: 4px 0 0 4px;
+            // font-size: 12px;
+            transition: 0.5s;
+        }
+        #sort-by-select:first-child {
+            font-size: 0.875rem;
+        }
+
+        #sort-by-select-asc {
+            // color: white !important;
+            color: rgba(50, 50, 50, 0.7) !important;
+            // background-color: $theme-color !important;
+            background-color: white !important;
+            border: 1px solid rgba(200, 200, 200, 0.5);
+            padding: 8px 10px;
+            border-radius: 0 4px 4px 0;
+            transition: 0.5s;
+        }
+
+    }
+
+    .table-dark {
+        background-color: $theme-color;
+        --bs-table-bg: $theme-color;
+    }
+
+    select:disabled {
+        opacity: 0.5 !important;
+        color: #6c757d !important;
+        background-color: #e9ecef !important;
+        transition: 0.5s;
     }
 </style>

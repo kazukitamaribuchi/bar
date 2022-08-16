@@ -149,6 +149,7 @@ class CustomerSerializer(DynamicFieldsModelSerializer):
     customer_no = serializers.IntegerField(source='card.customer_no', allow_null=True)
     delete_flg = serializers.BooleanField(default=False)
     caution_flg = serializers.BooleanField(default=False)
+    is_caution = serializers.SerializerMethodField()
     remarks = serializers.CharField(default='', allow_null=True)
 
     # 2022/6/20 ボトル機能追加⇒create, update確認
@@ -185,6 +186,7 @@ class CustomerSerializer(DynamicFieldsModelSerializer):
             'total_visit',
             'total_sales',
             'caution_flg',
+            'is_caution',
             'created_at',
             'updated_at',
             'delete_flg',
@@ -232,9 +234,14 @@ class CustomerSerializer(DynamicFieldsModelSerializer):
         return obj.company
 
     def get_address(self, obj):
-        if obj.company == None:
+        if obj.address == None:
             return ''
-        return obj.company
+        return obj.address
+
+    def get_is_caution(self, obj):
+        if obj.caution_flg:
+            return '要注意'
+        return '-'
 
     def get_bottle(self, obj):
 
@@ -729,7 +736,13 @@ class SeatSerializer(DynamicFieldsModelSerializer):
 
 class BottleSerializer(DynamicFieldsModelSerializer):
 
-    customer = CustomerSerializer()
+    customer = CustomerSerializer(
+        fields=[
+            'id',
+            'name',
+            'customer_no',
+        ]
+    )
     created_at = serializers.SerializerMethodField()
     updated_at = serializers.SerializerMethodField()
     deadline = serializers.SerializerMethodField()
@@ -738,7 +751,11 @@ class BottleSerializer(DynamicFieldsModelSerializer):
     customer_type = serializers.SerializerMethodField()
 
     # b-tableで区分によって表示する方法分からんからここで渡す 2022/06/25
+    # ➡filterがオブジェクトだといけない模様。正規表現だから文字列か数字のみか？
+    # そのため多少冗長だがname, noなどそのまま渡す・・・
+    customer_no = serializers.SerializerMethodField()
     customer_name = serializers.SerializerMethodField()
+    customer_name_kana = serializers.SerializerMethodField()
     product_name = serializers.SerializerMethodField()
     product = ProductSerializer()
 
@@ -761,7 +778,9 @@ class BottleSerializer(DynamicFieldsModelSerializer):
             'delete_flg',
             'non_member_name',
             'customer_type',
+            'customer_no',
             'customer_name',
+            'customer_name_kana',
             'remarks',
             'product_name'
         ]
@@ -769,17 +788,17 @@ class BottleSerializer(DynamicFieldsModelSerializer):
     def get_deadline(self, obj):
         if obj.deadline == None:
             return ''
-        return utc_to_jst(obj.deadline).strftime('%Y年%m月%d日')
+        return utc_to_jst(obj.deadline).strftime('%Y/%m/%d')
 
     def get_open_date(self, obj):
         if obj.open_date == None:
             return ''
-        return utc_to_jst(obj.open_date).strftime('%Y年%m月%d日')
+        return utc_to_jst(obj.open_date).strftime('%Y/%m/%d')
 
     def get_end_date(self, obj):
         if obj.end_date == None:
             return ''
-        return utc_to_jst(obj.end_date).strftime('%Y年%m月%d日')
+        return utc_to_jst(obj.end_date).strftime('%Y/%m/%d')
 
     def get_customer_type(self, obj):
         if (obj.customer == None):
@@ -790,6 +809,16 @@ class BottleSerializer(DynamicFieldsModelSerializer):
         if (obj.customer == None):
             return obj.non_member_name
         return obj.customer.name
+
+    def get_customer_name_kana(self, obj):
+        if (obj.customer == None):
+            return obj.non_member_name
+        return obj.customer.name_kana
+
+    def get_customer_no(self, obj):
+        if (obj.customer == None):
+            return '-'
+        return obj.customer.card.customer_no
 
     def get_product_name(self, obj):
         return obj.product.name
@@ -822,6 +851,7 @@ class SalesDetailSerializer(DynamicFieldsModelSerializer):
             'order_time',
             'tax_free_flg',
             'disp_seat_name',
+            'bottle_register',
         ]
 
     def get_header(self, obj):
@@ -881,6 +911,7 @@ class SubSalesDetailSerializer(DynamicFieldsModelSerializer):
             'disp_order_time',
             'disp_seat_name',
             'tax_free_flg',
+            'bottle_register',
         ]
 
     def get_header(self, obj):
@@ -915,12 +946,13 @@ class SalesServiceDetailSerializer(DynamicFieldsModelSerializer):
     total_price = serializers.SerializerMethodField()
 
     class Meta:
-        model = SalesDetail
+        model = SalesServiceDetail
         fields = [
             'id',
             'service',
             # 'cast',
             'quantity',
+            'discount_flg',
             'fixed_price',
             # 'fixed_tax_price',
             'total_price',
@@ -959,18 +991,22 @@ class SalesSerializer(DynamicFieldsModelSerializer):
     # sales_appoint_detail = serializers.SerializerMethodField()
     sales_service_detail = serializers.SerializerMethodField()
     total_visitors = serializers.SerializerMethodField()
-    # account_date = serializers.SerializerMethodField()
     visit_time = serializers.SerializerMethodField()
     leave_time = serializers.SerializerMethodField()
     header_id = serializers.SerializerMethodField()
     disp_seat_name = serializers.SerializerMethodField()
+    account_date = serializers.SerializerMethodField()
+    stay_hour = serializers.SerializerMethodField()
     # move_time = serializers.SerializerMethodField()
-    # sales_detail_total_price = serializers.SerializerMethodField()
+    sales_detail_total_price = serializers.SerializerMethodField()
     # sales_detail_total_tax_price = serializers.SerializerMethodField()
     # sales_appoint_detail_total_price = serializers.SerializerMethodField()
     # sales_appoint_detail_total_tax_price = serializers.SerializerMethodField()
-    # sales_service_detail_total_price = serializers.SerializerMethodField()
+    sales_service_detail_total_price = serializers.SerializerMethodField()
     # sales_service_detail_total_tax_price = serializers.SerializerMethodField()
+    customer_no = serializers.CharField(source="customer.card", allow_null=True, allow_blank=True)
+    customer_name = serializers.CharField(source="customer.name", allow_null=True, allow_blank=True)
+    customer_name_kana = serializers.CharField(source="customer.name_kana", allow_null=True, allow_blank=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -980,12 +1016,19 @@ class SalesSerializer(DynamicFieldsModelSerializer):
         fields = [
             'id',
             'customer',
+
+            # ↓b-tableの検索用・・・
+            'customer_no',
+            'customer_name',
+            'customer_name_kana',
+
+
             # 'total_visitors',
             'male_visitors',
             'female_visitors',
             'total_visitors',
             # 'move_diff_seat',
-            # 'account_date',
+            'account_date',
             'visit_time',
             'leave_time',
             # 'move_time',
@@ -999,19 +1042,19 @@ class SalesSerializer(DynamicFieldsModelSerializer):
             'stay_hour',
             # 'stay_hour_other',
             # 'total_stay_hour',
-            # 'total_sales',
-            # 'total_tax_sales',
+            'total_sales',
+            'total_tax_sales',
             'created_at',
             'updated_at',
             'delete_flg',
             'sales_detail',
             # 'sales_appoint_detail',
             'sales_service_detail',
-            # 'sales_detail_total_price',
+            'sales_detail_total_price',
             # 'sales_detail_total_tax_price',
             # 'sales_appoint_detail_total_price',
             # 'sales_appoint_detail_total_tax_price',
-            # 'sales_service_detail_total_price',
+            'sales_service_detail_total_price',
             # 'sales_service_detail_total_tax_price',
             'remarks',
             'close_flg',
@@ -1046,6 +1089,11 @@ class SalesSerializer(DynamicFieldsModelSerializer):
     #         return ''
     #     return utc_to_jst(obj.account_date).strftime('%Y/%m/%d')
 
+    def get_account_date(self, obj):
+        if obj.visit_time == None:
+            return ''
+        return utc_to_jst(obj.visit_time).strftime('%Y/%m/%d')
+
     def get_visit_time(self, obj):
         if obj.visit_time == None:
             return ''
@@ -1056,13 +1104,19 @@ class SalesSerializer(DynamicFieldsModelSerializer):
             return ''
         return utc_to_jst(obj.leave_time).strftime('%Y/%m/%d %H:%M')
 
+    # どうする？
+    def get_stay_hour(self, obj):
+        if obj.visit_time == None or obj.leave_time == None:
+            return 0
+        return 0
+
     # def get_move_time(self, obj):
     #     if obj.move_time == None:
     #         return ''
     #     return utc_to_jst(obj.move_time).strftime('%Y/%m/%d %H:%M')
 
-    # def get_sales_detail_total_price(self, obj):
-    #     return obj.sales_detail.all().aggregate(models.Sum('total_price'))['total_price__sum']
+    def get_sales_detail_total_price(self, obj):
+        return obj.sales_detail.all().aggregate(models.Sum('fixed_price', field="fixed_price*quantity"))['fixed_price__sum']
 
     # def get_sales_detail_total_tax_price(self, obj):
     #     return obj.sales_detail.all().aggregate(models.Sum('total_tax_price'))['total_tax_price__sum']
@@ -1073,8 +1127,8 @@ class SalesSerializer(DynamicFieldsModelSerializer):
     # def get_sales_appoint_detail_total_tax_price(self, obj):
     #     return obj.sales_appoint_detail.all().aggregate(models.Sum('total_tax_price'))['total_tax_price__sum']
 
-    # def get_sales_service_detail_total_price(self, obj):
-    #     return obj.sales_service_detail.all().aggregate(models.Sum('total_price'))['total_price__sum']
+    def get_sales_service_detail_total_price(self, obj):
+        return obj.sales_service_detail.all().aggregate(models.Sum('fixed_price', field="fixed_price*quantity"))['fixed_price__sum']
 
     # def get_sales_service_detail_total_tax_price(self, obj):
     #     return obj.sales_service_detail.all().aggregate(models.Sum('total_tax_price'))['total_tax_price__sum']
@@ -1149,12 +1203,12 @@ class ProductSalesSerializer(serializers.Serializer):
 #     def get_start(self, obj):
 #         if obj.start == None:
 #             return ''
-#         return utc_to_jst(obj.start).strftime('%Y年%m月%d日 %H時%M分')
+#         return utc_to_jst(obj.start).strftime('%Y/%m/%d %H:%M')
 #
 #     def get_end(self, obj):
 #         if obj.end == None:
 #             return ''
-#         return utc_to_jst(obj.end).strftime('%Y年%m月%d日 %H時%M分')
+#         return utc_to_jst(obj.end).strftime('%Y/%m/%d %H:%M')
 
 
 class BookingSerializer(DynamicFieldsModelSerializer):
@@ -1191,14 +1245,14 @@ class BookingSerializer(DynamicFieldsModelSerializer):
     def get_register_date(self, obj):
         if obj.register_date == None:
             return ''
-        return utc_to_jst(obj.register_date).strftime('%Y年%m月%d日')
+        return utc_to_jst(obj.register_date).strftime('%Y/%m/%d')
 
     def get_booking_start(self, obj):
         if obj.booking_start == None:
             return ''
-        return utc_to_jst(obj.booking_start).strftime('%Y年%m月%d日 %H時%M分')
+        return utc_to_jst(obj.booking_start).strftime('%Y/%m/%d %H:%M')
 
     def get_booking_end(self, obj):
         if obj.booking_end == None:
             return ''
-        return utc_to_jst(obj.booking_end).strftime('%Y年%m月%d日 %H時%M分')
+        return utc_to_jst(obj.booking_end).strftime('%Y/%m/%d %H:%M')

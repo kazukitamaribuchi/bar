@@ -33,15 +33,26 @@ const bottleActions = {
         })
     },
     deleteBottleListAction (ctx, kwargs) {
+        // Vue.prototype.$axios({
+        //     url: '/api/bottle/delete_bottle_data/',
+        //     method: 'DELETE',
+        //     data: kwargs
+        // })
+        // .then(res => {
+        //     console.log(res)
+        //     // storeの削除フラグを更新
+        //     this.commit('updateBottleList', res.data.data)
+        // })
+        // .catch(e => {
+        //     console.log(e)
+        // })
         Vue.prototype.$axios({
-            url: '/api/bottle/delete_bottle_data/',
+            url: `/api/bottle/${kwargs.id}/`,
             method: 'DELETE',
-            data: kwargs
         })
         .then(res => {
             console.log(res)
-            // storeの削除フラグを更新
-            this.commit('updateBottleList', res.data.data)
+            this.commit('deleteBottleList', kwargs)
         })
         .catch(e => {
             console.log(e)

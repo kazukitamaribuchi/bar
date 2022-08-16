@@ -46,30 +46,44 @@ def sales_detail_receiver(sender, instance, created, **kwargs):
 
     logger.debug('★sales_detail_receiver')
 
-    if created:
-        # 新規作成の場合で食べ物のみリアルタイムで厨房行
-        if instance.product.category.large_category != 2:
-            return
-        channel_layer = get_channel_layer()
-        logger.debug(channel_layer)
-        async_to_sync(channel_layer.group_send)(
-            instance.header.user.username,
-            {
-                'type': 'new_order',
-                'content': SalesDetailSerializer(instance).data,
-            },
-        )
+    if not created:
+        logger.debug('新規作成じゃないのでスルー')
+        return
+
+    # 新規作成の場合で食べ物のみリアルタイムで厨房行
+    if instance.product.category.large_category != 2:
+        logger.debug('食べ物オーダーじゃないのでスルー')
+        return
+
+    channel_layer = get_channel_layer()
+    logger.debug('食事の明細新規作成➡WS送信')
+    async_to_sync(channel_layer.group_send)(
+        instance.header.user.username,
+        {
+            'type': 'new_order',
+            'content': SalesDetailSerializer(instance).data,
+        },
+    )
 
 @receiver(post_save, sender=SalesHeader)
 def sales_header_receiver(sender, instance, created, **kwargs):
 
-    if not created:
-        if instance.close_flg:
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                instance.user.username,
-                {
-                    'type': 'close_sales_header',
-                    'content': SalesSerializer(instance).data,
-                },
-            )
+    logger.debug('sales_header_receiver')
+
+    if created:
+        logger.debug('伝票新規作成はスルー')
+        return
+
+    if not instance.close_flg:
+        logger.debug('締めフラグではないのでスルー')
+        return
+
+    channel_layer = get_channel_layer()
+    logger.debug('伝票締め➡WS送信')
+    async_to_sync(channel_layer.group_send)(
+        instance.user.username,
+        {
+            'type': 'close_sales_header',
+            'content': SalesSerializer(instance).data,
+        },
+    )

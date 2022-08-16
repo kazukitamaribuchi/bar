@@ -13,6 +13,8 @@ from rest_framework.response import Response
 from django.db import transaction, models
 from django.db.models import Sum, Q
 
+from django.db.models.functions import Concat
+
 from datetime import (
     datetime,
     timedelta,
@@ -131,6 +133,23 @@ class BaseModelViewSet(viewsets.ModelViewSet):
     """
     """
 
+    @transaction.atomic
+    def destroy(self, request, *args, **kwargs):
+        """
+        共通で論理削除とする
+        """
+
+        logger.debug('★共通のDestroyですとろい')
+
+        instance = self.get_object()
+        instance.delete_flg = True
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )
+
 
 class CustomerViewSet(BaseModelViewSet):
     """
@@ -227,17 +246,16 @@ class CustomerViewSet(BaseModelViewSet):
         #
         # return Response(self.get_serializer(customer).data, status=status.HTTP_200_OK)
 
-    def destroy(self, request, pk=None):
-        logger.debug("★DELETE")
-        logger.debug(request.data)
-        logger.debug(pk)
-
-        instance = self.get_object()
-        logger.debug(instance)
-
-        instance.delete_flg = True
-        instance.save()
-        return Response(CustomerSerializer(instance).data, status=status.HTTP_200_OK)
+    # def destroy(self, request, *args, **kwargs):
+    #     logger.debug("★DELETE")
+    #     logger.debug(request.data)
+    #
+    #     instance = self.get_object()
+    #     logger.debug(instance)
+    #
+    #     instance.delete_flg = True
+    #     instance.save()
+    #     return Response(CustomerSerializer(instance).data, status=status.HTTP_200_OK)
 
 
     @action(methods=['get'], detail=False)
@@ -245,7 +263,7 @@ class CustomerViewSet(BaseModelViewSet):
 
         customers = self.get_queryset().filter(
             delete_flg=False,
-        )
+        ).order_by('-rank_id')
 
         res = {
             'customers': CustomerSerializer(customers, many=True).data,
@@ -614,7 +632,7 @@ class BottleViewSet(BaseModelViewSet):
 
         bottle = self.get_queryset().filter(
             delete_flg=False,
-        )
+        ).order_by(Concat('end_flg', 'end_date'), '-created_at')
 
         res = {
             'bottle': BottleSerializer(bottle, many=True).data,
@@ -832,6 +850,25 @@ class SalesViewSet(BaseModelViewSet):
     permission_classes = (permissions.AllowAny,)
     queryset = SalesHeader.objects.all()
     serializer_class = SalesSerializer
+
+    @action(methods=['get'], detail=False)
+    def get_all_sales(self, request):
+
+        sales = self.get_queryset().filter(
+            Q(customer__delete_flg=False) &
+            Q(close_flg=True) &
+            Q(delete_flg=False)
+        ).order_by('-leave_time')
+
+        res = {
+            'sales': SalesSerializer(sales, many=True).data,
+            'count': sales.count(),
+        }
+
+        return Response(
+            res,
+            status=status.HTTP_200_OK
+        )
 
     @transaction.atomic
     @action(methods=['post'], detail=False)
@@ -2320,11 +2357,20 @@ class SalesViewSet(BaseModelViewSet):
                     logger.debug('ボトル登録有')
                     logger.debug('商品のid')
                     logger.debug(sales_detail['id'])
+
                     BottleManagement.objects.create(
                         customer=customer,
                         open_date=open_date,
                         product=product,
                     )
+
+                    try:
+                        detail = SalesDetail.objects.get(pk=sales_detail['id'])
+                        detail.bottle_register = True
+                        detail.save()
+                    except SalesDetail.DoesNotExist:
+                        return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
         for sales_service_detail in request.data['sales_service_detail']:
             logger.debug(sales_service_detail)

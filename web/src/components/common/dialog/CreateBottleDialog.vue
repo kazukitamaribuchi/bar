@@ -695,6 +695,7 @@ export default {
                 customerNo: '',
                 nonMemberName: '',
                 customerType: 1,
+                openDate: now,
                 remarks: '',
             }
             this.customerNoError = ''

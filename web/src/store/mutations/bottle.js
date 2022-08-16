@@ -20,9 +20,7 @@ const bottleMutations = {
     deleteBottleList (state, payload) {
         if (state.bottle != undefined) {
             const index = state.bottle.findIndex(b => b.id === payload.id)
-            Vue.set(state.bottle, index, payload)
-            // const index = state.bottle.findIndex(s => s.id === payload.id)
-            // if (index !== -1) state.bottle = state.bottle.filter((_, i) => i !== index)
+            if (index !== -1) state.bottle = state.bottle.filter((_, i) => i !== index)
         }
     }
 }

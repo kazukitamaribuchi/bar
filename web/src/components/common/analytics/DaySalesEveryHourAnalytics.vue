@@ -65,12 +65,13 @@
                 // },
                 chart: {
                   type: 'line',
-                  toolbar: {
-                      show: false,
-                  },
-                  zoom: {
-                    enabled: false
-                  }
+                  height: 270,
+                  // toolbar: {
+                  //     show: false,
+                  // },
+                  // zoom: {
+                  //   enabled: false
+                  // }
                 },
                 // responsive: [{
                 //   breakpoint: 480,
@@ -92,102 +93,120 @@
                 //     },
                 // },
                 xaxis: {
-                    type: 'datetime',
+                    type: 'category',
                     // position: 'top',
-                    axisBorder: {
-                        show: false
-                    },
-                    axisTicks: {
-                        show: false
-                    },
-                    crosshairs: {
-                        fill: {
-                            type: 'gradient',
-                            gradient: {
-                                colorFrom: '#D8E3F0',
-                                colorTo: '#BED1E6',
-                                stops: [0, 100],
-                                opacityFrom: 0.4,
-                                opacityTo: 0.5,
-                            }
-                        }
-                    },
-                    tooltip: {
-                        enabled: true,
-                    },
-                    labels: {
-                        style: {
-                            fontSize: '12px',
-                            colors: ["#ffffff"]
+                    // axisBorder: {
+                    //     show: false
+                    // },
+                    // axisTicks: {
+                    //     show: false
+                    // },
+                    // crosshairs: {
+                    //     fill: {
+                    //         type: 'gradient',
+                    //         gradient: {
+                    //             colorFrom: '#D8E3F0',
+                    //             colorTo: '#BED1E6',
+                    //             stops: [0, 100],
+                    //             opacityFrom: 0.4,
+                    //             opacityTo: 0.5,
+                    //         }
+                    //     }
+                    // },
+                    // tooltip: {
+                    //     enabled: true,
+                    // },
+                    // labels: {
+                    //     style: {
+                    //         fontSize: '12px',
+                    //         colors: ["#ffffff"]
+                    //     },
+                    //     datetimeFormatter: {
+                    //         year: 'yyyy年',
+                    //         month: "M月",
+                    //         day: 'M月dd日',
+                    //         hour: 'HH:mm',
+                    //     },
+                    //     datetimeUTC: false,
+                    // }
+                },
+                yaxis: [
+                    {
+                        title: {
+                            text: '売上',
                         },
-                        datetimeFormatter: {
-                            year: 'yyyy年',
-                            month: "M月",
-                            day: 'M月dd日',
-                            hour: 'HH:mm',
-                        },
-                        datetimeUTC: false,
-                    }
-                },
-                yaxis: {
-                    labels: {
-                        style: {
-                            fontSize: '12px',
-                            colors: ["#ffffff"]
+                    },
+                    {
+                        opposite: true,
+                        title: {
+                            text: '来店数'
                         }
-                    },
-                    title: {
-                        text: "来店数",
-                        style: {
-                            color: '#008FFB',
-                        }
-                    },
-                },
-                dataLabels: {
-                    enabled: false,
-                    formatter: function (val) {
-                        return val.toLocaleString() + "円";
-                    },
-                    offsetY: -20,
-                    style: {
-                        fontSize: '12px',
-                        colors: ["#ffffff"]
                     }
-                },
+                ],
+                // dataLabels: {
+                //     enabled: true,
+                //     enabledOnSeries: [1]
+                //     // enabled: false,
+                //     // formatter: function (val) {
+                //     //     return val.toLocaleString() + "円";
+                //     // },
+                //     // offsetY: -20,
+                //     // style: {
+                //     //     fontSize: '12px',
+                //     //     colors: ["#ffffff"]
+                //     // }
+                // },
                 stroke: {
                     curve: 'straight',
+                    // width: [0, 5]
                 },
-                labels: ['01 Jan 2001', '02 Jan 2001', '03 Jan 2001', '04 Jan 2001', '05 Jan 2001', '06 Jan 2001', '07 Jan 2001', '08 Jan 2001', '09 Jan 2001', '10 Jan 2001', '11 Jan 2001', '12 Jan 2001'],
-                
-                // title: {
-                //     text: 'Fundamental Analysis of Stocks',
-                //     align: 'left'
-                // },
-                // subtitle: {
-                //     text: 'Price Movements',
-                //     align: 'left'
-                // },
+                labels: [
+                    '00:00 ~ 00:59',
+                    '01:00 ~ 01:59',
+                    '02:00 ~ 02:59',
+                    '03:00 ~ 03:59',
+                    '04:00 ~ 04:59',
+                    '05:00 ~ 05:59',
+                    '06:00 ~ 06:59',
+                    '07:00 ~ 07:59',
+                    '08:00 ~ 08:59',
+                    '09:00 ~ 09:59',
+                    '10:00 ~ 10:59',
+                    '11:00 ~ 11:59',
+                    '12:00 ~ 12:59',
+                    '13:00 ~ 13:59',
+                    '14:00 ~ 14:59',
+                    '15:00 ~ 15:59',
+                    '16:00 ~ 16:59',
+                    '17:00 ~ 17:59',
+                    '18:00 ~ 18:59',
+                    '19:00 ~ 19:59',
+                    '20:00 ~ 20:59',
+                    '21:00 ~ 21:59',
+                    '22:00 ~ 22:59',
+                    '23:00 ~ 23:59',
+                ],
 
-                // legend: {
-                //     position: 'right',
-                //     offsetX: 0,
-                //     offsetY: 50
-                // },
-                // fill: {
-                //     opacity: 0.9
-                // },
-                fill: {
-                    type: 'gradient',
-                    gradient: {
-                        shade: 'dark',
-                        gradientToColors: [ '#FDD835'],
-                        shadeIntensity: 1,
-                        type: 'horizontal',
-                        opacityFrom: 1,
-                        opacityTo: 1,
-                        stops: [0, 100, 100, 100]
-                    },
+                legend: {
+                    position: 'right',
+                    offsetX: 0,
+                    offsetY: 50
                 },
+                fill: {
+                    opacity: 0.9
+                },
+                // fill: {
+                //     type: 'gradient',
+                //     gradient: {
+                //         shade: 'dark',
+                //         gradientToColors: [ '#FDD835'],
+                //         shadeIntensity: 1,
+                //         type: 'horizontal',
+                //         opacityFrom: 1,
+                //         opacityTo: 1,
+                //         stops: [0, 100, 100, 100]
+                //     },
+                // },
                 tooltip: {
                     theme: 'dark',
                     followCursor: true
@@ -197,12 +216,12 @@
             },
             daySalesEveryHourSeries: [
                 {
-                    name: 'Blog',
+                    name: '売上',
                     type: 'column',
                     data: [440, 505, 414, 671, 227, 413, 201, 352, 752, 320, 257, 160]
                 },
-            {
-                    name: '',
+                {
+                    name: '来店数',
                     type: 'line',
                     data: [23, 42, 35, 27, 43, 22, 17, 31, 22, 22, 12, 16]
                 }
@@ -212,15 +231,17 @@
         beforeCreate () {
         },
         created () {
+            // console.log('★get_sales_by_every_time_analytics')
             this.$axios({
                 method: 'GET',
                 url: '/api/sales/get_sales_by_every_time_analytics/',
                 params: {
-                    // target_date: this.targetDate,
-                    target_date: '2022-08-14',
+                    target_date: this.targetDate,
+                    // target_date: '2022-08-14',
                 }
             })
             .then(res => {
+                // console.log('res',res)
                 this.setDaySalesEveryHourData(res.data)
             })
             .catch(e => {
@@ -249,18 +270,27 @@
         },
         methods: {
             setDaySalesEveryHourData (item) {
-                const data = item.data
-                let series = []
-                let labels = []
+                // console.log('setDaySalesEveryHourData', item)
+                let cnt = 0
+                const data = item
+                let sales = []
+                let visit = []
                 let colors = []
                 for (const i in data) {
-                    labels.push(data[i].date)
-                    series.push(data[i].total)
+                    // console.log('data[i]', data[i][cnt])
+                    sales.push(data[i][cnt].total)
+                    visit.push(data[i][cnt].total_visit)
                     colors.push('#ffffff')
+                    cnt++
+                    // if (cnt >= 8) break
                 }
-                this.daySalesEveryHourSeries[0].data = series
-                this.daySalesEveryHourChartOptions.labels = labels
-                this.daySalesEveryHourChartOptions.xaxis.labels.style.colors = colors
+                // console.log('sales', sales)
+                // console.log('visit', visit)
+                // console.log('this.daySalesEveryHourSeries', this.daySalesEveryHourSeries)
+                this.daySalesEveryHourSeries[0].data = sales
+                this.daySalesEveryHourSeries[1].data = visit
+                // this.daySalesEveryHourChartOptions.labels = labels
+                // this.daySalesEveryHourChartOptions.xaxis.labels.style.colors = colors
                 this.loading = false
             }
         },
