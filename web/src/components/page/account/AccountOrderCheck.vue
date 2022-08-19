@@ -8,8 +8,7 @@
             title="注文内容"
         />
 
-        <OrderList
-        />
+        <OrderList/>
         <SelectedProductFooter
             v-show="selectedProduct != undefined && selectedProduct.length != 0"
         />

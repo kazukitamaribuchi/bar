@@ -28,6 +28,7 @@
                         >
                         </vs-input> -->
                         <SearchCustomerInfo
+                            ref="searchCustomerInfo"
                             @updateCustomerInfo="updateCustomerInfo"
                         />
 
@@ -186,6 +187,15 @@
                 ><i class='bx bxs-send'></i> ボトル情報作成</v-btn>
             </v-col>
 
+            <v-col cols="12" class="pb-0">
+                <v-btn
+                    block
+                    depressed
+                    color="primary"
+                    @click="init"
+                ><i class='bx bx-x'></i> クリア</v-btn>
+            </v-col>
+
             <v-col cols="12">
                 <HomeButton/>
             </v-col>
@@ -335,8 +345,10 @@
                     openDate: '',
                     remarks: '',
                 }
-                this.menu = false,
+                this.menu = false
                 this.menu2 = false
+                this.todaySwitch = true
+                this.$refs.searchCustomerInfo.init()
             },
             toHome () {
                 this.init()

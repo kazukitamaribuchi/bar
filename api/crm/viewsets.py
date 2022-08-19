@@ -1738,7 +1738,7 @@ class SalesViewSet(BaseModelViewSet):
             for hour in range(0, 24):
 
                 end_time = start_time + timedelta(hours=1)
-                
+
                 data = SalesDetail.objects.filter(
                     Q(header__customer__delete_flg=False) &
                     Q(header__delete_flg=False) &
@@ -1896,6 +1896,7 @@ class SalesViewSet(BaseModelViewSet):
         if customer_no != None and customer_no != '':
             try:
                 customer = MCustomer.objects.get(card__customer_no=customer_no)
+
             except MCustomer.DoesNotExist:
                 logger.error('顧客情報が取得出来ません。')
                 return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -1946,19 +1947,21 @@ class SalesViewSet(BaseModelViewSet):
             try:
                 seat = MSeat.objects.get(pk=seat_id)
 
-                not_end_same_seat_sales_header_list = SalesHeader.objects.filter(
-                    seat=seat,
-                    close_flg=False,
-                )
-
-                if len(not_end_same_seat_sales_header_list) >= 1:
-                    logger.error('同一座席の伝票が存在します。')
-                    return Response(
-                        {
-                            'msg': '同一座席の伝票が存在します。'
-                        },
-                        status=status.HTTP_400_BAD_REQUEST
-                    )
+                # 2022-08-19 => 同一座席の伝票もOK☞後から来た人とか。
+                # not_end_same_seat_sales_header_list = SalesHeader.objects.filter(
+                #     seat=seat,
+                #     close_flg=False,
+                #     delete_flg=False,
+                # )
+                #
+                # if len(not_end_same_seat_sales_header_list) >= 1:
+                #     logger.error('同一座席の伝票が存在します。')
+                #     return Response(
+                #         {
+                #             'msg': '同一座席の伝票が存在します。'
+                #         },
+                #         status=status.HTTP_400_BAD_REQUEST
+                #     )
             except MSeat.DoesNotExist:
                 logger.error('座席情報が取得出来ません。')
                 return Response(status=status.HTTP_400_BAD_REQUEST)

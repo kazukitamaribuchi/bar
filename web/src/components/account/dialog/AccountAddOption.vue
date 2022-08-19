@@ -39,7 +39,7 @@
                     block
                     @click="addSelectedProduct"
                     size="large"
-                >追加</vs-button>
+                >{{ btnText }}</vs-button>
             </v-card-text>
 
 
@@ -59,35 +59,59 @@ export default {
         dialog: false,
         item: {},
         index: null,
+        editMode: false,
     }),
     computed: {
         isDisabled () {
-            if (this.item.quantity == 0) {
+            if (this.item.quantity == 0 && !this.editMode) {
                 return true
             }
             return false
+        },
+        btnText () {
+            if (this.editMode) return '更新'
+            return '追加'
         }
     },
     methods: {
         ...mapMutations([
             'pushSelectedProduct',
+            'updateSelectedProduct',
             'setSelectedProductSalesId',
+            'deleteSelectedProduct',
         ]),
         open (item, idx) {
             this.dialog = true
             this.item = _.cloneDeep(item)
             this.index = idx
-            console.log(this.item)
+
+            // 2022-08-19 とりあえず追加かUPDATEで1回の注文で1パターンのみにする。
+            if (this.item.quantity >= 1 ) {
+                this.editMode = true
+            } else {
+                this.editMode = false
+            }
+            console.log('open', this.item)
         },
         close () {
             this.dialog = false
             this.item = {}
             this.index = null
+            this.editMode = false
         },
         addSelectedProduct () {
-            this.pushSelectedProduct(this.item)
-            this.setSelectedProductSalesId(this.$route.params.id)
+            this.item.fixedPrice = Number(this.item.fixedPrice) 
+            if (this.editMode) {
+                if (this.item.quantity == 0) {
+                    this.deleteSelectedProduct(this.item)
+                } else {
+                    this.updateSelectedProduct(this.item)
+                }
+            } else {
+                this.pushSelectedProduct(this.item)
+            }
             this.$emit('addSelectedProductOpt', this.item, this.index)
+            this.setSelectedProductSalesId(this.$route.params.id)
             this.close()
         }
     }

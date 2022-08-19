@@ -250,6 +250,14 @@
                     @click="createSalesHeader"
                 ><i class='bx bxs-send'></i> 入店情報作成</v-btn>
             </v-col>
+            <v-col cols="12" class="pb-0">
+                <v-btn
+                    block
+                    depressed
+                    color="success"
+                    @click="init"
+                ><i class='bx bx-x'></i> クリア</v-btn>
+            </v-col>
             <v-col cols="12">
                 <HomeButton/>
             </v-col>
@@ -472,19 +480,25 @@
             },
             init () {
                 this.visitInfo = {
-                    seatId: null,
+                    seatId: '',
                     maleVisitors: 0,
                     femaleVisitors: 0,
-                    customerNo: null,
-                    basicPlanType: null,
-                    visitTime: null,
+                    customerNo: '',
+                    basicPlanType: '',
+                    visitTime: '',
                     remarks: '',
                 }
+                this.snackbar = false
+                this.snackbarText = false
+                this.basicPlanError = false
+                this.customerNoError = false
+                this.visitorsError = false
                 this.visitTimeSwitch = true
-                this.menu = false,
+                this.menu = false
                 this.menu2 = false
                 this.date = this.nowDate
                 this.time = this.nowTime
+                this.$refs.searchCustomerInfo.init()
             },
             toHome () {
                 this.init()

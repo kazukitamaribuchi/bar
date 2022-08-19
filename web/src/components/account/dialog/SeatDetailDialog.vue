@@ -131,6 +131,15 @@
                 >更新</v-btn>
                 <v-btn
                     block
+                    color="danger"
+                    depressed
+                    outlined
+                    @click="deleteSalesHeaderConfirm = true"
+                    :loading="deleteLoading"
+                    class="my-3"
+                >伝票削除</v-btn>
+                <v-btn
+                    block
                     color="blue-grey"
                     outlined
                     @click="dialog = false"
@@ -168,7 +177,7 @@
             v-model="snackbar"
             timeout="2000"
         >
-            データの更新に失敗しました。
+            {{ snackbarText }}
             <template v-slot:action="{ attrs }">
                 <v-btn
                     color="pink"
@@ -178,6 +187,61 @@
                 >Close</v-btn>
             </template>
         </v-snackbar>
+
+        <v-dialog
+            v-model="deleteSalesHeaderConfirm"
+        >
+            <v-card>
+                <v-card-title>
+                    伝票を削除します。<br>
+                    宜しいですか？
+                </v-card-title>
+                <v-card-actions>
+                    <v-row class="ma-0">
+                        <v-col class="ma-0">
+                            <v-btn
+                                block
+                                color="blue-grey"
+                                @click="deleteSalesHeaderConfirm = false"
+                                dark
+                            >
+                                いいえ
+                            </v-btn>
+                        </v-col>
+                        <v-col class="ma-0">
+                            <v-btn
+                                block
+                                color="primary"
+                                @click="deleteSalesHeader"
+                            >
+                                はい
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <v-dialog
+            v-model="deleteSuccessDialog"
+        >
+            <v-card
+                class="pt-3"
+                flat
+            >
+                <v-card-title>
+                    伝票の削除に成功しました。
+                </v-card-title>
+                <v-card-actions>
+                    <vs-button
+                        primary
+                        transparent
+                        size="large"
+                        @click="deleteSuccess"
+                    >はい</vs-button>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
 
         <v-dialog
             v-model="successDialog"
@@ -256,9 +320,13 @@
             ],
             basicPlanType: 0,
             updateLoading: false,
+            deleteLoading: false,
             seatId: null,
             snackbar: false,
+            snackbarText: '',
             successDialog: false,
+            deleteSuccessDialog: false,
+            deleteSalesHeaderConfirm: false,
         }),
         computed: {
             ...mapGetters([
@@ -307,7 +375,6 @@
                 const data = this.salesData
                 data.basic_plan_type_id = this.basicPlanType
                 data.seat_id = this.seatId
-                console.log('data', data)
                 this.$axios({
                     method: 'put',
                     url: '/api/sales/update_sales_header/',
@@ -324,6 +391,37 @@
                 .catch(e => {
                     this.updateLoading = false
                     this.snackbar = true
+                    this.snackbarText = 'データの更新に失敗しました。'
+                    console.log(e)
+                })
+            },
+            deleteSuccess () {
+                this.$router.push({
+                    name: 'AccountHome',
+                })
+                this.init()
+            },
+            deleteConfirm () {
+
+            },
+            deleteSalesHeader () {
+                this.deleteLoading = true
+                const data = this.salesData
+                this.$axios({
+                    method: 'delete',
+                    url: `/api/sales/${data.id}/`,
+                })
+                .then(res => {
+                    console.log(res)
+                    this.salesData = res.data
+                    this.$emit('deleteSalesData', res.data)
+                    this.deleteLoading = false
+                    this.deleteSuccessDialog = true
+                })
+                .catch(e => {
+                    this.deleteLoading = false
+                    this.snackbar = true
+                    this.snackbarText = 'データの削除に失敗しました。'
                     console.log(e)
                 })
             },

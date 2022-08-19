@@ -37,7 +37,7 @@
                             v-else
                             class="white--text align-end"
                             height="120px"
-                            src="http://localhost:8000/media/upload/酒6.png"
+                            src="http://localhost:8000/media/upload/酒2.png"
                             contain
                         >
                         </v-img>
@@ -112,6 +112,7 @@
                                 <vs-checkbox
                                     class="mt-4"
                                     v-model="item.taxFree"
+                                    @change="updateTaxFree(item)"
                                 >非課税</vs-checkbox>
                             </div>
                             <div>
@@ -139,16 +140,16 @@
             <v-divider
                 class="mx-4"
             />
-            <v-card-title>
+            <v-card-title class="text-h7 py-0">
                 総計
             </v-card-title>
-            <v-card-text class="text-right text-h6">
+            <v-card-text class="text-right text-h7 py-2">
                 注文数 : <SelectedProductTotalCnt/>
             </v-card-text>
-            <v-card-text class="text-right text-h6">
+            <v-card-text class="text-right text-h7 py-2">
                 総計(税抜) : <SelectedProductTotalPrice/>
             </v-card-text>
-            <v-card-text class="text-right text-h5">
+            <v-card-text class="text-right text-h7 py-2">
                 総計(税込) : <SelectedProductTotalPrice :tax=true />
             </v-card-text>
         </v-card>
@@ -187,7 +188,6 @@ export default {
 
         this.getHeaderInfo()
         .then(res=> {
-            console.log('ちんこ')
             const customerBottleList = _.cloneDeep(this.headerInfo.customer.bottle)
             this.items = _.cloneDeep(this.selectedProductList).map(function(ele) {
                 const bottleIdx = customerBottleList.findIndex(e => e.id == ele.id)

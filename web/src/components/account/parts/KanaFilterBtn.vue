@@ -1,6 +1,13 @@
 <template>
     <v-container fluid :class="{'pa-0': paddingOff}">
-        <v-row class="kana_filter_btn_wrap">
+        <vs-button
+            circle
+            icon
+            @click="showFilter != showFilter"
+        >
+            <i class='bx bx-filter'></i>
+        </vs-button>
+        <v-row v-if="showFilter" class="kana_filter_btn_wrap">
             <v-col
                 cols="2"
                 sm="2"
@@ -47,6 +54,7 @@ export default {
             { name: 'ワ', key: 9 },
             { name: 'All', key: 10 },
         ],
+        showFilter: false,
     }),
     computed: {
         ...mapGetters([

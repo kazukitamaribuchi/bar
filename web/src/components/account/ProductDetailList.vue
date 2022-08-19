@@ -2,11 +2,12 @@
     <v-container
         fluid
         :class="{'selected_product_padding': isShowSelectedProductFooter}"
+        class="px-1"
     >
         <KanaFilterBtn
             @kanaFilter="kanaFilter"
         />
-        <v-row>
+        <v-row class="px-1">
             <v-col v-if="dispItems == undefined || dispItems == null || dispItems.length == 0">
                 <v-card-subtitle>
                     対象の商品は存在しません。
@@ -16,15 +17,112 @@
                 cols="12"
                 v-for="(item, i) in dispItems"
                 :key="i"
-                class="py-1 px-0"
+                class="px-1 py-2"
             >
+            <!-- class="pt-4" -->
                 <v-card
-                    class="pt-4"
-                    outlined
-                    style="cursor: pointer;"
-                    @click="toProductDetail(item)"
+                    flat
+                    @click.stop="toProductDetail(item)"
+                    :ripple="false"
                 >
-                    <v-row style="max-width: 100%; margin: 0 auto;">
+                    <v-container fluid>
+                        <v-row>
+                            <v-col cols="9" class="pa-0">
+                                <v-card-subtitle style="font-size: 12px;" class="pb-1 pr-0">
+                                    {{ item.name }}
+                                </v-card-subtitle>
+                                <v-card-text style="font-size: 12px;" class="pb-0 pr-0">
+                                    <v-chip
+                                        v-if="item.taxFree"
+                                        :ripple="false"
+                                        small
+                                    >
+                                        非課税
+                                    </v-chip>
+                                    <span
+                                        v-if="item.fixed"
+                                        class="text-right"
+                                        style="font-size: 12px; color: rgba(50, 50, 50, 0.8);"
+                                    >
+                                        <i class='bx bx-yen'></i>
+                                        {{ item.fixedPrice | priceLocaleString }}
+                                    </span>
+                                    <span
+                                        style="font-size: 12px;"
+                                        :class="{'is_fixed': isFixed(item)}"
+                                    >
+                                        <i class='bx bx-yen'></i>
+                                        {{ item.price | priceLocaleString }}
+                                    </span>
+                                </v-card-text>
+                                <v-card-actions class="pt-0">
+                                    <b-form-spinbutton
+                                        id="sb-inline"
+                                        v-model="item.quantity"
+                                        size="sm"
+                                        min="0"
+                                        style="width: 200px;"
+                                        class="ml-4"
+                                        @change="changeQuantity(item, i)"
+                                    ></b-form-spinbutton>
+                                    <vs-button
+                                        icon
+                                        circle
+                                        border
+                                        primary
+                                        @click="openAddOption(item, i)"
+                                        :disabled="isDisabled(item)"
+                                    >
+                                        <i class='bx bx-plus'></i>
+                                    </vs-button>
+                                </v-card-actions>
+                                <!-- <v-card-actions>
+                                    <vs-button
+                                        style="width: 200px; border-radius: 13px;"
+                                        @click.stop="addCart(item, i)"
+                                    >
+                                        追加
+                                    </vs-button>
+                                </v-card-actions> -->
+                            </v-col>
+                            <v-col cols="3" class="pa-0">
+                                <v-badge
+                                    right
+                                    :content="selectedValue(item)"
+                                    :value="selectedValue(item)"
+                                    style="width: 100%; height: 100%;"
+                                    offset-x="30"
+                                    offset-y="20"
+                                >
+                                    <v-img
+                                        v-if="item.thumbnail != null"
+                                        class="white--text align-end"
+                                        height="120px"
+                                        :src="item.thumbnail"
+                                        contain
+                                    >
+                                    </v-img>
+                                    <v-img
+                                        v-else
+                                        class="white--text align-end"
+                                        height="120px"
+                                        src="http://localhost:8000/media/upload/酒2.png"
+                                        contain
+                                    >
+                                    </v-img>
+                                </v-badge>
+                                <v-chip
+                                    v-if="item.isBottle"
+                                    class="ml-2"
+                                    color="success"
+                                >
+                                    ボトル有
+                                </v-chip>
+                            </v-col>
+                        </v-row>
+                    </v-container>
+
+                    <!-- <v-row style="max-width: 100%; margin: 0 auto;">
                         <v-col cols="3" class="pl-1 pt-0">
                             <v-badge
                                 left
@@ -82,11 +180,26 @@
                                     >
                                         <p
                                             class="mb-0"
-                                            style="font-size: 16px;"
+                                            style="font-size: 16px; text-align: right;"
                                         >
-                                            <i class='bx bx-yen'></i> <span
+                                            <span
+                                                v-if="item.taxFree"
+                                            >非課税</span>
+                                            <span
+                                                v-if="item.fixed"
+                                                class="text-right"
+                                                style="font-size: 16px; color: red;"
+                                            >
+                                                <i class='bx bx-yen'></i>
+                                                {{ item.fixedPrice | priceLocaleString }}
+                                            </span>
+                                            <i class='bx bx-yen'></i>
+                                            <span
                                                 style="font-weight: 200;"
-                                            >{{ item.price | priceLocaleString }}</span>
+                                                :class="{'is_fixed': isFixed(item)}"
+                                            >
+                                                {{ item.price | priceLocaleString }}
+                                            </span>
                                         </p>
                                     </div>
                                     <div class="mt-1 mb-2">
@@ -95,7 +208,7 @@
                                             v-model="item.quantity"
                                             size="sm"
                                             min="0"
-                                            @change="changeQuantity(item)"
+                                            @change="changeQuantity(item, i)"
                                         ></b-form-spinbutton>
                                     </div>
                                     <div style="display: flex; justify-content: space-between;" class="mt-5 mb-2">
@@ -105,37 +218,21 @@
                                         >
                                             追加
                                         </vs-button>
-                                        <!-- <b-form-spinbutton
-                                            id="sb-inline"
-                                            v-model="items[i].quantity"
-                                            inline
-                                            size="sm"
-                                            style="height: 20px; margin: auto;"
-                                            min="0"
-                                            @change="changeQuantity(item)"
-                                        ></b-form-spinbutton> -->
                                         <vs-button
-                                            circle
-                                            icon
                                             border
                                             success
                                             @click="openAddOption(item, i)"
                                             :disabled="isDisabled(item)"
                                         >
+                                            詳細
                                             <i class='bx bx-plus' ></i>
                                         </vs-button>
                                     </div>
 
                                 </v-col>
-                                <!-- <v-col cols="3">
-                                    1
-                                </v-col>
-                                <v-col cols="3">
-                                    2
-                                </v-col> -->
                             </v-row>
                         </v-col>
-                    </v-row>
+                    </v-row> -->
                 </v-card>
             </v-col>
 
@@ -166,6 +263,7 @@
 
 <script>
 
+import Vue from 'vue'
 import AccountAddOption from '@/components/account/dialog/AccountAddOption'
 import SpinButton from '@/components/account/SpinButton'
 import KanaFilterBtn from '@/components/account/parts/KanaFilterBtn'
@@ -196,13 +294,12 @@ export default {
         }
     },
     data: () => ({
-        test: 1,
+        // 全体の配列
         items: [],
-        // large: 1,
-        // middle: 0,
-        // small: 0,
         currentPage: 1,
         pageNum: 0,
+
+        // 表示用
         dispItems: [],
     }),
     components: {
@@ -213,30 +310,30 @@ export default {
     beforeCreate () {
     },
     created () {
-        // const large = this.$route.params.large
-        // const middle = this.$route.params.middle
-        // const small = this.$route.params.small
-
+        // カートの中身
         const selectedProductList = _.cloneDeep(this.selectedProduct)
+
+        // 顧客のボトルリスト
         const customerBottleList = _.cloneDeep(this.headerInfo.customer.bottle)
-        console.log('customerBottleList', customerBottleList)
+
+        // 選んだカテゴリの商品を取得しディープコピー
         const copyItems = _.cloneDeep(this.productByCategory[this.large][this.middle][this.small])
-        // let slicedArray = this.divideArrIntoPieces(copyItems, 5)
-        // this.items = copyItems
 
-
-        console.log('selectedProductList', selectedProductList)
-        console.log('customerBottleList', customerBottleList)
         console.log('copyItems', copyItems)
 
-
+        // 選択中の商品か、
+        // 顧客がボトル所持しているか、
         let items = copyItems.map(function(ele) {
             const selectedIdx = selectedProductList.findIndex(e => e.id == ele.id)
             const bottleIdx = customerBottleList.findIndex(e => e.product.id == ele.id)
             if (selectedIdx != -1) {
                 ele.quantity = selectedProductList[selectedIdx].quantity
+                ele.fixedPrice = selectedProductList[selectedIdx].fixedPrice
+                ele.taxFree = selectedProductList[selectedIdx].taxFree
+                ele.fixed = selectedProductList[selectedIdx].fixed
             } else {
                 ele.quantity = 0
+                ele.taxFree = false
             }
 
             if (bottleIdx != -1) {
@@ -245,12 +342,11 @@ export default {
                 ele.isBottle = false
             }
 
-            ele.fixedPrice = ele.price
-            ele.taxFree = false
             return ele
         })
+
         this.items = items
-        console.log('this.items', this.items)
+        console.log('this.items', items)
         let slicedArray = this.divideArrIntoPieces(_.cloneDeep(items), 5)
         this.dispItems = slicedArray[0]
         this.pageNum = slicedArray.length
@@ -315,42 +411,100 @@ export default {
         openAddOption (item, idx) {
             this.$refs.accountAddOption.open(item, idx)
         },
-        changeQuantity (item) {
+        changeQuantity (item, idx) {
+            console.log('changeQuantity', item, idx)
             this.updateSelectedProductQuantity(item)
+
+            let fixed = true
+            if (item.quantity == 0 || item.price == item.fixedPrice) {
+                fixed = false
+                item.fixedPrice = item.price
+                item.taxFree = false
+            }
+            item.fixed = fixed
+
+            const index1 = this.items.findIndex(s => s.id == item.id)
+            console.log('index1', index1)
+            if (index1 != -1) {
+                Vue.set(this.items, index1, item)
+            }
+
+            const index2 = this.dispItems.findIndex(s => s.id == item.id)
+            console.log('index2', index2)
+            if (index2 != -1) {
+                Vue.set(this.dispItems, index2, item)
+            }
         },
         addOpt (item, index) {
+            console.log('addOpt', item)
+            let fixed = true
+            if (item.quantity == 0 || item.price == item.fixedPrice) {
+                fixed = false
+                item.fixedPrice = item.price
+            }
+            item.fixed = fixed
+
+            const index1 = this.items.findIndex(s => s.id == item.id)
+            if (index1 != -1) {
+                Vue.set(this.items, index1, item)
+            }
+
+            const index2 = this.dispItems.findIndex(s => s.id == item.id)
+            if (index2 != -1) {
+                Vue.set(this.dispItems, index2, item)
+            }
+
             console.log('item', item, index)
-            this.items[index].quantity = item.quantity
+            console.log('this.items', this.items)
+            console.log('this.dispItems', this.dispItems)
+
+            // this.items[index].quantity = item.quantity
+            // this.items[index].taxFree = item.taxFree
+            // this.items[index].fixed = true
+            // this.items[index].fixedPrice = item.fixedPrice
+            // this.dispItems[index].quantity = item.quantity
+            // this.dispItems[index].fixed = true
+            // this.dispItems[index].fixedPrice = item.fixedPrice
+            // this.dispItems[index].taxFree = item.taxFree
         },
         isDisabled (item) {
-            if (item.quantity != 0) {
-                return true
-            }
+            // 2022-08-19プラスの制御はとりあえずやめる。
+            // ☞今後、定価データ、追加データを別々に注文出来るようにする？
+            // if (item.quantity != 0) {
+            //     return true
+            // }
             return false
         },
         kanaFilter (key) {
-            // const large = this.$route.params.large
-            // const middle = this.$route.params.middle
-            // const small = this.$route.params.small
+            // カートの中身
             const selectedProductList = _.cloneDeep(this.selectedProduct)
+
+            // 顧客のボトルリスト
             const customerBottleList = _.cloneDeep(this.headerInfo.customer.bottle)
+
+            // 選んだカテゴリの商品を取得しディープコピー
             let copyItems = _.cloneDeep(this.productByCategory[this.large][this.middle][this.small])
 
+            console.log('copyItems', copyItems)
+
+            // フィルター全選択じゃなければ
             if (key != 10) {
                 copyItems = copyItems.filter(item => item.filter_key == key)
             }
 
-            console.log('selectedProductList', selectedProductList)
-            console.log('customerBottleList', customerBottleList)
-            console.log('copyItems', copyItems)
-
+            // 選択中の商品か、
+            // 顧客がボトル所持しているか、
             let items = copyItems.map(function(ele) {
                 const selectedIdx = selectedProductList.findIndex(e => e.id == ele.id)
                 const bottleIdx = customerBottleList.findIndex(e => e.product.id == ele.id)
                 if (selectedIdx != -1) {
                     ele.quantity = selectedProductList[selectedIdx].quantity
+                    ele.fixedPrice = selectedProductList[selectedIdx].fixedPrice
+                    ele.taxFree = selectedProductList[selectedIdx].taxFree
+                    ele.fixed = selectedProductList[selectedIdx].fixed
                 } else {
                     ele.quantity = 0
+                    ele.taxFree = false
                 }
 
                 if (bottleIdx != -1) {
@@ -358,9 +512,12 @@ export default {
                 } else {
                     ele.isBottle = false
                 }
-
-                ele.fixedPrice = ele.price
-                ele.taxFree = false
+                //
+                // if (ele.price != ele.fixedPrice) {
+                //     ele.fixed = true
+                // }
+                //
+                // ele.taxFree = false
                 return ele
             })
 
@@ -391,23 +548,10 @@ export default {
             let items = this.divideArrIntoPieces(_.cloneDeep(this.items), 5)
             this.dispItems = items[pageNumber-1]
         },
-        // setCategory (large, middle, small) {
-        //
-        //     const selectedProductList = _.cloneDeep(this.selectedProduct)
-        //     const copyItems = _.cloneDeep(this.productByCategory[large][middle][small])
-        //     console.log('copyItems', copyItems, this.large, this.middle, this.small)
-        //     this.items = copyItems.map(function(ele) {
-        //         const idx = selectedProductList.findIndex(e => e.id == ele.id)
-        //         if (idx != -1) {
-        //             ele.quantity = selectedProductList[idx].quantity
-        //         } else {
-        //             ele.quantity = 0
-        //         }
-        //         ele.fixedPrice = ele.price
-        //         ele.taxFree = false
-        //         return ele
-        //     })
-        // }
+        isFixed (item) {
+            if (item.fixed) return true
+            return false
+        }
     }
 }
 </script>
@@ -418,5 +562,11 @@ export default {
     }
     .selected_product_padding {
         padding-bottom: 80px;
+    }
+
+    .is_fixed {
+        text-decoration: line-through;
+        font-weight: 100;
+        color: rgba(139, 139, 139, 0.5);
     }
 </style>

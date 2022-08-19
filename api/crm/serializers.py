@@ -672,6 +672,7 @@ class ProductSerializer(DynamicFieldsModelSerializer):
 
     created_at = serializers.SerializerMethodField()
     updated_at = serializers.SerializerMethodField()
+    fixedPrice = serializers.SerializerMethodField()
     category = ProductCategorySerializer()
     tax = TaxSerializer(fields=['id', 'tax_rate'])
 
@@ -693,7 +694,13 @@ class ProductSerializer(DynamicFieldsModelSerializer):
             'updated_at',
             'delete_flg',
             'thumbnail',
+
+            # ↓画面の表示用
+            'fixedPrice',
         ]
+
+    def get_fixedPrice(self, obj):
+        return obj.price
 
 
 class ServiceSerializer(DynamicFieldsModelSerializer):

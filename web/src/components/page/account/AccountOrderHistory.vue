@@ -3,24 +3,18 @@
         <div class="account_order_history_wrap">
             <AccountPageTitleArea
                 to="AccountOrderCheckSelect"
-                title="注文確認"
+                title="伝票確認"
             />
 
             <div v-if="!loading" style="padding-bottom: 120px;" class="pa-4">
-
-                <v-card-text class="text-right pa-0">
-                    <span style="font-size: 12px; color: rgba(70, 70, 70, 0.8);">
-                        伝票No: {{ salesData.header_id }}
-                    </span>
-                </v-card-text>
-                <v-divider class="mx-4"/>
                 <v-card
                     flat
-                    class="pa-1"
                 >
-                    <v-card-title class="pl-0">
-                        伝票情報
-                    </v-card-title>
+                    <v-card-text class="pt-0">
+                        <span style="font-size: 12px;">
+                            伝票No: {{ salesData.header_id }}
+                        </span>
+                    </v-card-text>
                     <v-row>
                         <v-col cols="5" class="py-0">
                             <v-list-item two-line>
@@ -83,9 +77,8 @@
                     <v-card-text class="text--primary" v-else>
                         {{ salesData.remarks }}
                     </v-card-text>
-                </v-card>
-                <v-container fluid class="mt-3 px-1">
-                    <v-row>
+
+                    <v-row class="px-4">
                         <v-col cols="5" class="py-0">
                             <div style="font-size: 13px;">
                                 注文数
@@ -127,17 +120,32 @@
                             </div>
                         </v-col>
                         <v-col cols="5" class="pt-1">
-                            <div style="font-size: 17px; color: rgb(255, 87, 87); font-weight: bold;">
+                            <div style="font-size: 15px;">
                                 合計(税込)
                             </div>
                         </v-col>
                         <v-col cols="7" class="text-right pt-1">
-                            <div style="font-size: 20px; color: rgb(255, 87, 87); font-weight: bold; font-style: italic;">
+                            <div style="font-size: 15px;">
                                 <i class='bx bx-yen'></i>{{ totalTaxPrice | priceLocaleString }}
                             </div>
                         </v-col>
-                        <v-divider class="mx-2"/>
                     </v-row>
+                </v-card>
+
+                <v-divider class="mx-2"/>
+
+                <vs-button
+                    border
+                    danger
+                    block
+                    @click="deleteSalesHeaderConfirm = true"
+                >
+                    伝票削除
+                </vs-button>
+
+                <!-- <v-divider class="mx-2"/> -->
+
+                <v-container fluid class="px-2">
 
                     <v-row class="pt-4">
                         <v-card-title>
@@ -428,14 +436,14 @@
                             </v-col>
                         </v-row>
                     </v-row>
-
-                    <!-- <DeleteSalesDetailDialog
-                        ref="deleteSalesDetailDialog"
-                        @deleteSalesDetail="deleteSalesDetail"
-                    /> -->
-
                 </v-container>
-
+                <!-- <vs-button
+                    danger
+                    border
+                    block
+                >
+                    伝票削除
+                </vs-button> -->
             </div>
             <div v-else style="text-align: center;">
                 <v-progress-circular
@@ -483,6 +491,61 @@
                 </v-card>
             </v-dialog>
         </div>
+
+        <v-dialog
+            v-model="deleteSalesHeaderConfirm"
+        >
+            <v-card>
+                <v-card-title>
+                    伝票を削除します。<br>
+                    宜しいですか？
+                </v-card-title>
+                <v-card-actions>
+                    <v-row class="ma-0">
+                        <v-col class="ma-0">
+                            <v-btn
+                                block
+                                color="blue-grey"
+                                @click="deleteSalesHeaderConfirm = false"
+                                dark
+                            >
+                                いいえ
+                            </v-btn>
+                        </v-col>
+                        <v-col class="ma-0">
+                            <v-btn
+                                block
+                                color="primary"
+                                @click="deleteSalesHeader"
+                            >
+                                はい
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <v-dialog
+            v-model="deleteSuccessDialog"
+        >
+            <v-card
+                class="pt-3"
+                flat
+            >
+                <v-card-title>
+                    伝票の削除に成功しました。
+                </v-card-title>
+                <v-card-actions>
+                    <vs-button
+                        primary
+                        transparent
+                        size="large"
+                        @click="toHome"
+                    >はい</vs-button>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
 
         <EndSalesFooter
             :totalOrder="totalOrderCnt"
@@ -544,6 +607,9 @@
             taxRate: 0,
             endAccountSuccessDialog: false,
             loading: false,
+            deleteSalesHeaderConfirm: false,
+            deleteLoading: false,
+            deleteSuccessDialog: false,
         }),
         beforeCreate () {
         },
@@ -793,10 +859,10 @@
                 this.stayHour = val
             },
             toHome () {
-                this.init()
                 this.$router.push({
                     name: 'AccountHome',
                 })
+                this.init()
             },
             init () {
                 this.salesData = null
@@ -827,6 +893,26 @@
                     this.bottleDeleteList = this.bottleDeleteList.filter(e => e.id !== item.id)
                 }
                 console.log('this.bottleDeleteList', this.bottleDeleteList)
+            },
+            deleteSalesHeader () {
+                this.deleteLoading = true
+                const data = this.salesData
+                this.$axios({
+                    method: 'delete',
+                    url: `/api/sales/${data.id}/`,
+                })
+                .then(res => {
+                    console.log(res)
+                    this.salesData = res.data
+                    this.deleteLoading = false
+                    this.deleteSuccessDialog = true
+                })
+                .catch(e => {
+                    this.deleteLoading = false
+                    this.snackbar = true
+                    this.snackbarText = 'データの削除に失敗しました。'
+                    console.log(e)
+                })
             }
         },
         mixins: [
@@ -860,6 +946,6 @@
     }
 
     .account_order_history_wrap {
-        margin-bottom: 100px;
+        margin-bottom: 140px;
     }
 </style>

@@ -84,7 +84,8 @@
                     <v-list-item two-line>
                         <v-list-item-content>
                             <v-list-item-subtitle>要注意人物</v-list-item-subtitle>
-                            <v-list-item-title class="sales_header_info_content">{{ item.customer.caution_flg }}</v-list-item-title>
+                            <v-list-item-title class="sales_header_info_content" v-if="item.customer.caution_flg">要注意</v-list-item-title>
+                            <v-list-item-title class="sales_header_info_content" v-else>-</v-list-item-title>
                         </v-list-item-content>
                         <v-list-item-content>
                             <v-list-item-subtitle>来店数</v-list-item-subtitle>

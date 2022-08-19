@@ -112,7 +112,7 @@
                     <v-col cols="12">
                         <vs-input
                             placeholder="メールアドレス"
-                            v-model="customerInfo.phone"
+                            v-model="customerInfo.mail"
                             label="メールアドレス(任意)"
                         >
                         </vs-input>
@@ -194,6 +194,15 @@
                     color="success"
                     @click="register"
                 ><i class='bx bxs-send'></i> 会員情報作成</v-btn>
+            </v-col>
+
+            <v-col cols="12" class="pb-0">
+                <v-btn
+                    block
+                    depressed
+                    color="primary"
+                    @click="init"
+                ><i class='bx bx-x'></i> クリア</v-btn>
             </v-col>
 
             <v-col cols="12">
@@ -364,15 +373,15 @@
             },
             init () {
                 this.customerInfo = {
-                    customerNo: null,
+                    customerNo: '',
                     name: '',
-                    nameKana: null,
-                    age: null,
-                    birthday: null,
-                    phone: null,
-                    mail: null,
-                    address: null,
-                    company: null,
+                    nameKana: '',
+                    age: '',
+                    birthday: '',
+                    phone: '',
+                    mail: '',
+                    address: '',
+                    company: '',
                     cautionFlg: false,
                     remarks: '',
                 }
@@ -380,6 +389,9 @@
                 this.menu2 = false
                 this.date = this.nowDate
                 this.time = this.nowTime
+                this.customerNoError = false
+                this.customerNoErrorText = ''
+                this.custonerNoSuccess = false
             },
             toHome () {
                 this.init()

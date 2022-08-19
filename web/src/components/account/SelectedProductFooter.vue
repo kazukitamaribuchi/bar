@@ -149,7 +149,6 @@ export default {
                 this.dialogText = '注文が完了しました。'
                 this.sendStatus = true
                 this.dialog = true
-                this.initSelectedProductData()
             })
             .catch(e => {
                 console.log(e)
@@ -159,6 +158,7 @@ export default {
             })
         },
         toHome () {
+            this.initSelectedProductData()
             if (this.sendStatus) {
                 this.$router.push({
                     name: 'AccountHome',

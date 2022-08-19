@@ -126,6 +126,13 @@ export default {
             this.customerNoError = false
             this.customerInfo = null
             this.customerNoErrorText = ''
+        },
+        init () {
+            this.customerNo = ''
+            this.customerInfo = null
+            this.customerNoError = false
+            this.customerNoErrorText = ''
+            this.custonerNoSuccess = false
         }
     }
 }

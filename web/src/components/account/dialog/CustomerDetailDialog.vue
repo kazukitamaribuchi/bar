@@ -71,6 +71,11 @@
                         <v-list-item-subtitle>総売上</v-list-item-subtitle>
                         <v-list-item-title><i class='bx bx-yen'></i>{{ customer.total_sales | priceLocaleString }}</v-list-item-title>
                     </v-list-item-content>
+                    <v-list-item-content>
+                        <v-list-item-subtitle>要注意人物</v-list-item-subtitle>
+                        <v-list-item-title v-if="customer.caution_flg">要注意</v-list-item-title>
+                        <v-list-item-title v-else>-</v-list-item-title>
+                    </v-list-item-content>
                 </v-list-item>
             </v-card-text>
 
