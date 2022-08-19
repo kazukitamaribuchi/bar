@@ -86,7 +86,7 @@ class AbstractServiceModel(AbstractBaseModel):
         blank=True,
     )
 
-    price = models.SmallIntegerField(
+    price = models.IntegerField(
         _('価格'),
     )
 

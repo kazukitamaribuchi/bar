@@ -24,25 +24,19 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'tk)y1cu0@sqzogczfe222q6fn8w499n!+*@9pkbh(@ojtr(zjj'
-# SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-# ALLOWED_HOSTS = [
-#     '*'
-# ]
+# DEBUG = True
 
 if os.environ['DJANGO_ENV'] == 'production':
     # 本番
     DEBUG = False
-    ALLOWED_HOSTS = ['*']
-
 else:
     # 開発
     DEBUG = True
-    ALLOWED_HOSTS = ['*']
+
+ALLOWED_HOSTS = ['*']
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
@@ -56,11 +50,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework_jwt',
+    'rest_framework_jwt',\
     'django_filters',
     'crm.apps.CrmConfig',
     # 'corsheaders',
-    'webpack_loader',
+    # 'webpack_loader',
     'ws.apps.WsConfig',
     'channels',
 ]
@@ -85,7 +79,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
     # 'DEFAULT_THROTTLE_RATES': {
     #     'anon': '100/day',
-    #     'user': '5/sec',
+    #     'user': '20/sec',
     # }
 }
 
@@ -94,8 +88,8 @@ JWT_AUTH = {
     'JWT_VERIFY': True,
     'JWT_VERIFY_EXPIRATION': True,
     'JWT_LEEWAY': 0,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=86400), # Sessionの保存期間を設定(24時間)
-    # 'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=604800), # Sessionの保存期間を設定(1週間)
+    # 'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=86400), # Sessionの保存期間を設定(24時間)
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7), # Sessionの保存期間を設定(1週間)
     'JWT_ALLOW_REFRESH': True,
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
     # 'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(seconds=1),
@@ -114,12 +108,12 @@ CHANNEL_LAYERS = {
 }
 
 
-# if not DEBUG:
-#     CHANNEL_LAYERS['default'].update({
-#         'CONFIG': {
-#             'hosts':[os.environ.get('REDIS_URL', 'redis://localhost:6379')],
-#         },
-#     })
+if not DEBUG:
+    CHANNEL_LAYERS['default'].update({
+        'CONFIG': {
+            'hosts':[os.environ.get('REDIS_URL', ('redis', 6379))],
+        },
+    })
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -242,6 +236,7 @@ if DEBUG:
     )
 
 else:
+    import dj_database_url
     DATABASE_URL = os.environ.get('DATABASE_URL')
     db_from_env = dj_database_url.config(default=DATABASE_URL, ssl_require=True)
     DATABASES['default'].update(db_from_env)

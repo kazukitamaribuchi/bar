@@ -91,7 +91,7 @@
                                             /> -->
                                             <DaySalesAnalytics
                                                 :targetDate=threeDaysAgo
-                                                :range=4
+                                                :range=3
                                                 :key="yResetKey"
                                             />
                                         </b-card>
@@ -100,14 +100,14 @@
                                         <b-card class="sales_list_area sales_list_area_top_right1">
                                             <TotalSalesAnalytics
                                                 :targetDate=threeDaysAgo
-                                                :range=4
+                                                :range=3
                                                 :key="yResetKey"
                                             />
                                         </b-card>
                                         <b-card class="sales_list_area sales_list_area_top_right2">
                                             <TotalVisitorsAnalytics
                                                 :targetDate=threeDaysAgo
-                                                :range=4
+                                                :range=3
                                                 :key="yResetKey"
                                             />
                                         </b-card>
@@ -118,7 +118,7 @@
                                         <b-card class="sales_list_area sales_list_area_middle_right">
                                             <CustomerDayTotalSalesAnalytics
                                                 :targetDate=threeDaysAgo
-                                                :range=4
+                                                :range=3
                                                 :key="yResetKey"
                                             />
                                         </b-card>
@@ -127,7 +127,7 @@
                                         <b-card class="sales_list_area sales_list_area_middle_left">
                                             <DayTotalVisitorsAnalytics
                                                 :targetDate=threeDaysAgo
-                                                :range=4
+                                                :range=3
                                                 :key="yResetKey"
                                             />
                                         </b-card>
@@ -138,7 +138,7 @@
                                         <b-card class="sales_list_area">
                                             <ProductDaySalesAnalytics
                                                 :targetDate=threeDaysAgo
-                                                :range=4
+                                                :range=3
                                                 :key="yResetKey"
                                             />
                                         </b-card>
@@ -153,7 +153,7 @@
                                         <b-card class="sales_list_area sales_list_area_top_left">
                                             <DaySalesAnalytics
                                                 :targetDate=weekAgo
-                                                :range=8
+                                                :range=7
                                                 :key="wResetKey"
                                             />
                                         </b-card>
@@ -162,14 +162,14 @@
                                         <b-card class="sales_list_area sales_list_area_top_right1">
                                             <TotalSalesAnalytics
                                                 :targetDate=weekAgo
-                                                :range=8
+                                                :range=7
                                                 :key="wResetKey"
                                             />
                                         </b-card>
                                         <b-card class="sales_list_area sales_list_area_top_right2">
                                             <TotalVisitorsAnalytics
                                                 :targetDate=weekAgo
-                                                :range=8
+                                                :range=7
                                                 :key="wResetKey"
                                             />
                                         </b-card>
@@ -180,7 +180,7 @@
                                         <b-card class="sales_list_area sales_list_area_middle_right">
                                             <CustomerDayTotalSalesAnalytics
                                                 :targetDate=weekAgo
-                                                :range=8
+                                                :range=7
                                                 :key="wResetKey"
                                             />
                                         </b-card>
@@ -189,7 +189,7 @@
                                         <b-card class="sales_list_area sales_list_area_middle_left">
                                             <DayTotalVisitorsAnalytics
                                                 :targetDate=weekAgo
-                                                :range=8
+                                                :range=7
                                                 :key="wResetKey"
                                             />
                                         </b-card>
@@ -200,7 +200,7 @@
                                         <b-card class="sales_list_area">
                                             <ProductDayTotalSalesAnalytics
                                                 :targetDate=weekAgo
-                                                :range=8
+                                                :range=7
                                                 :key="wResetKey"
                                             />
                                         </b-card>
@@ -215,7 +215,7 @@
                                         <b-card class="sales_list_area sales_list_area_top_left">
                                             <DaySalesAnalytics
                                                 :targetDate=monthAgo
-                                                :range=32
+                                                :range=monthAgoRange
                                                 :key="mResetKey"
                                             />
                                         </b-card>
@@ -224,14 +224,14 @@
                                         <b-card class="sales_list_area sales_list_area_top_right1">
                                             <TotalSalesAnalytics
                                                 :targetDate=monthAgo
-                                                :range=32
+                                                :range=monthAgoRange
                                                 :key="mResetKey"
                                             />
                                         </b-card>
                                         <b-card class="sales_list_area sales_list_area_top_right2">
                                             <TotalVisitorsAnalytics
                                                 :targetDate=monthAgo
-                                                :range=32
+                                                :range=monthAgoRange
                                                 :key="mResetKey"
                                             />
                                         </b-card>
@@ -242,7 +242,7 @@
                                         <b-card class="sales_list_area sales_list_area_middle_right">
                                             <CustomerDayTotalSalesAnalytics
                                                 :targetDate=monthAgo
-                                                :range=32
+                                                :range=monthAgoRange
                                                 :key="mResetKey"
                                             />
                                         </b-card>
@@ -251,7 +251,7 @@
                                         <b-card class="sales_list_area sales_list_area_middle_left">
                                             <DayTotalVisitorsAnalytics
                                                 :targetDate=monthAgo
-                                                :range=31
+                                                :range=monthAgoRange
                                                 :key="mResetKey"
                                             />
                                         </b-card>
@@ -262,7 +262,7 @@
                                         <b-card class="sales_list_area">
                                             <ProductDayTotalSalesAnalytics
                                                 :targetDate=monthAgo
-                                                :range=31
+                                                :range=monthAgoRange
                                                 :key="mResetKey"
                                             />
                                         </b-card>
@@ -1053,6 +1053,7 @@ export default {
             'sales',
             'salesTopActive',
             'currentTime',
+            'setting',
         ]),
         topActive () {
             if (this.salesTopActive == undefined || this.salesTopActive == 0) {
@@ -1063,12 +1064,16 @@ export default {
         now () {
             return dayjs(this.currentTime)
         },
+        sales_separate_time () {
+            return this.setting[0].sales_separate_time
+        },
         target_day () {
-            // let border_line = dayjs(this.now.format('YYYY-MM-DD') + ' 07:00:00')
-            // if (this.now.isAfter(border_line)) {
+            const spTime = this.sales_separate_time.slice(0,2) + ':' + this.sales_separate_time.slice(2, 4) + ':00'
+            let border_line = dayjs(this.now.format('YYYY-MM-DD') + ' ' + spTime)
+            if (this.now.isAfter(border_line)) {
                 return this.now
-            // }
-            // return this.now.subtract(1, 'd')
+            }
+            return this.now.subtract(1, 'd')
         },
         today () {
             return this.target_day.format('YYYY-MM-DD')
@@ -1077,16 +1082,24 @@ export default {
             return this.target_day.subtract(1, 'd').format('YYYY-MM-DD')
         },
         threeDaysAgo () {
-            return this.target_day.subtract(3, 'd').format('YYYY-MM-DD')
+            return this.target_day.subtract(2, 'd').format('YYYY-MM-DD')
         },
         weekAgo () {
-            return this.target_day.subtract(1, 'w').format('YYYY-MM-DD')
+            return this.target_day.subtract(1, 'w').add(1, 'd').format('YYYY-MM-DD')
         },
         monthAgo () {
-            return this.target_day.subtract(31, 'd').format('YYYY-MM-DD')
+            return this.target_day.subtract(1, 'M').add(1, 'd').format('YYYY-MM-DD')
+        },
+        monthAgoRange () {
+            const monthAgo = this.target_day.subtract(1, 'M').add(1, 'd')
+            return this.target_day.diff(monthAgo, 'day') + 1
         },
         yearAgo () {
-            return this.target_day.subtract(1, 'y').format('YYYY-MM-DD')
+            return this.target_day.subtract(1, 'y').add(1, 'd').format('YYYY-MM-DD')
+        },
+        yearAgoRange () {
+            const yearAgo = this.target_day.subtract(1, 'y').add(1, 'd')
+            return this.target_day.diff(yearAgo, 'day')
         },
         sortOptions() {
             // Create an options list from our fields

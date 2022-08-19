@@ -255,6 +255,8 @@
             // console.log('before mount')
         },
         mounted () {
+            console.log('targetDate', this.targetDate)
+            console.log('range', this.range)
             this.$axios({
                 method: 'GET',
                 url: '/api/sales/get_day_sales_analytics/',

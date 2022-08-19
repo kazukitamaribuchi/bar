@@ -9,6 +9,7 @@ python manage.py migrate
 
 python manage.py loaddata fixture-rank.json
 python manage.py loaddata fixture-seats.json
+python manage.py loaddata fixture-setting.json
 python manage.py loaddata fixture-tax.json
 # python manage.py loaddata fixture-appointservice.json
 # python manage.py loaddata fixture-basicservice.json

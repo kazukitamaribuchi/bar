@@ -276,10 +276,12 @@
                 let sales = []
                 let visit = []
                 let colors = []
+                let labels = []
                 for (const i in data) {
                     // console.log('data[i]', data[i][cnt])
-                    sales.push(data[i][cnt].total)
-                    visit.push(data[i][cnt].total_visit)
+                    sales.push(data[i].total)
+                    visit.push(data[i].total_visit)
+                    labels.push(data[i].time)
                     colors.push('#ffffff')
                     cnt++
                     // if (cnt >= 8) break
@@ -289,6 +291,7 @@
                 // console.log('this.daySalesEveryHourSeries', this.daySalesEveryHourSeries)
                 this.daySalesEveryHourSeries[0].data = sales
                 this.daySalesEveryHourSeries[1].data = visit
+                this.daySalesEveryHourChartOptions.labels = labels
                 // this.daySalesEveryHourChartOptions.labels = labels
                 // this.daySalesEveryHourChartOptions.xaxis.labels.style.colors = colors
                 this.loading = false

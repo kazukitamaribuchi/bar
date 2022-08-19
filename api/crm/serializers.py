@@ -10,6 +10,7 @@ from .models import (
     MProduct,
     MProductCategory,
     MSeat,
+    MSetting,
     MPayment,
     MService,
     # MQuestion,
@@ -199,9 +200,10 @@ class CustomerSerializer(DynamicFieldsModelSerializer):
         #     return ''
         # return obj.first_visit.strftime('%Y/%m/%d')
         sales_data = SalesHeader.objects.filter(
-            customer__isnull=False,
-            customer=obj,
-            delete_flg=False
+            Q(customer__delete_flg=False) &
+            Q(delete_flg=False) &
+            Q(customer=obj) &
+            Q(close_flg=True)
         )
         if len(sales_data) != 0:
             return sales_data.order_by('visit_time').first().visit_time.strftime('%Y/%m/%d')
@@ -263,16 +265,20 @@ class CustomerSerializer(DynamicFieldsModelSerializer):
 
     def get_total_visit(self, obj):
         return SalesHeader.objects.filter(
-            customer__isnull=False,
-            customer=obj,
-            delete_flg=False
+            Q(customer__isnull=False) &
+            Q(customer=obj) &
+            Q(customer__delete_flg=False) &
+            Q(delete_flg=False) &
+            Q(close_flg=True)
         ).count()
 
     def get_total_sales(self, obj):
         return SalesHeader.objects.filter(
-            customer__isnull=False,
-            customer=obj,
-            delete_flg=False
+            Q(customer__isnull=False) &
+            Q(customer=obj) &
+            Q(customer__delete_flg=False) &
+            Q(delete_flg=False) &
+            Q(close_flg=True)
         ).aggregate(total=Coalesce(models.Sum('total_tax_sales'), 0))['total']
 
     def create(self, validated_data):
@@ -730,6 +736,20 @@ class SeatSerializer(DynamicFieldsModelSerializer):
             'seat_type',
             'seat_name',
             'limit',
+        ]
+
+
+
+class SettingSerializer(DynamicFieldsModelSerializer):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = MSetting
+        fields = [
+            'id',
+            'sales_separate_time',
         ]
 
 

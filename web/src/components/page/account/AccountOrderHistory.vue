@@ -42,7 +42,8 @@
                             <v-list-item two-line>
                                 <v-list-item-content class="py-0">
                                     <v-list-item-title>会員No</v-list-item-title>
-                                    <v-list-item-subtitle>{{ salesData.customer.customer_no }}</v-list-item-subtitle>
+                                    <v-list-item-subtitle v-if="salesData.customer != undefined">{{ salesData.customer.customer_no }}</v-list-item-subtitle>
+                                    <v-list-item-subtitle v-else>-</v-list-item-subtitle>
                                 </v-list-item-content>
                             </v-list-item>
                         </v-col>
@@ -58,7 +59,8 @@
                             <v-list-item two-line>
                                 <v-list-item-content class="py-0">
                                     <v-list-item-title>ランク</v-list-item-title>
-                                    <v-list-item-subtitle>{{ salesData.customer.rank_name }}</v-list-item-subtitle>
+                                    <v-list-item-subtitle v-if="salesData.customer != undefined">{{ salesData.customer.rank_name }}</v-list-item-subtitle>
+                                    <v-list-item-subtitle v-else>-</v-list-item-subtitle>
                                 </v-list-item-content>
                             </v-list-item>
                         </v-col>
@@ -66,7 +68,8 @@
                             <v-list-item two-line>
                                 <v-list-item-content class="py-0">
                                     <v-list-item-title>顧客名</v-list-item-title>
-                                    <v-list-item-subtitle>{{ salesData.customer.name }}</v-list-item-subtitle>
+                                    <v-list-item-subtitle v-if="salesData.customer != undefined">{{ salesData.customer.name }}</v-list-item-subtitle>
+                                    <v-list-item-subtitle v-else>-</v-list-item-subtitle>
                                 </v-list-item-content>
                             </v-list-item>
                         </v-col>
@@ -270,41 +273,44 @@
                                 ボトル情報
                             </v-card-title>
                             <v-card-subtitle class="text-right">
-                                所有ボトル数 : {{ salesData.customer.bottle.length }}
+                                所有ボトル数 :
+                                <span v-if="salesData.customer != undefined">{{ salesData.customer.bottle.length }}</span>
+                                <span v-else>0</span>
                             </v-card-subtitle>
 
+                            <div v-if="salesData.customer != undefined">
+                                <div
+                                    cols="12"
+                                    v-for="(item, i) in salesData.customer.bottle"
+                                    :key="i"
+                                    flat
+                                    style="padding-left: 20px;"
+                                >
+                                    <div class="px-2 sales_detail_no">
+                                        {{ i + 1 }}
+                                    </div>
+                                    <div class="text-right label-style">
+                                        開封日 : {{ item.open_date }}
+                                    </div>
+                                    <div class="px-2">
+                                        <label class="label-style">
+                                            商品名
+                                        </label>
+                                        <p class="product_name">
+                                            {{ item.product.name }}
+                                        </p>
+                                    </div>
 
-                            <div
-                                cols="12"
-                                v-for="(item, i) in salesData.customer.bottle"
-                                :key="i"
-                                flat
-                                style="padding-left: 20px;"
-                            >
-                                <div class="px-2 sales_detail_no">
-                                    {{ i + 1 }}
-                                </div>
-                                <div class="text-right label-style">
-                                    開封日 : {{ item.open_date }}
-                                </div>
-                                <div class="px-2">
-                                    <label class="label-style">
-                                        商品名
-                                    </label>
-                                    <p class="product_name">
-                                        {{ item.product.name }}
-                                    </p>
-                                </div>
-
-                                <div>
-                                    <label class="label-style">
-                                        消込
-                                    </label>
-                                    <v-switch
+                                    <div>
+                                        <label class="label-style">
+                                            消込
+                                        </label>
+                                        <v-switch
                                         v-model="item.bottleDelete"
                                         class="mt-0"
                                         @change="updateBottleDelete(item)"
-                                    ></v-switch>
+                                        ></v-switch>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -545,7 +551,7 @@
             this.loading = true
             this.$axios({
                 method: 'get',
-                url: `/api/sales/${this.$route.params.id}`,
+                url: `/api/sales/${this.$route.params.id}/`,
             })
             .then(res => {
                 console.log(res)

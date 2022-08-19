@@ -324,10 +324,15 @@ class MCast(AbstractHumanModel):
 class MSetting(AbstractBaseModel):
     """
     設定情報マスタ
-        ・アラート系の制御
-        ・予約時間のペナルティ
-        ・予約上限（グループ換算☞1席何人か。何人で2席にするかなど）
+        ・1日の区切り時間
     """
+
+    sales_separate_time = models.CharField(
+        _('売上の1日を何時始まりとするか'),
+        max_length=4,
+        default='1800',
+    )
+
 
 
 class MProductCategory(AbstractBaseModel):

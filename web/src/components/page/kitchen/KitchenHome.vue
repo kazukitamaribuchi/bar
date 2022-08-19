@@ -311,25 +311,27 @@
             console.log('process.env.VUE_APP_BASE_URL', process.env.VUE_APP_BASE_URL)
             const url = scheme + '://' + hostName + '/ws/order/' + this.$store.state.loginUser + '/'
 
-            if (this.ws === undefined || this.ws.readyState !== 1) {
-                this.ws = new WebSocket(url)
-                console.log('this.ws', this.ws)
-            }
+            if (this.$store.state.isAuth) {
+                if (this.ws === undefined || this.ws.readyState !== 1) {
+                    this.ws = new WebSocket(url)
+                    console.log('this.ws', this.ws)
+                }
 
-            this.ws.onmessage = e => {
-                var receiveData = JSON.parse(e.data)
-                console.log('ソケット結果受信', receiveData)
-                switch (receiveData.type) {
-                    case 0:
-                        // 新規オーダー
-                        this.$eventHub.$emit('addNewOrder', receiveData.content)
-                        break
-                    case 99:
-                        // 伝票締め
-                        this.$eventHub.$emit('closeSalesHeader', receiveData.content)
-                        break
-                    default:
-                        break
+                this.ws.onmessage = e => {
+                    var receiveData = JSON.parse(e.data)
+                    console.log('ソケット結果受信', receiveData)
+                    switch (receiveData.type) {
+                        case 0:
+                            // 新規オーダー
+                            this.$eventHub.$emit('addNewOrder', receiveData.content)
+                            break
+                        case 99:
+                            // 伝票締め
+                            this.$eventHub.$emit('closeSalesHeader', receiveData.content)
+                            break
+                        default:
+                            break
+                    }
                 }
             }
         },

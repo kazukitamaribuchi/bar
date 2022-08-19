@@ -2,6 +2,7 @@
     <v-dialog
         v-model="dialog"
         fullscreen
+        persistent
     >
         <v-card
             flat

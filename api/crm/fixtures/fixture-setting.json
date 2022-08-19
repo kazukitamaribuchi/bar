@@ -1,0 +1,9 @@
+[
+  {
+    "model": "crm.msetting",
+    "pk": 1,
+    "fields": {
+      "sales_separate_time": "1800"
+    }
+  }
+]

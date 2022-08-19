@@ -7,6 +7,7 @@ from .models import (
     MTax,
     MProduct,
     MSeat,
+    MSetting,
 )
 
 from .sub_models import (
@@ -125,3 +126,9 @@ def update_customer_rank(customer, sales):
                 logger.error('顧客のランク更新時、ランクの取得に失敗しました。')
             customer.rank = rank
             customer.save()
+
+def get_setting():
+    return MSetting.objects.first()
+
+def get_sales_separate_time():
+    return MSetting.objects.first().sales_separate_time

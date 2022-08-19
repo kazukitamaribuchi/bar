@@ -358,6 +358,12 @@
                                     <b-tab
                                         title="売上データ"
                                     >
+                                        <b-card-title
+                                            style="border-bottom: 1px solid rgba(200, 200, 200, 0.1); margin-top: 20px; padding-bottom: 14px;"
+                                        >
+                                            売上情報
+                                        </b-card-title>
+                                        
                                     </b-tab>
                                 </b-tabs>
                             </b-row>

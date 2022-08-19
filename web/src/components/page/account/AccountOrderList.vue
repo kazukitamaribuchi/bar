@@ -106,7 +106,7 @@
                         v-for="(b, i) in item.customer.bottle"
                         :key="i"
                         flat
-                        class="pa-2"
+                        class="pa-2 sales_header_bottle_info"
                     >
                         <v-list-item two-line>
                             <v-list-item-content>
@@ -271,5 +271,9 @@
         .sales_header_info_content {
             font-size: 14px !important;
         }
+    }
+
+    .sales_header_bottle_info {
+        background-color: rgba(224, 224, 224, 0.5);
     }
 </style>

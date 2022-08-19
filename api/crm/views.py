@@ -5,6 +5,8 @@ from rest_framework import status, generics, permissions
 from rest_framework.response import Response
 from django.db.models import Sum, Q
 
+from django.db.models.functions import Concat
+
 from .serializers import (
     CustomerSerializer,
     CastSerializer,
@@ -12,6 +14,7 @@ from .serializers import (
     TaxSerializer,
     ProductSerializer,
     SeatSerializer,
+    SettingSerializer,
     CardSerializer,
     BottleSerializer,
     SalesSerializer,
@@ -28,6 +31,7 @@ from .models import (
     MTax,
     MProduct,
     MSeat,
+    MSetting,
     MPayment,
     MService,
     # MQuestion,
@@ -86,7 +90,9 @@ class AppInitView(generics.ListAPIView):
 
     def list(self, request, *args, **kwargs):
         try:
-            customers = CustomerSerializer(MCustomer.objects.filter(delete_flg=False), many=True).data
+            customers = CustomerSerializer(
+                MCustomer.objects.filter(delete_flg=False).order_by('-rank_id'),
+                many=True).data
             logger.debug('1')
             product = ProductSerializer(MProduct.objects.filter(delete_flg=False), many=True).data
             logger.debug('2')
@@ -94,11 +100,23 @@ class AppInitView(generics.ListAPIView):
             logger.debug('3')
             popular, top = get_popular_product()
             logger.debug('4')
-            sales = SalesSerializer(SalesHeader.objects.filter(delete_flg=False, close_flg=True), many=True).data
+            sales = SalesSerializer(
+                SalesHeader.objects.filter(
+                    Q(customer__delete_flg=False) &
+                    Q(close_flg=True) &
+                    Q(delete_flg=False)
+                ).order_by('-leave_time'),
+                many=True).data
             logger.debug('5')
-            bottle = BottleSerializer(BottleManagement.objects.filter(delete_flg=False), many=True).data
+            bottle = BottleSerializer(
+                BottleManagement.objects.filter(
+                    delete_flg=False
+                ).order_by(Concat('end_flg', 'end_date'), '-created_at'),
+                many=True).data
             logger.debug('6')
             seat = SeatSerializer(MSeat.objects.all(), many=True).data
+            logger.debug('7')
+            setting = SettingSerializer(MSetting.objects.all(), many=True).data
             # cast = CastSerializer(MCast.objects.all(), many=True).data
             # question = QuestionSerializer(MQuestion.objects.all(), many=True).data
 
@@ -110,6 +128,7 @@ class AppInitView(generics.ListAPIView):
                 'sales': sales,
                 'bottle': bottle,
                 'seat': seat,
+                'setting': setting,
                 # 'question': question,
                 # 'cast': cast,
             }, status=status.HTTP_200_OK)

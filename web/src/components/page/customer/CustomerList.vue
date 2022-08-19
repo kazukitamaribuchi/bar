@@ -1,6 +1,15 @@
 <template>
     <div id="customer_list_wrap">
-        <b-row>
+        <div v-if="!initStatus" class="loading">
+            <div class="loading_icon">
+                <b-spinner
+                    style="width: 6rem; height: 6rem; display: block; margin: 0 auto;"
+                    label="Large Spinner"
+                    variant="light"
+                ></b-spinner>
+            </div>
+        </div>
+        <b-row v-else>
             <b-tabs card>
                 <b-tab
                     title="管理画面"
@@ -1408,6 +1417,16 @@ export default {
         color: #6c757d !important;
         background-color: #e9ecef !important;
         transition: 0.5s;
+    }
+
+    .loading {
+        height: 100%;
+        width: 100%;
+        .loading_icon {
+            display: block;
+            margin: 0 auto;
+            padding-top: 20%;
+        }
     }
 
 </style>

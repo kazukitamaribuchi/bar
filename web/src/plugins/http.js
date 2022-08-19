@@ -5,7 +5,8 @@ import axios from 'axios'
 export default {
     install: function (Vue, options) {
         const http = axios.create({
-            baseURL: 'http://localhost:8000/',
+            // baseURL: 'http://localhost:8000/',
+            baseURL: process.env.NODE_ENV !== 'production' ? 'http://localhost:8000/' : `${process.env.VUE_APP_AUTH_REDIRECT_URI}/`,
             xsrfCookieName:'csrftoken',
 			xsrfHeaderName: 'X-CSRFTOKEN',
 			timeout: 10000,

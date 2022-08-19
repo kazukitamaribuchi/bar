@@ -12,6 +12,7 @@ import attendanceMutations from './mutations/attendance'
 import productMutations from './mutations/product'
 import accountMutations from './mutations/account'
 import seatMutations from './mutations/seat'
+import settingMutations from './mutations/setting'
 
 import customerActions from './actions/customer'
 import castActions from './actions/cast'
@@ -23,6 +24,7 @@ import attendanceActions from './actions/attendance'
 import productActions from './actions/product'
 import accountActions from './actions/account'
 import seatActions from './actions/seat'
+import settingActions from './actions/setting'
 
 import router from '@/router'
 
@@ -50,6 +52,7 @@ const initialState = {
     selectedProduct: [],
     selectedProductSalesId: null,
     seat: [],
+    setting: [],
     accountData: [],
 }
 
@@ -82,6 +85,7 @@ export default new Vuex.Store({
         selectedProduct: state => state.selectedProduct,
         selectedProductSalesId: state => state.selectedProductSalesId,
         seat: state => state.seat,
+        setting: state => state.setting,
         accountData: state => state.accountData,
     },
     mutations: {
@@ -95,6 +99,7 @@ export default new Vuex.Store({
         ...productMutations,
         ...accountMutations,
         ...seatMutations,
+        ...settingMutations,
 
         setAuthToken (state, payload) {
             state.isAuth = true
@@ -145,6 +150,7 @@ export default new Vuex.Store({
         ...productActions,
         ...accountActions,
         ...seatActions,
+        ...settingActions,
 
         checkAuthToken (ctx, kwargs) {
             return new Promise((resolve, reject) => {
@@ -201,6 +207,7 @@ export default new Vuex.Store({
                     this.commit('setSalesList', res.data.sales)
                     this.commit('setBottleList', res.data.bottle)
                     this.commit('setSeatList', res.data.seat)
+                    this.commit('setSettingList', res.data.setting)
                     // this.commit('setCastList', res.data.cast)
                     // this.commit('setQuestionList', res.data.question)
 					resolve(res)

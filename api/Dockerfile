@@ -16,7 +16,20 @@ RUN apt-get install -y --no-install-recommends \
 	vim
 RUN apt-get clean
 
-ENV DJANGO_ENV develop
 ADD . .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
+
+MAINTAINER admin
+EXPOSE 8000
+ENV DJANGO_ENV production
+ENV USER admin
+
+RUN python manage.py collectstatic --noinput
+
+RUN useradd -m ${USER}
+RUN gpasswd -a ${USER} sudo
+RUN echo "${USER}:test_pass" | chpasswd
+USER ${USER}
+
+CMD daphne -b 0.0.0.0 -p $PORT api.asgi:application

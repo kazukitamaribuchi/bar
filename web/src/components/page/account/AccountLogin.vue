@@ -8,8 +8,9 @@
                         style="margin: 0 auto;"
                         height="50px"
                         width="50px"
-                        src="http://localhost:8000/media/upload/logo2.jpg"
+                        src="@/static/img/logo2.jpg"
                     ></v-img>
+                    <!-- src="http://localhost:8000/media/upload/logo2.jpg" -->
                 </div>
                 <div class="logo_text">
                     alpha pos
@@ -20,9 +21,9 @@
                 class="my-3"
                 v-model="credentials.username"
                 placeholder="User name"
-                @keyup.enter="checkLogin"
-                @keypress="setlogin1"
             >
+            <!-- @keyup.enter="checkLogin"
+            @keypress="setlogin1" -->
                 <template #icon>
                     <i class='bx bx-user'></i>
                 </template>
@@ -32,9 +33,9 @@
                 class="my-3"
                 v-model="credentials.password"
                 placeholder="Password"
-                @keyup.enter="checkLogin"
-                @keypress="setlogin2"
             >
+            <!-- @keyup.enter="checkLogin"
+            @keypress="setlogin2" -->
                 <template #icon>
                     <i class='bx bx-lock-open-alt'></i>
                 </template>
@@ -48,7 +49,30 @@
             >
                 <i class='bx bxs-lock-open'></i> Login
             </vs-button>
+
         </v-container>
+
+        <!-- <vs-button @click="clickTest">
+            testBtn0
+        </vs-button>
+        <vs-button @click.native="clickTest">
+            testBtn1
+        </vs-button>
+        <vs-button @click.prevent="clickTest">
+            testBtn2
+        </vs-button>
+        <vs-button @click.capture="clickTest">
+            testBtn3
+        </vs-button>
+        <vs-button @click.self="clickTest">
+            testBtn4
+        </vs-button>
+        <vs-button @click.stop="clickTest">
+            testBtn5
+        </vs-button>
+        <vs-button @click.native.prevent="clickTest">
+            testBtn6
+        </vs-button> -->
 
         <!-- <b-card
             title="Login"
@@ -185,12 +209,14 @@ export default {
         ]),
         login () {
             // バリデーション
-            if (!this.nameState
-                || !this.passState
-                || !this.loginNameValue
-                || !this.loginPassValue) {
-                return
-            }
+            // if (!this.nameState
+            //     || !this.passState
+            //     || !this.loginNameValue
+            //     || !this.loginPassValue) {
+            //     return
+            // }
+
+
             this.checkAuthToken(this.credentials)
             .then(res => {
                 this.initState()
@@ -202,6 +228,9 @@ export default {
                 console.log(e)
             })
         },
+        clickTest () {
+            console.log('動け～～～～～～～!!!!!')
+        }
     }
 }
 </script>
