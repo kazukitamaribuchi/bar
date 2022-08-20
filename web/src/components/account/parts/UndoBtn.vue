@@ -53,11 +53,14 @@
         methods: {
             undo () {
                 if (this.selectedProduct.length != 0) {
-                    console.log('カートの中身破棄するか確認する')
-                    // this.initSelectedProduct()
-                    this.$router.push({
-                        name: this.to,
-                    })
+                    if (this.$route.name == 'AccountOrder') {
+                        console.log('カートの中身破棄するか確認する')
+                        this.$emit('showDeleteSelectedProductDialog')
+                    } else {
+                        this.$router.push({
+                            name: this.to,
+                        })
+                    }
                 } else {
                     if (this.params != null) {
                         this.$router.push({

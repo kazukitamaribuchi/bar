@@ -92,6 +92,42 @@ class OrderConsumer(AsyncWebsocketConsumer):
         except Exception as e:
             raise
 
+    async def new_order(self, event):
+        logger.debug('=====Update_Order=====')
+        logger.debug(event)
+        try:
+            content = event['content']
+            await self.send(text_data=json.dumps({
+                'type': 20,
+                'content': content,
+            }))
+        except Exception as e:
+            raise
+
+    async def delete_order(self, event):
+        logger.debug('=====Delete_Order=====')
+        logger.debug(event)
+        try:
+            content = event['content']
+            await self.send(text_data=json.dumps({
+                'type': 30,
+                'content': content,
+            }))
+        except Exception as e:
+            raise
+
+    async def delete_sales_header(self, event):
+        logger.debug('=====delete_sales_header=====')
+        logger.debug(event)
+        try:
+            content = event['content']
+            await self.send(text_data=json.dumps({
+                'type': 50,
+                'content': content,
+            }))
+        except Exception as e:
+            raise
+
     async def close_sales_header(self, event):
         logger.debug('=====close_sales_header=====')
         logger.debug(event)

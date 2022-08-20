@@ -146,6 +146,7 @@
 <script>
     import NewVisitButton from '@/components/account/NewVisitButton'
     import HomeButton from '@/components/account/HomeButton'
+    import { mapMutations } from 'vuex'
 
     export default {
         name: 'AccountOrderListItem',
@@ -200,8 +201,9 @@
             })
             .then(res => {
                 console.log(res)
-                this.salesHeaderList = res.data
-                this.loading = false
+                // this.salesHeaderList = res.data
+                this.setSalesHeaderList(res.data)
+                // this.loading = false
             })
             .catch(e => {
                 console.log(e)
@@ -224,9 +226,14 @@
         computed: {
         },
         methods: {
+            ...mapMutations([
+                'initSelectedProduct',
+            ]),
             toPage (item) {
                 // console.log('item', item)
                 // console.log('this.$route', this.$route)
+                this.initSelectedProduct()
+
                 const route = this.$route.name
                 const params = {
                     'id': item.id,
@@ -246,6 +253,12 @@
             dispSeat (seat) {
                 if (seat == null) return '指定無し'
                 return seat.seat_name
+            },
+            setSalesHeaderList (salesHeaderList) {
+                let items = salesHeaderList
+                
+                this.salesHeaderList = items
+                this.loading = false
             }
         },
         mixins: [],

@@ -7,7 +7,14 @@
         <KanaFilterBtn
             @kanaFilter="kanaFilter"
         />
-        <v-row class="px-1">
+        <div v-if="loading" style="text-align: center;">
+            <v-progress-circular
+                indeterminate
+                color="primary"
+                style="text-align: center;"
+            ></v-progress-circular>
+        </div>
+        <v-row v-else class="px-1">
             <v-col v-if="dispItems == undefined || dispItems == null || dispItems.length == 0">
                 <v-card-subtitle>
                     対象の商品は存在しません。
@@ -246,18 +253,11 @@
                     @input="changePage"
                 />
             </v-col>
-
-            <!-- <v-col cols="12"
-
-            >
-
-            </v-col> -->
-
-            <AccountAddOption
-                ref="accountAddOption"
-                @addSelectedProductOpt="addOpt"
-            />
         </v-row>
+        <AccountAddOption
+            ref="accountAddOption"
+            @addSelectedProductOpt="addOpt"
+        />
     </v-container>
 </template>
 
@@ -301,6 +301,8 @@ export default {
 
         // 表示用
         dispItems: [],
+
+        loading: true,
     }),
     components: {
         SpinButton,
@@ -310,6 +312,8 @@ export default {
     beforeCreate () {
     },
     created () {
+        this.loading = true
+
         // カートの中身
         const selectedProductList = _.cloneDeep(this.selectedProduct)
 
@@ -350,6 +354,8 @@ export default {
         let slicedArray = this.divideArrIntoPieces(_.cloneDeep(items), 5)
         this.dispItems = slicedArray[0]
         this.pageNum = slicedArray.length
+
+        this.loading = false
     },
     beforeMount () {
     },
@@ -476,6 +482,8 @@ export default {
             return false
         },
         kanaFilter (key) {
+            this.loading = true
+
             // カートの中身
             const selectedProductList = _.cloneDeep(this.selectedProduct)
 
@@ -512,12 +520,6 @@ export default {
                 } else {
                     ele.isBottle = false
                 }
-                //
-                // if (ele.price != ele.fixedPrice) {
-                //     ele.fixed = true
-                // }
-                //
-                // ele.taxFree = false
                 return ele
             })
 
@@ -526,6 +528,8 @@ export default {
             let slicedArray = this.divideArrIntoPieces(_.cloneDeep(items), 5)
             this.dispItems = slicedArray[0]
             this.pageNum = slicedArray.length
+
+            this.loading = false
         },
         sliceArray (array, number) {
             const length = Math.ceil(array.length / number)

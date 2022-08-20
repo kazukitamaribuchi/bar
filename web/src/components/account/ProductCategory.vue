@@ -180,7 +180,7 @@ export default {
             //         small: item.small_category,
             //     }
             // })
-        }
+        },
     }
 }
 </script>

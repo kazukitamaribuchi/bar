@@ -325,6 +325,18 @@
                             // 新規オーダー
                             this.$eventHub.$emit('addNewOrder', receiveData.content)
                             break
+                        case 20:
+                            console.log('明細更新')
+                            this.$eventHub.$emit('updateOrder', receiveData.content)
+                            break
+                        case 30:
+                            console.log('明細削除')
+                            this.$eventHub.$emit('deleteOrder', receiveData.content)
+                            break
+                        case 50:
+                            console.log('伝票削除')
+                            this.$eventHub.$emit('deleteSalesHeader', receiveData.content)
+                            break
                         case 99:
                             // 伝票締め
                             this.$eventHub.$emit('closeSalesHeader', receiveData.content)
@@ -371,6 +383,41 @@
                         数量: ${item.quantity}<br>
                         注文時間: ${item.order_time}<br>
                         席: ${item.disp_seat_name}
+                    `
+                })
+            },
+            updateOrder (order) {
+                console.log('updateOrder', order)
+                // this.befItems = this.befItems.filter(item => item.header.id != order.id)
+                // this.afItems = this.afItems.filter(item => item.header.id != order.id)
+                const nt = this.$vs.notification({
+                    duration: 10000,
+                    progress: 'auto',
+                    color: '',
+                    position: '', // position
+                    width: '50%',
+                    title: 'オーダーが変更されました。',
+                    text: `
+                        商品名: ${order.product.name}<br>
+                        数量: ${order.quantity}<br>
+                        席: ${order.disp_seat_name}
+                    `
+                })
+            },
+            deleteOrder (order) {
+                this.befItems = this.befItems.filter(item => item.header.id != order.id)
+                this.afItems = this.afItems.filter(item => item.header.id != order.id)
+                const nt = this.$vs.notification({
+                    duration: 10000,
+                    progress: 'auto',
+                    color: '',
+                    position: '', // position
+                    width: '50%',
+                    title: 'オーダーが削除されました。',
+                    text: `
+                        商品名: ${order.product.name}<br>
+                        数量: ${order.quantity}<br>
+                        席: ${order.disp_seat_name}
                     `
                 })
             },
@@ -433,6 +480,22 @@
                     position: '', // position
                     width: '50%',
                     title: '会計を締めました。',
+                    text: `
+                        伝票No: ${header.header_id}<br>
+                        席: ${header.disp_seat_name}
+                    `
+                })
+            },
+            deleteSalesHeader (header) {
+                this.befItems = this.befItems.filter(item => item.header.id != header.id)
+                this.afItems = this.afItems.filter(item => item.header.id != header.id)
+                const nt = this.$vs.notification({
+                    duration: 10000,
+                    progress: 'auto',
+                    color: '',
+                    position: '', // position
+                    width: '50%',
+                    title: '伝票が削除されました。',
                     text: `
                         伝票No: ${header.header_id}<br>
                         席: ${header.disp_seat_name}

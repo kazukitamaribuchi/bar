@@ -1,159 +1,169 @@
 <template>
-    <v-row>
-        <v-col
-            v-if="items.length == 0"
-            cols="12"
-        >
-            <v-card-text>商品が選択されていません。</v-card-text>
-        </v-col>
-        <v-col
-            v-else
-            cols="12"
-            v-for="(item, i) in items"
-            :key="i"
-            class="py-1"
-        >
-            <v-divider
-                v-if="i != 0"
-                class="mx-4"
-            />
+    <div>
+        <div v-if="loading" style="text-align: center;">
+            <v-progress-circular
+                indeterminate
+                color="primary"
+                style="text-align: center;"
+            ></v-progress-circular>
+        </div>
+        <v-row v-else>
+            <v-col
+                v-if="items.length == 0"
+                cols="12"
+            >
+                <v-card-text>商品が選択されていません。</v-card-text>
+            </v-col>
+            <v-col
+                v-else
+                cols="12"
+                v-for="(item, i) in items"
+                :key="i"
+                class="py-1"
+            >
+                <v-divider
+                    v-if="i != 0"
+                    class="mx-4"
+                />
+                <v-card
+                    flat
+                    class="pt-4 pb-4"
+                    style="cursor: pointer;"
+                    @click="toProductDetail(item)"
+                >
+                    <v-row style="max-width: 100%; margin: 0 auto;">
+                        <v-col cols="4" class="pl-1 pt-2">
+                            <v-img
+                                v-if="item.thumbnail != null"
+                                class="white--text align-end"
+                                mix-height="120px"
+                                :src="item.thumbnail"
+                                contain
+                            >
+                            </v-img>
+                            <v-img
+                                v-else
+                                class="white--text align-end"
+                                height="120px"
+                                src="http://localhost:8000/media/upload/酒2.png"
+                                contain
+                            >
+                            </v-img>
+                            <v-chip
+                                v-if="item.isBottle"
+                                class="ml-7"
+                                color="success"
+                            >
+                                ボトル有
+                            </v-chip>
+                        </v-col>
+                        <v-col cols="8" class="pl-2 pt-0">
+                            <v-row>
+                                <v-col
+                                    cols="12"
+                                    class="py-0"
+                                >
+                                    <div
+                                        class="pl-2"
+                                        style="min-height: 70px;"
+                                    >
+                                        <label style="font-size: 12px; color: rgba(0, 0, 0, 0.64);">商品名</label>
+                                        <p
+                                            style="font-size: 15px; line-height: 1.7;"
+                                            class="mb-0 text-h7"
+                                        >{{ item.name }}</p>
+                                    </div>
+                                    <div
+                                        class="pl-2"
+                                    >
+                                        <label style="font-size: 12px; color: rgba(0, 0, 0, 0.64);">定価</label>
+                                        <p
+                                            style="font-size: 11px; line-height: 1.7; display: inline; float: right;"
+                                            class="mb-0"
+                                        > <i class='bx bx-yen'></i> {{ item.price | priceLocaleString }}</p>
+                                    </div>
+                                    <div
+                                        class="pl-2"
+                                    >
+                                        <label style="font-size: 12px; color: rgba(0, 0, 0, 0.64);">実価格</label>
+                                        <v-text-field
+                                            v-model="item.fixedPrice"
+                                            placeholder="実価格"
+                                            class="right-input pt-0"
+                                            @blur="focusOutFixedPrice(item)"
+                                        ></v-text-field>
+                                    </div>
+                                </v-col>
+                                <!-- <v-col cols="3">
+                                    1
+                                </v-col>
+                                <v-col cols="3">
+                                    2
+                                </v-col> -->
+                            </v-row>
+                        </v-col>
+                        <!-- <v-row> -->
+                            <div style="display: flex; justify-content: space-around;">
+                                <div>
+                                    <label style="font-size: 12px; color: rgba(0, 0, 0, 0.64);">数量</label>
+                                    <b-form-spinbutton
+                                        id="sb-inline"
+                                        v-model="item.quantity"
+                                        @change="updateQuantity(item)"
+                                    ></b-form-spinbutton>
+                                </div>
+                                <div>
+                                    <!-- <v-checkbox
+                                        v-model="item.taxFree"
+                                        label="非課税"
+                                        @change="updateTaxFree(item)"
+                                    ></v-checkbox> -->
+                                    <vs-checkbox
+                                        class="mt-4"
+                                        v-model="item.taxFree"
+                                        @change="updateTaxFree(item)"
+                                    >非課税</vs-checkbox>
+                                </div>
+                                <div>
+                                    <vs-button
+                                        class="mt-4"
+                                        circle
+                                        icon
+                                        danger
+                                        @click="deleteProduct(item)"
+                                    >
+                                        <i class='bx bx-trash' ></i>
+                                    </vs-button>
+                                </div>
+                            </div>
+                        <!-- </v-row> -->
+                    </v-row>
+                </v-card>
+
+
+            </v-col>
+
             <v-card
                 flat
-                class="pt-4 pb-4"
-                style="cursor: pointer;"
-                @click="toProductDetail(item)"
             >
-                <v-row style="max-width: 100%; margin: 0 auto;">
-                    <v-col cols="4" class="pl-1 pt-2">
-                        <v-img
-                            v-if="item.thumbnail != null"
-                            class="white--text align-end"
-                            mix-height="120px"
-                            :src="item.thumbnail"
-                            contain
-                        >
-                        </v-img>
-                        <v-img
-                            v-else
-                            class="white--text align-end"
-                            height="120px"
-                            src="http://localhost:8000/media/upload/酒2.png"
-                            contain
-                        >
-                        </v-img>
-                        <v-chip
-                            v-if="item.isBottle"
-                            class="ml-7"
-                            color="success"
-                        >
-                            ボトル有
-                        </v-chip>
-                    </v-col>
-                    <v-col cols="8" class="pl-2 pt-0">
-                        <v-row>
-                            <v-col
-                                cols="12"
-                                class="py-0"
-                            >
-                                <div
-                                    class="pl-2"
-                                    style="min-height: 70px;"
-                                >
-                                    <label style="font-size: 12px; color: rgba(0, 0, 0, 0.64);">商品名</label>
-                                    <p
-                                        style="font-size: 15px; line-height: 1.7;"
-                                        class="mb-0 text-h7"
-                                    >{{ item.name }}</p>
-                                </div>
-                                <div
-                                    class="pl-2"
-                                >
-                                    <label style="font-size: 12px; color: rgba(0, 0, 0, 0.64);">定価</label>
-                                    <p
-                                        style="font-size: 11px; line-height: 1.7; display: inline; float: right;"
-                                        class="mb-0"
-                                    > <i class='bx bx-yen'></i> {{ item.price }}</p>
-                                </div>
-                                <div
-                                    class="pl-2"
-                                >
-                                    <label style="font-size: 12px; color: rgba(0, 0, 0, 0.64);">実価格</label>
-                                    <v-text-field
-                                        v-model="item.fixedPrice"
-                                        placeholder="実価格"
-                                        class="right-input pt-0"
-                                    ></v-text-field>
-                                </div>
-                            </v-col>
-                            <!-- <v-col cols="3">
-                                1
-                            </v-col>
-                            <v-col cols="3">
-                                2
-                            </v-col> -->
-                        </v-row>
-                    </v-col>
-                    <!-- <v-row> -->
-                        <div style="display: flex; justify-content: space-around;">
-                            <div>
-                                <label style="font-size: 12px; color: rgba(0, 0, 0, 0.64);">数量</label>
-                                <b-form-spinbutton
-                                    id="sb-inline"
-                                    v-model="item.quantity"
-                                    @change="updateQuantity(item)"
-                                ></b-form-spinbutton>
-                            </div>
-                            <div>
-                                <!-- <v-checkbox
-                                    v-model="item.taxFree"
-                                    label="非課税"
-                                    @change="updateTaxFree(item)"
-                                ></v-checkbox> -->
-                                <vs-checkbox
-                                    class="mt-4"
-                                    v-model="item.taxFree"
-                                    @change="updateTaxFree(item)"
-                                >非課税</vs-checkbox>
-                            </div>
-                            <div>
-                                <vs-button
-                                    class="mt-4"
-                                    circle
-                                    icon
-                                    danger
-                                    @click="deleteProduct(item)"
-                                >
-                                    <i class='bx bx-trash' ></i>
-                                </vs-button>
-                            </div>
-                        </div>
-                    <!-- </v-row> -->
-                </v-row>
+                <v-divider
+                    class="mx-4"
+                />
+                <v-card-title class="text-h7 py-0">
+                    総計
+                </v-card-title>
+                <v-card-text class="text-right text-h7 py-2">
+                    注文数 : <SelectedProductTotalCnt/>
+                </v-card-text>
+                <v-card-text class="text-right text-h7 py-2">
+                    総計(税抜) : <SelectedProductTotalPrice/>
+                </v-card-text>
+                <v-card-text class="text-right text-h7 py-2">
+                    総計(税込) : <SelectedProductTotalPrice :tax=true />
+                </v-card-text>
             </v-card>
-
-
-        </v-col>
-
-        <v-card
-            flat
-        >
-            <v-divider
-                class="mx-4"
-            />
-            <v-card-title class="text-h7 py-0">
-                総計
-            </v-card-title>
-            <v-card-text class="text-right text-h7 py-2">
-                注文数 : <SelectedProductTotalCnt/>
-            </v-card-text>
-            <v-card-text class="text-right text-h7 py-2">
-                総計(税抜) : <SelectedProductTotalPrice/>
-            </v-card-text>
-            <v-card-text class="text-right text-h7 py-2">
-                総計(税込) : <SelectedProductTotalPrice :tax=true />
-            </v-card-text>
-        </v-card>
-    </v-row>
+        </v-row>
+    </div>
 </template>
 
 <script>
@@ -170,6 +180,7 @@ export default {
     data: () => ({
         items: [],
         headerInfo: {},
+        loading: true,
     }),
     props: {
     },
@@ -199,9 +210,11 @@ export default {
                 }
                 return ele
             })
+            this.loading = false
         })
         .catch(e => {
             this.items = _.cloneDeep(this.selectedProduct)
+            this.loading = false
         })
     },
     beforeMount () {
@@ -223,6 +236,8 @@ export default {
             'productByCategory',
             'selectedProduct',
         ]),
+    },
+    watch: {
     },
     methods: {
         ...mapMutations([
@@ -271,6 +286,10 @@ export default {
                     reject(e)
                 })
             })
+        },
+        focusOutFixedPrice (item) {
+            console.log('focusOutFixedPrice', item)
+            this.updateSelectedProduct(item)
         }
     }
 }

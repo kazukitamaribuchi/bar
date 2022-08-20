@@ -3,6 +3,8 @@
         <UndoBtn
             :to="to"
             :params="params"
+            :attention="true"
+            @showDeleteSelectedProductDialog="showDeleteSelectedProductDialog"
         />
         <v-card-title class="pt-0 pb-1">
             {{ title }}
@@ -32,7 +34,7 @@
                 type: Object,
                 required: false,
                 default: null,
-            }
+            },
         },
         data: () => ({
         }),
@@ -57,6 +59,9 @@
         computed: {
         },
         methods: {
+            showDeleteSelectedProductDialog () {
+                this.$emit('showDeleteSelectedProductDialog')
+            }
         },
         mixins: [],
     }

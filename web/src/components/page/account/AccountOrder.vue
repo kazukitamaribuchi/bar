@@ -7,6 +7,7 @@
         <AccountPageTitleArea
             to="AccountOrderSelect"
             title="商品カテゴリ"
+            @showDeleteSelectedProductDialog="showDeleteSelectedProductDialog"
         />
 
         <OrderHeader
@@ -20,6 +21,10 @@
             v-show="isShowSelectedProductFooter"
             class="selected_product_footer_wrap"
         />
+
+        <DeleteSelectedProductDialog
+            ref="deleteSelectedProductDialog"
+        />
     </div>
 </template>
 
@@ -29,6 +34,7 @@ import AccountPageTitleArea from '@/components/account/AccountPageTitleArea'
 import OrderHeader from '@/components/account/OrderHeader'
 import ProductCategory from '@/components/account/ProductCategory'
 import SelectedProductFooter from '@/components/account/SelectedProductFooter'
+import DeleteSelectedProductDialog from '@/components/account/dialog/DeleteSelectedProductDialog'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
@@ -42,6 +48,7 @@ export default {
         OrderHeader,
         ProductCategory,
         SelectedProductFooter,
+        DeleteSelectedProductDialog,
     },
     created () {
         this.$axios({
@@ -56,7 +63,13 @@ export default {
             console.log(e)
         })
     },
-    mounted: function () {
+    mounted () {
+        // window.addEventListener('popstate', (e) => {
+        //     this.showDeleteSelectedProductDialog()
+        // })
+    },
+    beforeDestroy () {
+        // window.removeEventListener('popstate', this.showDeleteSelectedProductDialog)
     },
     computed: {
         ...mapGetters([
@@ -76,6 +89,12 @@ export default {
         ]),
         updateSalesData (headerInfo) {
             this.headerInfo = headerInfo
+        },
+        showDeleteSelectedProductDialog () {
+            // console.log('showDeleteSelectedProductDialog')
+            // if (this.selectedProduct.length > 0) {
+                this.$refs.deleteSelectedProductDialog.open()
+            // }
         }
     },
     mixins: [],

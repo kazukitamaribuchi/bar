@@ -1907,6 +1907,7 @@ class SalesViewSet(BaseModelViewSet):
         not_end_sales_header_list = SalesHeader.objects.filter(
             customer=customer,
             close_flg=False,
+            delete_flg=False,
         )
 
         if len(not_end_sales_header_list) >= 1:
@@ -2106,7 +2107,7 @@ class SalesViewSet(BaseModelViewSet):
         """
 
         logger.debug('add_sales_detail')
-        logger.debug(request.data)
+        logger.info(request.data)
 
         try:
             sales_header = SalesHeader.objects.get(pk=request.data['sales_header_id'])

@@ -55,6 +55,9 @@ def sales_detail_receiver(sender, instance, created, **kwargs):
         logger.debug('食べ物オーダーじゃないのでスルー')
         return
 
+    logger.debug(instance)
+    logger.debug(kwargs)
+
     channel_layer = get_channel_layer()
     logger.debug('食事の明細新規作成➡WS送信')
     async_to_sync(channel_layer.group_send)(
@@ -74,16 +77,28 @@ def sales_header_receiver(sender, instance, created, **kwargs):
         logger.debug('伝票新規作成はスルー')
         return
 
-    if not instance.close_flg:
-        logger.debug('締めフラグではないのでスルー')
-        return
+    # if not instance.close_flg:
+    #     logger.debug('締めフラグではないのでスルー')
+    #     return
 
-    channel_layer = get_channel_layer()
-    logger.debug('伝票締め➡WS送信')
-    async_to_sync(channel_layer.group_send)(
-        instance.user.username,
-        {
-            'type': 'close_sales_header',
-            'content': SalesSerializer(instance).data,
-        },
-    )
+    if instance.delete_flg:
+        logger.debug('伝票削除➡WS送信')
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            instance.user.username,
+            {
+                'type': 'delete_sales_header',
+                'content': SalesSerializer(instance).data,
+            },
+        )
+
+    if instance.close_flg:
+        logger.debug('伝票締め➡WS送信')
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            instance.user.username,
+            {
+                'type': 'close_sales_header',
+                'content': SalesSerializer(instance).data,
+            },
+        )

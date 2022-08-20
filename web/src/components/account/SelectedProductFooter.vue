@@ -135,12 +135,12 @@ export default {
             }
         },
         orderConfirm () {
-            console.log('売上伝票追加', this.selectedProduct, this.selectedProductSalesId)
+            console.log('売上伝票追加', this.selectedProduct, this.selectedProductSalesId, this.$route.params)
             this.$axios({
                 method: 'POST',
                 url: '/api/sales/add_sales_detail/',
                 data: {
-                    sales_header_id: this.selectedProductSalesId,
+                    sales_header_id: this.$route.params.id,
                     sales_detail_list: this.selectedProduct,
                 }
             })

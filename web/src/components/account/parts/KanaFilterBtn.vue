@@ -1,12 +1,18 @@
 <template>
-    <v-container fluid :class="{'pa-0': paddingOff}">
-        <vs-button
-            circle
-            icon
-            @click="showFilter != showFilter"
-        >
-            <i class='bx bx-filter'></i>
-        </vs-button>
+    <v-container fluid :class="{'pa-0': paddingOff}" class="py-0">
+        <v-row align-content="end">
+            <!-- <v-col cols="10"/> -->
+            <v-col cols="2">
+                <vs-button
+                    circle
+                    icon
+                    @click="showFilter = !showFilter"
+                >
+                    <i v-if="showFilter" class='bx bx-x'></i>
+                    <i v-else class='bx bx-filter'></i>
+                </vs-button>
+            </v-col>
+        </v-row>
         <v-row v-if="showFilter" class="kana_filter_btn_wrap">
             <v-col
                 cols="2"
