@@ -37,9 +37,17 @@
                             <v-avatar
                                 size="50px"
                             >
-                                <img
+                                <!-- <img
                                     alt="Avatar"
                                     src="http://localhost:8000/media/upload/酒6.png"
+                                > -->
+                                <img
+                                    v-if="item.thumbnail != null"
+                                    :src="item.thumbnail"
+                                >
+                                <img
+                                    v-else
+                                    src="@/static/img/noimage8.png"
                                 >
                             </v-avatar>
                         </v-badge>

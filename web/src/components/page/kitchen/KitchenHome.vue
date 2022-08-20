@@ -185,9 +185,9 @@
         >
             <v-list-item>
                 <v-list-item-avatar>
-                    <v-img
-                        src="http://localhost:8000/media/upload/logo2.jpg"
-                    ></v-img>
+                    <img
+                        src="@/static/img/logo2.jpg"
+                    >
                 </v-list-item-avatar>
                 <v-list-item-content>
                     <v-list-item-title class="text-h6">
@@ -227,6 +227,7 @@
     import dayjs from 'dayjs'
     import { mapGetters, mapActions, mapMutations } from 'vuex'
     import LogoutConfirmDialog from '@/components/kitchen/dialog/LogoutConfirmDialog'
+    import _ from 'lodash'
 
     export default {
         name: 'KitchenHomeItem',
@@ -254,8 +255,12 @@
         created () {
             this.$eventHub.$off('addNewOrder')
             this.$eventHub.$on('addNewOrder', this.addNewOrder)
+            this.$eventHub.$off('deleteOrder')
+            this.$eventHub.$on('deleteOrder', this.deleteOrder)
             this.$eventHub.$off('closeSalesHeader')
             this.$eventHub.$on('closeSalesHeader', this.closeSalesHeader)
+            this.$eventHub.$off('deleteSalesHeader')
+            this.$eventHub.$on('deleteSalesHeader', this.deleteSalesHeader)
 
             console.log('KitchenHome')
             this.$axios({
@@ -325,19 +330,19 @@
                             // 新規オーダー
                             this.$eventHub.$emit('addNewOrder', receiveData.content)
                             break
-                        case 20:
+                        case 1:
                             console.log('明細更新')
                             this.$eventHub.$emit('updateOrder', receiveData.content)
                             break
-                        case 30:
+                        case 2:
                             console.log('明細削除')
                             this.$eventHub.$emit('deleteOrder', receiveData.content)
                             break
-                        case 50:
+                        case 10:
                             console.log('伝票削除')
                             this.$eventHub.$emit('deleteSalesHeader', receiveData.content)
                             break
-                        case 99:
+                        case 11:
                             // 伝票締め
                             this.$eventHub.$emit('closeSalesHeader', receiveData.content)
                             break
@@ -405,8 +410,9 @@
                 })
             },
             deleteOrder (order) {
-                this.befItems = this.befItems.filter(item => item.header.id != order.id)
-                this.afItems = this.afItems.filter(item => item.header.id != order.id)
+                console.log('deleteOrder', order)
+                this.befItems = this.befItems.filter(item => item.id != order.id)
+                this.afItems = this.afItems.filter(item => item.id != order.id)
                 const nt = this.$vs.notification({
                     duration: 10000,
                     progress: 'auto',
@@ -464,6 +470,9 @@
                     console.log(res)
                     this.afItems = this.afItems.filter(item => item.id !== res.data.id)
                     this.befItems.push(res.data)
+                    console.log('bef this.befItems', this.befItems)
+                    this.befItems = this.sortByOrderTime(this.befItems)
+                    console.log('af this.befItems', this.befItems)
                 })
                 .catch(e => {
                     console.log(e)
@@ -509,6 +518,13 @@
                 if (this.ws !== undefined && this.ws.readyState !== 3) {
                     this.ws.close()
                 }
+            },
+            sortByOrderTime (array) {
+                let arr = _.cloneDeep(array)
+                let result = arr.sort(function(a, b) {
+                    return (a.order_time < b.order_time) ? -1 : 1
+                })
+                return result
             }
         },
         mixins: [],

@@ -8,6 +8,7 @@
     <v-btn
         block
         depressed
+        outlined
         color="primary"
         @click="toHome"
     ><i class='bx bx-home'></i> ホームへ</v-btn>

@@ -65,8 +65,12 @@
                                     size="50px"
                                 >
                                     <img
-                                        alt="Avatar"
-                                        src="http://localhost:8000/media/upload/酒6.png"
+                                        v-if="bottleInfo.thumbnail != null"
+                                        :src="item.thumbnail"
+                                    >
+                                    <img
+                                        v-else
+                                        src="@/static/img/noimage8.png"
                                     >
                                 </v-avatar>
                             </v-col>
@@ -79,14 +83,14 @@
                                 </p>
                             </v-col>
                         </v-row>
-                        <vs-button
+                        <!-- <vs-button
                             v-if="bottleInfo.selectedBottle != null"
                             @click="bottleInfo.selectedBottle = null"
                             border
                             danger
                         >
                             クリア
-                        </vs-button>
+                        </vs-button> -->
                     </v-col>
 
                     <!-- <v-col cols="12">
@@ -182,7 +186,7 @@
                 <v-btn
                     block
                     depressed
-                    color="success"
+                    color="primary"
                     @click="register"
                 ><i class='bx bxs-send'></i> ボトル情報作成</v-btn>
             </v-col>
@@ -191,9 +195,9 @@
                 <v-btn
                     block
                     depressed
-                    color="primary"
+                    color="success"
                     @click="init"
-                ><i class='bx bx-x'></i> クリア</v-btn>
+                ><i class='bx bx-trash'></i> クリア</v-btn>
             </v-col>
 
             <v-col cols="12">

@@ -363,6 +363,7 @@
                                         >
                                             売上情報
                                         </b-card-title>
+
                                         
                                     </b-tab>
                                 </b-tabs>

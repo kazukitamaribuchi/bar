@@ -70,9 +70,13 @@
         >
             <v-list-item>
                 <v-list-item-avatar>
-                    <v-img
+                    <!-- <v-img
                         src="http://localhost:8000/media/upload/logo2.jpg"
-                    ></v-img>
+                    ></v-img> -->
+                    <img
+                        src="@/static/img/logo2.jpg"
+                        style="width: 50px; height: 50px; margin: 0 auto;"
+                    >
                 </v-list-item-avatar>
                 <v-list-item-content>
                     <v-list-item-title class="text-h6">

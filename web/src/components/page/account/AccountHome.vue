@@ -4,14 +4,8 @@
             v-if="isAuth"
         />
         <v-container fluid class="px-1 py-0">
-            <!-- <div class="account_home_title mb-0 mt-0">
-                <v-card-title class="py-0">
-                    Menu
-                </v-card-title>
-            </div> -->
-
             <v-row class="mb-2 mx-1">
-                <v-col
+                <!-- <v-col
                     v-for="(item, i) in items"
                     :key="i"
                     cols="6"
@@ -30,156 +24,85 @@
                             :src="item.src"
                             height="100px"
                         ></v-img>
-                        <div
-                            v-else
-                            class="account-menu-card-img-area"
-                        >
-                            <i
-                                style="position: relative; top: 23px;"
-                                :class="item.icon"
-                            ></i>
-                        </div>
-                        <!-- <div class="account-menu-card-img-area">
-                            <v-img
-                                v-if="item.src != ''"
-                                :src="item.src"
-                                contain
-                                height="80px"
-                                class="account-menu-card-img"
-                            ></v-img>
-                            <i
-                                v-else
-                                style="position: relative; top: 23px;"
-                                :class="item.icon"
-                            ></i>
-                        </div> -->
                         <div class="account-menu-card-text-area pa-2">
-                            <!-- <v-card-text class="card-title text-center">
-                                {{ item.title }}
-                            </v-card-text> -->
                             {{ item.title }}
                         </div>
+                    </v-card>
+                </v-col> -->
+                <v-col cols="6" sm="4" md="3" lg="2" class="pb-3 px-1">
+                    <v-card
+                        class="account-menu-card"
+                        @click="toPage('AccountOrderSelect')"
+                        style="background-color: rgba(200, 200, 200, 0.1);"
+                    >
+                        <img src="@/static/img/glass2-2.jpg" style="height: 100px; width: 100%;">
+                        <div class="account-menu-card-text-area pa-2">注文</div>
+                    </v-card>
+                </v-col>
+                <v-col cols="6" sm="4" md="3" lg="2" class="pb-3 px-1">
+                    <v-card
+                        class="account-menu-card"
+                        @click="toPage('AccountOrderCheckSelect')"
+                        style="background-color: rgba(200, 200, 200, 0.1);"
+                    >
+                        <img src="@/static/img/account1-2.jpg" style="height: 100px; width: 100%;">
+                        <div class="account-menu-card-text-area pa-2">伝票確認</div>
+                    </v-card>
+                </v-col>
+                <v-col cols="6" sm="4" md="3" lg="2" class="pb-3 px-1">
+                    <v-card
+                        class="account-menu-card"
+                        @click="toPage('AccountNewVisit')"
+                        style="background-color: rgba(200, 200, 200, 0.1);"
+                    >
+                        <img src="@/static/img/bar4.jpg" style="height: 100px; width: 100%;">
+                        <div class="account-menu-card-text-area pa-2">新規来店</div>
+                    </v-card>
+                </v-col>
+                <v-col cols="6" sm="4" md="3" lg="2" class="pb-3 px-1">
+                    <v-card
+                        class="account-menu-card"
+                        @click="toPage('AccountBottle')"
+                        style="background-color: rgba(200, 200, 200, 0.1);"
+                    >
+                        <img src="@/static/img/酒4サムネ.png" style="height: 100px; width: 100%;">
+                        <div class="account-menu-card-text-area pa-2">ボトル情報照会</div>
+                    </v-card>
+                </v-col>
+                <v-col cols="6" sm="4" md="3" lg="2" class="pb-3 px-1">
+                    <v-card
+                        class="account-menu-card"
+                        @click="toPage('AccountNewBottle')"
+                        style="background-color: rgba(200, 200, 200, 0.1);"
+                    >
+                        <img src="@/static/img/bar2.jpg" style="height: 100px; width: 100%;">
+                        <div class="account-menu-card-text-area pa-2">ボトル情報作成</div>
+                    </v-card>
+                </v-col>
+                <v-col cols="6" sm="4" md="3" lg="2" class="pb-3 px-1">
+                    <v-card
+                        class="account-menu-card"
+                        @click="toPage('AccountCustomer')"
+                        style="background-color: rgba(200, 200, 200, 0.1);"
+                    >
+                        <div>
+                            <img src="@/static/img/data1.jpg" style="height: 100px; width: 100%;">
+                        </div>
+                        <div class="account-menu-card-text-area pa-2">顧客情報照会</div>
+                    </v-card>
+                </v-col>
+                <v-col cols="6" sm="4" md="3" lg="2" class="pb-3 px-1">
+                    <v-card
+                        class="account-menu-card"
+                        @click="toPage('AccountNewCustomer')"
+                        style="background-color: rgba(200, 200, 200, 0.1);"
+                    >
+                        <img src="@/static/img/account3-2.jpg" style="height: 100px; width: 100%;">
+                        <div class="account-menu-card-text-area pa-2">新規会員登録</div>
                     </v-card>
                 </v-col>
             </v-row>
 
-
-
-            <!-- <div class="account_home_title mb-0 mt-4">
-                <v-card-title class="py-0">
-                    Wait Order
-                </v-card-title>
-            </div>
-            <v-card
-                flat
-            >
-                <v-row
-                    v-if="nonEndSalesDetail.length != 0"
-                    class="mb-1 mx-1"
-                >
-                    <v-col
-                        v-for="(item, i) in nonEndSalesDetail"
-                        :key="i"
-                        cols="12"
-                        class="py-1 mx-0 px-0"
-                    >
-                        <v-card
-                            class="pt-4"
-                        >
-                            <v-row style="max-width: 100%; margin: 0 auto;">
-                                <v-col cols="3" class="pa-0">
-                                    <v-img
-                                        v-if="item.product.thumbnail != null"
-                                        class="white--text align-end"
-                                        height="120px"
-                                        :src="item.product.thumbnail"
-                                        contain
-                                    >
-                                    </v-img>
-                                    <v-img
-                                        v-else
-                                        class="white--text align-end"
-                                        height="120px"
-                                        src="http://localhost:8000/media/upload/酒6.png"
-                                        contain
-                                    >
-                                    </v-img>
-                                </v-col>
-                                <v-col cols="9" class="pa-0">
-                                    <div
-                                        class="pl-2"
-                                        style="min-height: 65px;"
-                                    >
-                                        <label class="label-style">
-                                            商品名
-                                        </label>
-                                        <p
-                                            style="font-size: 13px; line-height: 2;"
-                                            class="mb-0"
-                                        >
-                                            {{ item.product.name | truncate(30) }}
-                                        </p>
-                                    </div>
-                                    <div style="display: flex;" class="pl-2">
-                                        <div style="margin-right: 30px;">
-                                            <label class="label-style">
-                                                伝票No
-                                            </label>
-                                            <p>
-                                                {{ item.header_id }}
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <label class="label-style">
-                                                席
-                                            </label>
-                                            <p>
-                                                {{ item.disp_seat_name }}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div style="display: flex; height: 55px;" class="pl-2">
-                                        <div style="margin-right: 30px;">
-                                            <label class="label-style">
-                                                注文数
-                                            </label>
-                                            <p>
-                                                {{ item.quantity }}
-                                            </p>
-                                        </div>
-                                        <div style="margin-right: 50px;">
-                                            <label class="label-style">
-                                                注文時刻
-                                            </label>
-                                            <p>
-                                                {{ item.disp_order_time }}
-                                            </p>
-                                        </div>
-                                        <vs-button
-                                            icon
-                                            relief
-                                            success
-                                            animation-type="rotate"
-                                            @click="checkSalesDetail(item)"
-                                            :loading="checkLoading"
-                                            style="height: 34px; margin-top: 10px;"
-                                        >
-                                            <i class='bx bx-check'></i>
-                                            <template #animate >
-                                                <i class='bx bx-check'></i>
-                                            </template>
-                                        </vs-button>
-                                    </div>
-                                </v-col>
-                            </v-row>
-
-                        </v-card>
-                    </v-col>
-                </v-row>
-                <v-card-text
-                    v-else
-                >オーダー待ち無し</v-card-text>
-            </v-card> -->
 
             <v-snackbar
                 v-model="snackbar"
@@ -211,50 +134,50 @@ export default {
         items: [
             {
                 title: '注文',
-                src: 'http://localhost:8000/media/upload/glass2.jpg',
-                // src: '',
+                // src: 'http://localhost:8000/media/upload/glass2.jpg',
+                src: '@/static/img/glass2.jpg',
                 link: 'AccountOrderSelect',
                 icon: 'bx bx-food-menu account-menu-card-icon',
             },
             {
                 title: '伝票確認',
-                src: 'http://localhost:8000/media/upload/account1.jpg',
-                // src: '',
+                // src: 'http://localhost:8000/media/upload/account1.jpg',
+                src: '@/static/img/account1.jpg',
                 link: 'AccountOrderCheckSelect',
                 icon: 'bx bx-yen account-menu-card-icon',
             },
             {
                 title: '新規来店',
-                src: 'http://localhost:8000/media/upload/bar4.jpg',
-                // src: '',
+                // src: 'http://localhost:8000/media/upload/bar4.jpg',
+                src: '@/static/img/bar4.jpg',
                 link: 'AccountNewVisit',
                 icon: 'bx bxs-face account-menu-card-icon',
             },
             {
                 title: 'ボトル情報照会',
-                src: 'http://localhost:8000/media/upload/酒2サムネ.png',
-                // src: '',
+                // src: 'http://localhost:8000/media/upload/酒2サムネ.png',
+                src: '@/static/img/酒2サムネ.png',
                 link: 'AccountBottle',
                 icon: 'bx bxs-drink account-menu-card-icon',
             },
             {
                 title: 'ボトル情報作成',
-                src: 'http://localhost:8000/media/upload/bar2.jpg',
-                // src: '',
+                // src: 'http://localhost:8000/media/upload/bar2.jpg',
+                src: '@/static/img/bar2.jpg',
                 link: 'AccountNewBottle',
                 icon: 'bx bxs-drink account-menu-card-icon',
             },
             {
                 title: '顧客情報照会',
-                src: 'http://localhost:8000/media/upload/data1.jpg',
-                // src: '',
+                // src: 'http://localhost:8000/media/upload/data1.jpg',
+                src: '@/static/img/data1.jpg',
                 link: 'AccountCustomer',
                 icon: 'bx bx-user account-menu-card-icon',
             },
             {
                 title: '新規会員登録',
-                src: 'http://localhost:8000/media/upload/account3.jpg',
-                // src: '',
+                // src: 'http://localhost:8000/media/upload/account3.jpg',
+                src: '@/static/img/account3.jpg',
                 link: 'AccountNewCustomer',
                 icon: 'bx bx-user account-menu-card-icon',
             },
@@ -339,6 +262,19 @@ export default {
         //         this.snackbar = true
         //     })
         // }
+        imgSrc (item) {
+            // const path = '@/static/img/glass2.jpg'
+            const path = item.src
+            // require([path], function (res) {
+            //     return res
+            // })
+
+            let result = require("localhost:8080" + path)
+            return result
+            // return '@/static/img/glass2.jpg'
+            // return require('@/static/img/glass2.jpg')
+            // return require(item.src)
+        }
     }
 }
 </script>

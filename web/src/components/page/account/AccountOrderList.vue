@@ -48,8 +48,9 @@
                                 >
                                     <img
                                         alt="Avatar"
-                                        src="http://localhost:8000/media/upload/男性1.jpg"
+                                        src="@/static/img/男性1.jpg"
                                     >
+                                    <!-- src="http://localhost:8000/media/upload/男性1.jpg" -->
                                 </v-avatar>
                             </v-col>
                             <v-col
@@ -256,7 +257,7 @@
             },
             setSalesHeaderList (salesHeaderList) {
                 let items = salesHeaderList
-                
+
                 this.salesHeaderList = items
                 this.loading = false
             }

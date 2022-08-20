@@ -87,8 +87,9 @@
                                     >
                                         <img
                                             alt="Avatar"
-                                            src="http://localhost:8000/media/upload/男性1.jpg"
+                                            src="@/static/img/男性1.jpg"
                                         >
+                                        <!-- src="http://localhost:8000/media/upload/男性1.jpg" -->
                                     </v-avatar>
                                     <!-- {{ item.customer_no }} -->
                                 </v-col>
@@ -259,7 +260,7 @@
             ...mapGetters([
             ]),
             pageNum () {
-                return Math.ceil(this.searchResult.count / 5)
+                return Math.ceil(this.searchResult.count / 10)
             }
         },
         methods: {

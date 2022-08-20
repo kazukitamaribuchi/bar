@@ -85,9 +85,17 @@
                                     <v-avatar
                                         size="65px"
                                     >
-                                        <img
+                                        <!-- <img
                                             alt="Avatar"
                                             src="http://localhost:8000/media/upload/酒5.png"
+                                        > -->
+                                        <img
+                                            v-if="item.thumbnail != null"
+                                            :src="item.thumbnail"
+                                        >
+                                        <img
+                                            v-if="item.thumbnail == null"
+                                            src="@/static/img/noimage8.png"
                                         >
                                     </v-avatar>
                                     <!-- {{ item.customer_no }} -->
@@ -277,7 +285,7 @@
             ...mapGetters([
             ]),
             pageNum () {
-                return Math.ceil(this.searchResult.count / 5)
+                return Math.ceil(this.searchResult.count / 10)
             }
         },
         methods: {

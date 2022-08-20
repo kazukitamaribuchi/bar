@@ -87,8 +87,13 @@ from .filters import (
     BottleFilter,
 )
 
+
 from django.db.models.functions import Coalesce
 
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
+import copy
 import logging
 
 logger = logging.getLogger(__name__)
@@ -2173,8 +2178,14 @@ class SalesViewSet(BaseModelViewSet):
         """
         明細更新
         """
+        logger.debug('★delete_sales_detail')
+        logger.debug(request.data)
+
+        res_detail = None
+
         try:
             detail = SalesDetail.objects.get(pk=request.data['id'])
+            res_detail = copy.deepcopy(detail)
             detail.delete()
         except SalesDetail.DoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -2183,6 +2194,17 @@ class SalesViewSet(BaseModelViewSet):
             header = SalesHeader.objects.get(pk=request.data['header_id'])
         except SalesHeader.DoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        if res_detail.product.category.large_category == 2:
+            channel_layer = get_channel_layer()
+            logger.debug('食事の明細削除➡WS送信')
+            async_to_sync(channel_layer.group_send)(
+                res_detail.header.user.username,
+                {
+                    'type': 'delete_order',
+                    'content': SalesDetailSerializer(res_detail).data,
+                },
+            )
 
         return Response(SalesSerializer(header).data)
 

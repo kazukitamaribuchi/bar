@@ -45,6 +45,8 @@ from asgiref.sync import async_to_sync
 def sales_detail_receiver(sender, instance, created, **kwargs):
 
     logger.debug('★sales_detail_receiver')
+    logger.debug(instance)
+    logger.debug(kwargs)
 
     if not created:
         logger.debug('新規作成じゃないのでスルー')

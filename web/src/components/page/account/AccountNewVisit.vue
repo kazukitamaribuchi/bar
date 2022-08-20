@@ -246,7 +246,7 @@
                 <v-btn
                     block
                     depressed
-                    color="success"
+                    color="primary"
                     @click="createSalesHeader"
                 ><i class='bx bxs-send'></i> 入店情報作成</v-btn>
             </v-col>
@@ -256,7 +256,7 @@
                     depressed
                     color="success"
                     @click="init"
-                ><i class='bx bx-x'></i> クリア</v-btn>
+                ><i class='bx bx-trash'></i> クリア</v-btn>
             </v-col>
             <v-col cols="12">
                 <HomeButton/>

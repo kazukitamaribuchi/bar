@@ -1,15 +1,32 @@
 <template>
     <div id="login_wrap">
-        <v-container class="pa-9">
+        <!-- <img
+            src="/media/upload/bar1.jpg"
+            alt="test1"
+        >
+        <img
+            src="/static/img/bar1.jpg"
+            alt="test2"
+        > -->
+        <!-- <img
+            src="@/static/img/bar1.jpg"
+            alt="test3"
+            style="width: 50px; height: 50px;"
+        > -->
 
+        <v-container class="pa-9">
             <div class="logo_area">
                 <div class="logo">
-                    <v-img
+                    <!-- <v-img
                         style="margin: 0 auto;"
                         height="50px"
                         width="50px"
+                        src="@/static/img/bar1.jpg"
+                    ></v-img> -->
+                    <img
                         src="@/static/img/logo2.jpg"
-                    ></v-img>
+                        style="width: 50px; height: 50px; margin: 0 auto;"
+                    >
                     <!-- src="http://localhost:8000/media/upload/logo2.jpg" -->
                 </div>
                 <div class="logo_text">

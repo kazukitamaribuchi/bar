@@ -2,7 +2,7 @@
     <v-container
         fluid
         :class="{'selected_product_padding': isShowSelectedProductFooter}"
-        class="px-1"
+        class="px-4"
     >
         <KanaFilterBtn
             @kanaFilter="kanaFilter"
@@ -34,7 +34,7 @@
                 >
                     <v-container fluid>
                         <v-row>
-                            <v-col cols="9" class="pa-0">
+                            <v-col cols="9" class="px-0">
                                 <v-card-subtitle style="font-size: 12px;" class="pb-1 pr-0">
                                     {{ item.name }}
                                 </v-card-subtitle>
@@ -91,8 +91,16 @@
                                         追加
                                     </vs-button>
                                 </v-card-actions> -->
+                                <v-chip
+                                    v-if="item.isBottle"
+                                    color="primary"
+                                    class="ml-4"
+                                    small
+                                >
+                                    ボトル有
+                                </v-chip>
                             </v-col>
-                            <v-col cols="3" class="pa-0">
+                            <v-col cols="3" class="px-0">
                                 <v-badge
                                     right
                                     :content="selectedValue(item)"
@@ -100,8 +108,9 @@
                                     style="width: 100%; height: 100%;"
                                     offset-x="30"
                                     offset-y="20"
+                                    class="pt-4"
                                 >
-                                    <v-img
+                                    <!-- <v-img
                                         v-if="item.thumbnail != null"
                                         class="white--text align-end"
                                         height="120px"
@@ -116,15 +125,30 @@
                                         src="http://localhost:8000/media/upload/酒2.png"
                                         contain
                                     >
-                                    </v-img>
+                                    </v-img> -->
+                                    <img
+                                        v-if="item.thumbnail != null"
+                                        style="height: 100px; width: 100%;"
+                                        :src="item.thumbnail"
+                                    >
+                                    <img
+                                        v-else
+                                        style="height: 100px; width: 100%;"
+                                        src="@/static/img/noimage5.png"
+                                    >
+
+                                    <!-- <img
+                                        v-if="item.thumbnail == null && item.category.large_category == 1"
+                                        src="@/static/img/酒2.png"
+                                        style="height: 100px; width: 100%;"
+                                    >
+                                    <img
+                                        v-if="item.thumbnail == null && item.category.large_category == 2"
+                                        src="@/static/img/天ぷら1.jpg"
+                                        style="height: 100px; width: 100%;"
+                                    > -->
+
                                 </v-badge>
-                                <v-chip
-                                    v-if="item.isBottle"
-                                    class="ml-2"
-                                    color="success"
-                                >
-                                    ボトル有
-                                </v-chip>
                             </v-col>
                         </v-row>
                     </v-container>

@@ -33,7 +33,7 @@
                 >
                     <v-row style="max-width: 100%; margin: 0 auto;">
                         <v-col cols="4" class="pl-1 pt-2">
-                            <v-img
+                            <!-- <v-img
                                 v-if="item.thumbnail != null"
                                 class="white--text align-end"
                                 mix-height="120px"
@@ -48,11 +48,33 @@
                                 src="http://localhost:8000/media/upload/酒2.png"
                                 contain
                             >
-                            </v-img>
+                            </v-img> -->
+                            <img
+                                v-if="item.thumbnail != null"
+                                style="height: 120px; width: 100%;"
+                                :src="item.thumbnail"
+                            >
+                            <img
+                                v-else
+                                style="height: 120px; width: 100%;"
+                                src="@/static/img/noimage8.png"
+                            >
+
+
+                            <!-- <img
+                                v-if="item.thumbnail == null && item.category.large_category == 1"
+                                src="@/static/img/酒2.png"
+                                style="height: 120px;"
+                            >
+                            <img
+                                v-if="item.thumbnail == null && item.category.large_category == 2"
+                                src="@/static/img/天ぷら1.jpg"
+                                style="height: 120px;"
+                            > -->
                             <v-chip
                                 v-if="item.isBottle"
                                 class="ml-7"
-                                color="success"
+                                color="primary"
                             >
                                 ボトル有
                             </v-chip>
