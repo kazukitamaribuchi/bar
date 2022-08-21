@@ -221,14 +221,13 @@
                             </v-row>
                             <v-row class="pa-2">
                                 <v-col cols="4" class="py-0">
-                                    <div v-if="!isNotDrink(item)">
+                                    <div v-if="isBottle(item)">
                                         <label class="label-style">
                                             ボトル登録
                                         </label>
                                         <v-switch
                                             v-model="item.bottle"
                                             class="mt-0"
-                                            :disabled="isNotDrink(item)"
                                         ></v-switch>
                                     </div>
                                 </v-col>
@@ -728,6 +727,13 @@
             isNotDrink (item) {
                 // if (this.mode == 1) return true
                 return item.product.category.large_category == 2
+            },
+            isBottle (item) {
+                // if (this.mode == 1) return true
+                if (item.product.category.large_category == 1 &&
+                    item.product.category.middle_category == 0 &&
+                    item.product.category.small_category != 4) return true
+                return false
             },
             deleteProductDetail: _.debounce(function deleteProductDetail (item, i) {
                 this.checkLoading = true

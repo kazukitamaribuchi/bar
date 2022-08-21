@@ -42,7 +42,7 @@
                             ></b-card-img> -->
                             <div class="add_bottle_img">
                                 <img
-                                    src="@/assets/img/酒9.png"
+                                    src="@/static/img/noimage8.png"
                                     class="add_bottle_default_icon"
                                 >
                             </div>

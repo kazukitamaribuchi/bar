@@ -20,8 +20,9 @@
                                     <div style="display: flex; margin-left: 30px; margin-top: 20px;">
                                         <div>
                                             <img
-                                                src="@/assets/img/男性3.jpg"
+                                                src="@/static/img/男性3.jpg"
                                                 class="sales_detail_customer"
+                                                style="position: relative; top: -8px; left: -5px;"
                                             >
                                         </div>
                                         <div class="mt-3" style="margin-left: 15px;">
@@ -50,7 +51,7 @@
                                             v-if="salesData.customer.birthday == salesData.account_date"
                                         >
                                             <img
-                                                src="@/assets/img/ケーキ.png"
+                                                src="@/static/img/ケーキ.png"
                                                 class="sales_detail_customer_birthday">
                                         </span>
                                     </b-card-text>
@@ -243,10 +244,10 @@
                                     :fields="salesDetailFields"
                                     class="mb-0 pb-0"
                                 >
-                                    <template #cell(cast)="data">
+                                    <!-- <template #cell(cast)="data">
                                         <span v-if="data.value.icon == null">
                                             <img
-                                                src="@/assets/img/女性11.jpg"
+                                                src="@/static/img/女性11.jpg"
                                                 class="sales_detail_cast"
                                             >
                                         </span>
@@ -257,7 +258,7 @@
                                             >
                                         </span>
                                         <span style="position: relative; left: 20px;">{{ data.value.name }}</span>
-                                    </template>
+                                    </template> -->
 
                                     <template #cell(bottle_register)="data">
                                         <div v-if="data.value">有</div>

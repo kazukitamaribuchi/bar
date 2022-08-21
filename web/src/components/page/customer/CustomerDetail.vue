@@ -46,8 +46,9 @@
                                     <div style="display: flex; margin-left: 30px; margin-top: 30px;">
                                         <div>
                                             <img
-                                                src="@/assets/img/男性3.jpg"
+                                                src="@/static/img/男性3.jpg"
                                                 class="customer_detail_customer_icon"
+                                                style="position: relative; top: -13px; left: -7px;"
                                             >
                                         </div>
                                         <div class="mt-3" style="margin-left: 15px;">
@@ -235,7 +236,7 @@
                                                                 <b-row>
                                                                     <b-col cols="3">
                                                                         <img
-                                                                            src="@/assets/img/酒2.png"
+                                                                            src="@/static/img/酒2.png"
                                                                             class="customer_detail_customer_icon"
                                                                         >
                                                                     </b-col>
@@ -364,7 +365,33 @@
                                             売上情報
                                         </b-card-title>
 
-                                        
+                                        <b-row>
+                                            <b-col cols="4">
+                                                <TotalByCustomerSalesAnalytics
+                                                    :customerNo="customerData.customer_no"
+                                                    :totalSalesData="customerData.total_sales"
+                                                />
+                                            </b-col>
+                                            <b-col cols="4">
+                                                <TotalByCustomerVisitAnalytics
+                                                    :customerNo="customerData.customer_no"
+                                                    :totalVisitData="customerData.total_visit"
+                                                />
+                                            </b-col>
+                                            <b-col cols="4">
+                                                <NextRankByCustomerAnalytics
+                                                    :rank="customerData.rank_id"
+                                                    :totalSalesData="customerData.total_sales"
+                                                />
+                                            </b-col>
+                                        </b-row>
+                                        <b-row>
+                                            <b-col cols="12">
+                                                <AllSalesEveryDayByCustomerAnalytics
+                                                    :customerNo="customerData.customer_no"
+                                                />
+                                            </b-col>
+                                        </b-row>
                                     </b-tab>
                                 </b-tabs>
                             </b-row>
@@ -544,6 +571,10 @@ import DeleteCustomerDetailDialog from '@/components/common/dialog/DeleteCustome
 import EndBottleDetailDialog from '@/components/common/dialog/EndBottleDetailDialog'
 import CreateBottleDialog from '@/components/common/dialog/CreateBottleDialog'
 import DeleteBottleDetailDialog from '@/components/common/dialog/DeleteBottleDetailDialog'
+import TotalByCustomerSalesAnalytics from '@/components/common/analytics/TotalByCustomerSalesAnalytics'
+import TotalByCustomerVisitAnalytics from '@/components/common/analytics/TotalByCustomerVisitAnalytics'
+import NextRankByCustomerAnalytics from '@/components/common/analytics/NextRankByCustomerAnalytics'
+import AllSalesEveryDayByCustomerAnalytics from '@/components/common/analytics/AllSalesEveryDayByCustomerAnalytics'
 
 export default {
     name: 'CustomerDetailItem',
@@ -557,7 +588,7 @@ export default {
         // 現在のボトルデータ
         customerOwnBottleList: [],
         // 過去のボトルデータ
-        customerBottleHistoryList: []
+        customerBottleHistoryList: [],
     }),
     props: {
     },
@@ -567,6 +598,10 @@ export default {
         EndBottleDetailDialog,
         CreateBottleDialog,
         DeleteBottleDetailDialog,
+        TotalByCustomerSalesAnalytics,
+        TotalByCustomerVisitAnalytics,
+        NextRankByCustomerAnalytics,
+        AllSalesEveryDayByCustomerAnalytics,
     },
     computed: {
         ...mapGetters([

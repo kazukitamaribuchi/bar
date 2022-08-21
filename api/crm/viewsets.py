@@ -11,7 +11,10 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db import transaction, models
-from django.db.models import Sum, Q
+from django.db.models import Sum, Q, CharField
+from django.db.models.functions import (
+    TruncMonth,
+)
 
 from django.db.models.functions import Concat
 
@@ -1317,6 +1320,44 @@ class SalesViewSet(BaseModelViewSet):
             SalesDetail.objects.bulk_create(sales_detail_list)
 
         return Response(SalesSerializer(header).data, status=status.HTTP_200_OK)
+
+    @action(methods=['get'], detail=False)
+    def get_month_sales_analytics(self, request):
+        """
+        指定した日から~間の売上を取得（月単位）
+            target_date無ければ全期間
+            customer_noあれば顧客毎
+            　=> 2022-08-21 とりあえず顧客詳細用に顧客毎の全期間を作る
+        """
+
+        if 'target_date' in request.data:
+            pass
+
+        else:
+            queryset = SalesHeader.objects.filter(
+                Q(customer__delete_flg=False) &
+                Q(delete_flg=False) &
+                Q(close_flg=True))
+
+
+        if 'customer_no' in request.query_params:
+            try:
+                customer = MCustomer.objects.get(pk=request.query_params['customer_no'])
+                queryset = queryset.filter(customer=customer)
+            except MCustomer.DoesNotExist:
+                logger.error('顧客情報の取得に失敗しました。')
+
+        data = queryset.annotate(
+            month=TruncMonth('leave_time')
+        ).values('month').annotate(
+            total=models.Sum('total_tax_sales'),
+            total_visit=models.Count('total_tax_sales'),
+        )
+
+        return Response({
+            'data': data,
+        })
+
 
 
     @action(methods=['get'], detail=False)

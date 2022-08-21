@@ -117,7 +117,7 @@
                                                 <div style="display: flex;">
                                                     <div>
                                                         <img
-                                                            src="@/assets/img/男性3.jpg"
+                                                            src="@/static/img/男性3.jpg"
                                                             class="create_bottle_customer_icon"
                                                         >
                                                     </div>
@@ -230,7 +230,7 @@
                                                 <div style="display: flex;">
                                                     <div>
                                                         <img
-                                                            src="@/assets/img/酒9.png"
+                                                            src="@/static/img/noimage8.png"
                                                             class="create_bottle_customer_icon"
                                                         >
                                                     </div>
