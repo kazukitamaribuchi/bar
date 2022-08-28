@@ -501,7 +501,7 @@ class SalesDetail(AbstractBaseModel):
 
     tax_rate = models.SmallIntegerField(
         _('税率'),
-        default=35,
+        default=20,
     )
 
     # total_price = models.IntegerField(
@@ -527,6 +527,8 @@ class SalesDetail(AbstractBaseModel):
 
     order_time = models.DateTimeField(
         _('注文時間'),
+        # null=True,
+        # blank=True,
     )
 
     bottle_register = models.BooleanField(

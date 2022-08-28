@@ -6,9 +6,10 @@
             value-field="value"
             text-field="text"
             class="basic_select"
+            :class="{'full_size': fullSize}"
         >
-            <template #first>
-                <b-form-select-option :value="null" disabled>{{ initValue }}</b-form-select-option>
+            <template #first v-if="initValue != ''">
+                <b-form-select-option :value="firstValue" :disabled="disabled">{{ initValue }}</b-form-select-option>
             </template>
         </b-form-select>
     </span>
@@ -59,13 +60,31 @@ export default {
             type: Number,
             required: false,
             default: null,
+        },
+        fullSize: {
+            type: Boolean,
+            required: false,
+            default: false,
+        },
+        dispOptions: {
+            type: Array,
+            required: false,
+            default: null,
+        },
+        disabled: {
+            type: Boolean,
+            required: false,
+            default: true,
+        },
+        firstValue: {
+            type: Number,
+            required: false,
+            default: null,
         }
     },
     created () {
-
     },
     data: () => ({
-
     }),
     computed: {
         birthdayYearList () {
@@ -88,6 +107,7 @@ export default {
             return Con.DAY
         },
         options () {
+            if (this.dispOptions != null) return this.dispOptions
             const OPT = [
                 Con.OPTIONS_HOUR, // 0
                 Con.OPTIONS_HOUR_ALL, // 1
@@ -101,6 +121,7 @@ export default {
                 this.birthdayYearList, // 9(誕生年) 現在年月から100歳以下18歳以上をセレクト
                 Con.MONTH, // 10
                 this.birthdayYearMonthDay, // 11
+                Con.OPTIONS_BASIC_PLAN_TYPE_LIST2, // 12
             ]
             if (this.optionType != 99) return OPT[this.optionType]
 
@@ -116,6 +137,8 @@ export default {
         },
         initValue () {
             if (this.initVal != '') return this.initVal
+
+            if (this.dispOptions != null) return ''
             const val = [
                 '時',
                 '時',
@@ -129,6 +152,7 @@ export default {
                 '年',
                 '月',
                 '日',
+                '',
             ]
 
             if (this.optionType != 99) return val[this.optionType]
@@ -164,6 +188,10 @@ export default {
         right: 12px;
         top: 13px;
         width: 0;
+    }
+
+    .full_size {
+        width: 95%;
     }
 
 </style>

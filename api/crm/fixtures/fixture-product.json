@@ -138,7 +138,7 @@
       "name": "ペリエ・ジュエ ブラン・ド・ブラン",
       "name_kana": "ペリエ・ジュエ ブラン・ド・ブラン",
       "filter_key": 5,
-      "price": 99999999,
+      "price": 0,
       "category": 1,
       "tax": 4
     }
@@ -174,7 +174,7 @@
       "name": "ドンぺリニヨン　エノテーク（ドンペリ黒）",
       "name_kana": "ドンぺリニヨン　エノテーク（ドンペリ黒）",
       "filter_key": 3,
-      "price": 99999999,
+      "price": 0,
       "category": 1,
       "tax": 4
     }
@@ -186,7 +186,7 @@
       "name": "ドンペリニヨン　レゼルヴ・ドゥ・ラ・ベイ（ドンペリゴールド）",
       "name_kana": "ドンペリニヨン　レゼルヴ・ドゥ・ラ・ベイ（ドンペリゴールド）",
       "filter_key": 3,
-      "price": 99999999,
+      "price": 0,
       "category": 1,
       "tax": 4
     }
@@ -270,7 +270,7 @@
       "name": "アルマン・ド・ブリニャック ブラン・ド・ブラン（シルバー）",
       "name_kana": "アルマン・ド・ブリニャック ブラン・ド・ブラン（シルバー）",
       "filter_key": 0,
-      "price": 99999999,
+      "price": 0,
       "category": 1,
       "tax": 4
     }
@@ -282,7 +282,7 @@
       "name": "アルマン・ド・ブリニャック ブラン・ド・ノワール（ブラック）",
       "name_kana": "アルマン・ド・ブリニャック ブラン・ド・ノワール（ブラック）",
       "filter_key": 0,
-      "price": 99999999,
+      "price": 0,
       "category": 1,
       "tax": 4
     }
@@ -438,7 +438,7 @@
       "name": "山崎18年",
       "name_kana": "ヤマザキ18年",
       "filter_key": 7,
-      "price": 99999999,
+      "price": 0,
       "category": 2,
       "tax": 4
     }
@@ -462,7 +462,7 @@
       "name": "響21年",
       "name_kana": "ヒビキ21年",
       "filter_key": 5,
-      "price": 99999999,
+      "price": 0,
       "category": 2,
       "tax": 4
     }
@@ -486,7 +486,7 @@
       "name": "白州12年",
       "name_kana": "ハクシュウ12年",
       "filter_key": 5,
-      "price": 99999999,
+      "price": 0,
       "category": 2,
       "tax": 4
     }
@@ -510,7 +510,7 @@
       "name": "ザ・マッカラン ダブルカスク",
       "name_kana": "ザ・マッカラン ダブルカスク",
       "filter_key": 2,
-      "price": 99999999,
+      "price": 0,
       "category": 2,
       "tax": 4
     }
@@ -582,7 +582,7 @@
       "name": "クロスデロスシエテ",
       "name_kana": "クロスデロスシエテ",
       "filter_key": 1,
-      "price": 99999999,
+      "price": 0,
       "category": 4,
       "tax": 4
     }
@@ -594,7 +594,7 @@
       "name": "ルイラトゥールヴォーヌロマネ",
       "name_kana": "ルイラトゥールヴォーヌロマネ",
       "filter_key": 8,
-      "price": 99999999,
+      "price": 0,
       "category": 4,
       "tax": 4
     }
@@ -606,7 +606,7 @@
       "name": "オーパスワン",
       "name_kana": "オーパスワン",
       "filter_key": 0,
-      "price": 99999999,
+      "price": 0,
       "category": 4,
       "tax": 4
     }
@@ -618,7 +618,7 @@
       "name": "ダスティ",
       "name_kana": "ダスティ",
       "filter_key": 3,
-      "price": 99999999,
+      "price": 0,
       "category": 4,
       "tax": 4
     }
@@ -630,7 +630,7 @@
       "name": "シャブリ",
       "name_kana": "シャブリ",
       "filter_key": 2,
-      "price": 99999999,
+      "price": 0,
       "category": 4,
       "tax": 4
     }

@@ -13,6 +13,7 @@ import productMutations from './mutations/product'
 import accountMutations from './mutations/account'
 import seatMutations from './mutations/seat'
 import settingMutations from './mutations/setting'
+import serviceMutations from './mutations/service'
 
 import customerActions from './actions/customer'
 import castActions from './actions/cast'
@@ -53,6 +54,7 @@ const initialState = {
     selectedProductSalesId: null,
     seat: [],
     setting: [],
+    service: [],
     accountData: [],
 }
 
@@ -86,6 +88,7 @@ export default new Vuex.Store({
         selectedProductSalesId: state => state.selectedProductSalesId,
         seat: state => state.seat,
         setting: state => state.setting,
+        service: state => state.service,
         accountData: state => state.accountData,
     },
     mutations: {
@@ -100,6 +103,7 @@ export default new Vuex.Store({
         ...accountMutations,
         ...seatMutations,
         ...settingMutations,
+        ...serviceMutations,
 
         setAuthToken (state, payload) {
             state.isAuth = true
@@ -133,6 +137,8 @@ export default new Vuex.Store({
             state.selectedProduct = []
             state.selectedProductSalesId = null
             state.seat = []
+            state.setting = []
+            state.service = []
             state.accountData = []
         },
         setCurrentTime (state, payload) {
@@ -208,6 +214,7 @@ export default new Vuex.Store({
                     this.commit('setBottleList', res.data.bottle)
                     this.commit('setSeatList', res.data.seat)
                     this.commit('setSettingList', res.data.setting)
+                    this.commit('setServiceList', res.data.service)
                     // this.commit('setCastList', res.data.cast)
                     // this.commit('setQuestionList', res.data.question)
 					resolve(res)

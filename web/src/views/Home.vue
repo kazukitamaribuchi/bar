@@ -45,7 +45,7 @@ export default {
             this.$router.push('/')
         }
 
-        if (!this.initStatus) {
+        if (!this.initStatus && this.$store.state.isAuth) {
             this.appInitAction()
             .then(res => {
                 this.getCurrentTime()
@@ -55,42 +55,6 @@ export default {
                 console.log(e)
             })
         }
-
-        // this.getCustomerList()
-        // .then(res => {
-        //     this.setCustomerList(res)
-        // })
-        //
-        // this.getProductList()
-        // .then(res => {
-        //     this.setProductList(res)
-        // })
-        //
-        // this.getPopularProductList()
-        // .then(res => {
-        //     this.setPopularProductList(res.data)
-        // })
-        //
-        // this.getProductByCategoryList()
-        // .then(res => {
-        //     this.setProductByCategoryList(res)
-        // })
-        //
-        //
-        // this.getCastList()
-        // .then(res => {
-        //     this.setCastList(res)
-        // })
-        //
-        // this.getSalesList()
-        // .then(res => {
-        //     this.setSalesList(res)
-        // })
-        //
-        // this.getQuestionList()
-        // .then(res => {
-        //     this.setQuestionList(res)
-        // })
     },
     computed: {
         ...mapGetters([

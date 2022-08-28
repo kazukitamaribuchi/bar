@@ -362,7 +362,7 @@
             },
             updateCustomerInfo (val) {
                 if (val == null) {
-                    this.visitInfo.customerNo = ''
+                    this.bottleInfo.customerNo = ''
                 } else {
                     this.bottleInfo.customerNo = val.customer_no
                 }

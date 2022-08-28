@@ -379,6 +379,27 @@ class CustomerViewSet(BaseModelViewSet):
 
         return Response(res, status=status.HTTP_200_OK)
 
+    @action(methods=['get'], detail=False)
+    def search_customer_by_customer_no(self, request):
+        try:
+            customer = MCustomer.objects.get(
+                card__customer_no=request.query_params['customer_no'],
+                # 削除されていたらどうする？
+            )
+            return Response({
+                'status': 'success',
+                'data': CustomerSerializer(customer).data,
+            })
+        except MCustomer.DoesNotExist:
+            return Response({
+                'status': 'failure',
+                'msg': '該当の顧客は存在しません。'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({
+            'status': 'failure',
+            'data': '該当の顧客は存在しません。'
+        }, status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['get'], detail=False)
     def get_customer_exist(self, request):
@@ -905,183 +926,183 @@ class SalesViewSet(BaseModelViewSet):
         if customer_no != None and customer_no != '':
             try:
                 customer = MCustomer.objects.get(card__customer_no=customer_no)
+
             except MCustomer.DoesNotExist:
                 logger.error('顧客情報が取得出来ません。')
-                return Response(status.status.HTTP_400_BAD_REQUEST)
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            logger.error('会員IDが正しくありません')
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        account_date_str = request.data['account_date']
-        account_date = datetime.strptime(account_date_str, '%Y-%m-%d').astimezone(timezone('Asia/Tokyo'))
-
-        visit_time_str = request.data['visit_time']
-        visit_time = datetime.strptime(visit_time_str, '%Y-%m-%d %H:%M').astimezone(timezone('Asia/Tokyo'))
-        leave_time_str = request.data['leave_time']
-        leave_time = datetime.strptime(leave_time_str, '%Y-%m-%d %H:%M').astimezone(timezone('Asia/Tokyo'))
-        move_diff_seat = request.data['move_diff_seat']
-
-        move_time_str = request.data['move_time']
-        move_time = datetime.strptime(move_time_str, '%Y-%m-%d %H:%M').astimezone(timezone('Asia/Tokyo'))  if move_diff_seat else None
-
-        type = request.data['payment_type']
-        payment = MPayment.objects.get(type=0)
-        logger.debug(type)
-        try:
-            payment = MPayment.objects.get(type=type)
-        except:
-            logger.error('支払い方法が取得出来ません')
-
-        appoint = request.data['appoint']
-        # 後々
-        booking = False
-
+        male_visitors = request.data['male_visitors']
+        female_visitors = request.data['female_visitors']
         basic_plan_type = request.data['basic_plan_type']
-        stay_hour = request.data['stay_hour']
-        stay_hour_other = request.data['stay_hour_other']
-        total_stay_hour = request.data['total_stay_hour']
-
+        seat_id = request.data['seat_id']
         total_sales = request.data['total_sales']
         total_tax_sales = request.data['total_tax_sales']
-
-        is_charterd = request.data['is_charterd']
-        tax_rate = request.data['tax_rate']
-        total_visitors = request.data['total_visitors']
+        basic_plan_service_tax = request.data['basic_plan_service_tax']
+        basic_plan_tax = request.data['basic_plan_tax']
+        basic_plan_card_tax = request.data['basic_plan_card_tax']
         remarks = request.data['remarks']
+
+        try:
+            service = MService.objects.get(pk=basic_plan_type)
+        except MService.DoesNotExist:
+            logger.error('サービス情報が取得出来ません。')
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        visit_time = None
+        leave_time = None
+        visit_time_str = request.data['visit_time']
+        leave_time_str = request.data['leave_time']
+        if visit_time_str != '' and visit_time_str != None:
+            visit_time = datetime.strptime(visit_time_str, '%Y-%m-%d %H:%M:%S').astimezone(timezone('Asia/Tokyo'))
+        if leave_time_str != '' and leave_time_str != None:
+            leave_time = datetime.strptime(leave_time_str, '%Y-%m-%d %H:%M:%S').astimezone(timezone('Asia/Tokyo'))
+
+        seat = None
+        if seat_id != None and seat_id != '' and seat_id != 0:
+            try:
+                seat = MSeat.objects.get(pk=seat_id)
+            except MSeat.DoesNotExist:
+                logger.error('座席情報が取得出来ません。')
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        # 支払い方法は必要？★
+        payment = request.data['payment']
+
+        try:
+            payment = MPayment.objects.get(pk=payment)
+        except MPayment.DoesNotExist:
+            logger.error('支払い方法が取得出来ません')
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        logger.debug('★★★★★★★★header作成するよーーーーーー')
 
         header = SalesHeader.objects.create(
             customer=customer,
-            payment=payment,
-            appoint=appoint,
-            total_visitors=total_visitors,
-            is_charterd=is_charterd,
-            tax_rate=tax_rate,
-            booking=booking,
-            move_diff_seat=move_diff_seat,
-            basic_plan_type=basic_plan_type,
-            stay_hour=stay_hour,
-            stay_hour_other=stay_hour_other,
-            total_stay_hour=total_stay_hour,
-            total_sales=total_sales,
-            total_tax_sales=total_tax_sales,
+            male_visitors=male_visitors,
+            female_visitors=female_visitors,
+            seat=seat,
             visit_time=visit_time,
             leave_time=leave_time,
-            move_time=move_time,
-            account_date=account_date,
+            basic_plan_type=service,
             remarks=remarks,
             user=user,
+            total_sales=total_sales,
+            total_tax_sales=total_tax_sales,
+            close_flg=True,
+            payment=payment,
         )
 
+        logger.debug('ヘッダー作れた～～～～～～～～～～～～')
+
+        # bulk_create用
         sales_service_detail_list = []
-        sales_appoint_detail_list = []
         sales_detail_list = []
 
-        for data in request.data['sales_detail_service_list']:
-            logger.debug('★★')
-            logger.debug(data)
-            service = MService.objects.get(
-                basic_plan_type=data['basic_plan_type'],
-                large_category=data['large_category'],
-                middle_category=data['middle_category'],
-            )
+        # ボトル消込処理
+        for bottle_delete in request.data['bottle_delete_list']:
+            try:
+                bottle = BottleManagement.objects.get(pk=bottle_delete['id'])
+                bottle.delete()
+            except BottleManagement.DoesNotExist:
+                logger.error('ボトル情報の取得に失敗しました。')
 
-            # 基本料金なのでcastはNone
-            cast = None
+        open_date = leave_time
+
+        logger.debug('サービス')
+
+        for sales_service_detail in request.data['sales_service_detail']:
+            logger.debug(sales_service_detail)
+            service = MService.objects.get(
+                large_category=sales_service_detail['service']['large_category'],
+                middle_category=sales_service_detail['service']['middle_category'],
+                small_category=sales_service_detail['service']['small_category'],
+            )
+            quantity = sales_service_detail['quantity']
+            fixed_price = sales_service_detail['fixed_price']
+            discount_flg = sales_service_detail['discount_flg']
+            # tax_rate = sales_service_detail['tax_rate']
 
             sales_service_detail_list.append(
                 SalesServiceDetail(
                     header=header,
                     service=service,
-                    cast=cast,
-                    quantity=data['quantity'],
-                    fixed_price=data['fixed_price'],
-                    fixed_tax_price=data['fixed_tax_price'],
-                    total_price=data['total_price'],
-                    total_tax_price=data['total_tax_price'],
+                    quantity=quantity,
+                    fixed_price=fixed_price,
+                    discount_flg=discount_flg,
+                    # tax_rate=tax_rate,
                 )
             )
 
-        for data in request.data['sales_detail_appoint_list']:
-            logger.debug('★★★')
-            logger.debug(data)
-            service = MService.objects.get(
-                basic_plan_type=data['basic_plan_type'],
-                large_category=data['large_category'],
-                middle_category=data['middle_category'],
-            )
+        registered_bottle_product_list = []
+        bottle_list = []
+        disp_bottle_list = []
 
-            # 指名、同伴の場合キャストが紐づく
-            cast = None
-            if data['large_category'] == 1 or data['large_category'] == 2:
-                cast = MCast.objects.get(id=data['cast_id'])
+        logger.debug('明細')
 
-            sales_appoint_detail_list.append(
-                SalesAppointDetail(
-                    header=header,
-                    service=service,
-                    cast=cast,
-                    quantity=data['quantity'],
-                    fixed_price=data['fixed_price'],
-                    fixed_tax_price=data['fixed_tax_price'],
-                    total_price=data['total_price'],
-                    total_tax_price=data['total_tax_price'],
-                )
-            )
-
-        bottle = []
-
-        for data in request.data['sales_detail_list']:
+        # 商品一覧が来る
+        for item in request.data['sales_detail_list']:
             logger.debug('★★★★')
-            logger.debug(data)
+            logger.debug(item)
             try:
-                product = MProduct.objects.get(id=data['product_id'])
+                product = MProduct.objects.get(id=item['id'])
             except:
                 logger.error('商品が取得出来ません')
 
-            # これは誰が頼ませた商品か判別させるもの
-            cast = None
-            try:
-                cast = MCast.objects.get(id=data['cast_id'])
-            except:
-                logger.error('キャストが取得出来ません')
+            salesDetailInstance = SalesDetail(
+                header=header,
+                product=product,
+                quantity=item['quantity'],
+                fixed_price=item['fixed_price'],
+                tax_free_flg=item['tax_free_flg'],
+                order_time=leave_time,
+            )
 
-            # ボトル登録フラグ立ってたらボトル登録
-            # ★開封日は会計日で良いか？
-            # 2022/06/24 => 会員のみ売上登録からのボトル登録を許容する
-            if data['bottle'] and customer != None:
-                bottleInstance = BottleManagement.objects.create(
-                    customer=customer,
-                    product=product,
-                    open_date=account_date
-                )
-                logger.debug('★ボトル登録 : ' + customer.name)
-                bottle.append(BottleSerializer(bottleInstance).data)
+            if 'bottle' in item and item['bottle'] == True:
+                if item['id'] not in registered_bottle_product_list:
+                    bottle_list.append(
+                        BottleManagement(
+                            customer=customer,
+                            open_date=leave_time,
+                            product=product,
+                        )
+                    )
+                    disp_bottle_list.append(
+                        BottleSerializer(
+                            BottleManagement(
+                                customer=customer,
+                                open_date=leave_time,
+                                product=product,
+                            )
+                        ).data
+                    )
+                    salesDetailInstance.bottle_register = True
+                    registered_bottle_product_list.append(item['id'])
 
             logger.debug('＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿')
 
-            sales_detail_list.append(
-                SalesDetail(
-                    header=header,
-                    product=product,
-                    cast=cast,
-                    quantity=data['quantity'],
-                    fixed_price=data['fixed_price'],
-                    fixed_tax_price=data['fixed_tax_price'],
-                    total_price=data['total_price'],
-                    total_tax_price=data['total_tax_price'],
-                    remarks=data['remarks'],
-                )
-            )
+            sales_detail_list.append(salesDetailInstance)
 
         logger.debug('★★★★★★最終局面★★★★★★')
 
         if len(sales_service_detail_list) > 0:
             SalesServiceDetail.objects.bulk_create(sales_service_detail_list)
-        if len(sales_appoint_detail_list) > 0:
-            SalesAppointDetail.objects.bulk_create(sales_appoint_detail_list)
+        if len(bottle_list) > 0:
+            BottleManagement.objects.bulk_create(bottle_list)
         if len(sales_detail_list) > 0:
             SalesDetail.objects.bulk_create(sales_detail_list)
 
+        # 顧客のランク更新
+        total_sales_for_rank = SalesHeader.objects.filter(
+            customer=customer
+        ).aggregate(total=Coalesce(models.Sum('total_tax_sales'), 0))['total']
+        update_customer_rank(customer, total_sales_for_rank)
+
         return Response({
             'data': SalesSerializer(header).data,
-            'bottle': bottle,
+            'bottle': disp_bottle_list,
         }, status=status.HTTP_201_CREATED)
 
     @transaction.atomic
@@ -2033,6 +2054,9 @@ class SalesViewSet(BaseModelViewSet):
     @action(methods=['put'], detail=False)
     def update_sales_header(self, request):
 
+        logger.debug('update_sales_header')
+        logger.debug(request.data)
+
         try:
             header = SalesHeader.objects.get(pk=request.data['id'])
         except SalesHeader.DoesNotExist:
@@ -2052,10 +2076,11 @@ class SalesViewSet(BaseModelViewSet):
             logger.error('サービス情報が取得出来ません。')
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        if seat_id != None and seat_id != '':
+        if seat_id != None and seat_id != '' and seat_id != 0:
             try:
                 seat = MSeat.objects.get(pk=seat_id)
             except MSeat.DoesNotExist:
+                logger.error('席情報が取得出来ません。')
                 return Response(status=status.HTTP_400_BAD_REQUEST)
 
         header.seat = seat
@@ -2164,6 +2189,9 @@ class SalesViewSet(BaseModelViewSet):
         order_time = datetime.now(timezone('Asia/Tokyo'))
 
         sales_detail_list = request.data['sales_detail_list']
+
+        sales_detail_list_for_create = []
+
         for item in sales_detail_list:
             try:
                 product = MProduct.objects.get(pk=item['id'])
@@ -2171,15 +2199,27 @@ class SalesViewSet(BaseModelViewSet):
                 logger.error('商品情報が取得出来ません。')
                 return Response(status=status.HTTP_400_BAD_REQUEST)
 
-            detail = SalesDetail.objects.create(
-                header=sales_header,
-                product=product,
-                quantity=item['quantity'],
-                fixed_price=item['fixedPrice'],
-                tax_free_flg=item['taxFree'],
-                order_time=order_time,
+            sales_detail_list_for_create.append(
+                SalesDetail(
+                    header=sales_header,
+                    product=product,
+                    quantity=item['quantity'],
+                    fixed_price=item['fixedPrice'],
+                    tax_free_flg=item['taxFree'],
+                    order_time=order_time,
+                )
             )
-            detail.save()
+            # detail = SalesDetail.objects.create(
+            #     header=sales_header,
+            #     product=product,
+            #     quantity=item['quantity'],
+            #     fixed_price=item['fixedPrice'],
+            #     tax_free_flg=item['taxFree'],
+            #     order_time=order_time,
+            # )
+            # detail.save()
+
+        SalesDetail.objects.bulk_create(sales_detail_list_for_create)
 
         logger.debug('注文データ作成完了 sales_header:' + str(sales_header.id))
 
@@ -2278,6 +2318,19 @@ class SalesViewSet(BaseModelViewSet):
         header.basic_plan_tax = request.data['basic_plan_tax']
         header.basic_plan_card_tax = request.data['basic_plan_card_tax']
 
+
+        # 支払い方法は必要？★
+        payment_pk = request.data['payment']
+
+        try:
+            payment = MPayment.objects.get(pk=payment_pk)
+        except MPayment.DoesNotExist:
+            logger.error('支払い方法が取得出来ません')
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        header.payment = payment
+
+        # ボトルの開封日は会計時の日付で良いよな？★
         open_date_str = request.data['leave_time']
         open_date = datetime.strptime(open_date_str, '%Y/%m/%d %H:%M').astimezone(timezone('Asia/Tokyo'))
 
@@ -2295,7 +2348,8 @@ class SalesViewSet(BaseModelViewSet):
 
         for sales_detail in request.data['sales_detail']:
             if 'bottle' in sales_detail and sales_detail['bottle'] == True:
-                if sales_detail['product']['id'] not in registered_bottle_list:
+                # 明細1つにつき1登録のみ
+                if sales_detail['id'] not in registered_bottle_list:
                     try:
                         product = MProduct.objects.get(pk=sales_detail['product']['id'])
                     except MProduct.DoesNotExist:
@@ -2316,6 +2370,9 @@ class SalesViewSet(BaseModelViewSet):
                         detail.save()
                     except SalesDetail.DoesNotExist:
                         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+                    # registered_bottle_listに追加していなかった？
+                    registered_bottle_list.append(detail.id)
 
 
         for sales_service_detail in request.data['sales_service_detail']:

@@ -375,6 +375,9 @@
                 const data = this.salesData
                 data.basic_plan_type_id = this.basicPlanType
                 data.seat_id = this.seatId
+
+                console.log('update', data)
+
                 this.$axios({
                     method: 'put',
                     url: '/api/sales/update_sales_header/',

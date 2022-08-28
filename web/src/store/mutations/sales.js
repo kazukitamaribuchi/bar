@@ -13,6 +13,9 @@ const salesMutations = {
             state.sales.push(payload)
         }
     },
+    addSalesListTop (state, payload) {
+        state.sales.splice(0, 0, payload)
+    },
     updateSalesList (state, payload) {
         const index = state.sales.findIndex(s => s.id === payload.id)
         Vue.set(state.sales, index, payload)

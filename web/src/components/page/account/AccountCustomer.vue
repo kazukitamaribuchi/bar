@@ -315,18 +315,24 @@
                 })
             },
             getPageNumber (pageNumber) {
-                const page = '?page=' + pageNumber
-                let url = '/api/customer/search/' + page
-                if (this.searchedInfo.customerNo != '') {
-                    url += '&customerNo=' + this.searchedInfo.customerNo
-                }
-                if (this.searchedInfo.customerName != '') {
-                    url += '&customerName=' + this.searchedInfo.customerName
-                }
+                let params = {}
+                // const page = '?page=' + pageNumber
+                // let url = '/api/customer/search/' + page
+                // if (this.searchedInfo.customerNo != '') {
+                //     url += '&customerNo=' + this.searchedInfo.customerNo
+                // }
+                // if (this.searchedInfo.customerName != '') {
+                //     url += '&customerName=' + this.searchedInfo.customerName
+                // }
+                params.page = pageNumber
+                params.customerNo = this.searchedInfo.customerNo
+                params.customerName = this.searchedInfo.customerName
+                
                 this.searchLoading = true
                 this.$axios({
                     method: 'get',
-                    url: url
+                    url: '/api/customer/search/',
+                    params: params
                 })
                 .then(res => {
                     this.searchLoading = false

@@ -100,12 +100,12 @@
 
                     <v-divider class="mx-5 my-2"/>
 
-                    <div class="text-caption text-right pr-4">
+                    <div class="text-caption pl-4 pb-2">
                         所有ボトル {{ item.customer.bottle.length }}件
                     </div>
 
                     <v-card
-                        v-for="(b, i) in item.customer.bottle"
+                        v-for="(b, i) in dispCustomerBottle(item)"
                         :key="i"
                         flat
                         class="pa-2 sales_header_bottle_info"
@@ -258,9 +258,35 @@
             setSalesHeaderList (salesHeaderList) {
                 let items = salesHeaderList
 
+                items = items.sort(this.sortByCreatedAt).sort(this.sortBySeat)
+                // items = items.sort(this.sortBySeat)
+                // console.log('★伝票', items)
+
                 this.salesHeaderList = items
                 this.loading = false
-            }
+            },
+            dispCustomerBottle (item) {
+                return item.customer.bottle.slice(0, 2)
+            },
+            sortByCreatedAt (a, b) {
+                if (a.created_at != b.created_at) {
+                    if (a.created_at < b.created_at) return -1
+                    if (a.created_at > b.created_at) return 1
+                }
+                return 0
+            },
+            sortBySeat (a, b) {
+                if (a.seat != b.seat) {
+                    if (a.seat == null) return 1
+                    if (b.seat == null) return -1
+
+                    if (a.seat.id != b.seat.id) {
+                        if (a.seat.id < b.seat.id) return -1
+                        if (a.seat.id > b.seat.id) return 1
+                    }
+                }
+                return 0
+            },
         },
         mixins: [],
     }

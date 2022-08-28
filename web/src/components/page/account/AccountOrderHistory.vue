@@ -67,6 +67,14 @@
                                 </v-list-item-content>
                             </v-list-item>
                         </v-col>
+                        <v-col cols="6" class="py-0">
+                            <v-list-item two-line>
+                                <v-list-item-content class="py-0">
+                                    <v-list-item-title>料金プラン</v-list-item-title>
+                                    <v-list-item-subtitle>{{ salesData.basic_plan_type.name }}</v-list-item-subtitle>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </v-col>
                     </v-row>
                     <v-card-subtitle class="pb-0">
                         備考
@@ -86,7 +94,7 @@
                         </v-col>
                         <v-col cols="7" class="text-right py-0">
                             <div style="font-size: 13px;">
-                                {{ totalOrderCnt }} 点
+                                {{ totalOrderCnt }}
                             </div>
                         </v-col>
                         <v-col cols="5" class="py-0">
@@ -174,8 +182,10 @@
                             flat
                             style="padding-left: 20px;"
                         >
-                            <div class="px-2 sales_detail_no">
-                                {{ i + 1 }}
+                            <div class="sales_detail_no">
+                                <p class="sales_detail_no_val">
+                                    No. {{ i + 1 }}
+                                </p>
                             </div>
                             <div class="text-right label-style">
                                 注文時間 : {{ item.order_time }}
@@ -197,10 +207,10 @@
                                         v-model="item.fixed_price"
                                         placeholder="実価格"
                                         class="right-input mt-0 pt-0 mr-1"
-                                        @change="updateSalesDetail(item, i)"
                                         :disabled="isEditMode"
                                     ></v-text-field>
                                 </v-col>
+                                <!-- @blur="updateSalesDetail(item, i)" -->
                                 <v-col cols="5" class="py-0">
                                     <label class="label-style">
                                         数量
@@ -238,9 +248,9 @@
                                     <v-checkbox
                                         v-model="item.tax_free_flg"
                                         class="mt-0"
-                                        @change="updateSalesDetail(item, i)"
                                         :disabled="isEditMode"
                                     ></v-checkbox>
+                                    <!-- @change="updateSalesDetail(item, i)" -->
                                 </v-col>
                                 <v-col cols="2" class="py-0">
                                     <div v-if="isNotDrink(item)">
@@ -263,7 +273,7 @@
                                         icon
                                         danger
                                         animation-type="rotate"
-                                        @click="deleteProductDetail(item)"
+                                        @click="showDeleteConfirmDialog(item)"
                                         :loading="checkLoading"
                                         style="margin: 0 auto;"
                                         :disabled="isEditMode"
@@ -294,7 +304,9 @@
                                     style="padding-left: 20px;"
                                 >
                                     <div class="px-2 sales_detail_no">
-                                        {{ i + 1 }}
+                                        <p class="sales_detail_no_val">
+                                            No. {{ i + 1 }}
+                                        </p>
                                     </div>
                                     <div class="text-right label-style">
                                         開封日 : {{ item.open_date }}
@@ -313,9 +325,9 @@
                                             消込
                                         </label>
                                         <v-switch
-                                        v-model="item.bottleDelete"
-                                        class="mt-0"
-                                        @change="updateBottleDelete(item)"
+                                            v-model="item.bottleDelete"
+                                            class="mt-0"
+                                            @change="updateBottleDelete(item)"
                                         ></v-switch>
                                     </div>
                                 </div>
@@ -527,6 +539,7 @@
 
         <v-dialog
             v-model="deleteSuccessDialog"
+            persistent
         >
             <v-card
                 class="pt-3"
@@ -554,6 +567,11 @@
             @changeMode="changeMode"
             @closeAccount="closeAccount"
         />
+
+        <DeleteConfirmDialog
+            ref="deleteConfirmDialog"
+            @delete="deleteProductDetail"
+        />
     </div>
 </template>
 <script>
@@ -564,6 +582,7 @@
     import CalcStayHour from '@/components/account/parts/CalcStayHour'
     import CalcBasicPlanPrice from '@/components/account/parts/CalcBasicPlanPrice'
     import DeleteSalesDetailDialog from '@/components/account/dialog/DeleteSalesDetailDialog'
+    import DeleteConfirmDialog from '@/components/account/dialog/DeleteConfirmDialog'
     import utilsMixin from '@/mixins/utils'
 
     export default {
@@ -574,6 +593,7 @@
             CalcStayHour,
             CalcBasicPlanPrice,
             DeleteSalesDetailDialog,
+            DeleteConfirmDialog,
         },
         props: {
         },
@@ -689,13 +709,12 @@
                 servicePrice = (totalTaxPrice)
                 totalTaxPrice += totalDetail
 
-
                 let taxRate = 0
                 if (this.salesData != null) {
                     taxRate += this.salesData.basic_plan_service_tax
                     taxRate += this.salesData.basic_plan_tax
                     taxRate += this.salesData.basic_plan_card_tax
-                    total += this.roundDown2(totalTaxPrice + totalTaxPrice * (taxRate/100))
+                    total += this.roundDown(totalTaxPrice + totalTaxPrice * (taxRate/100))
                     total += totalTaxFreeDetail
 
                     this.setTaxRate(taxRate)
@@ -772,7 +791,7 @@
                     this.snackbarText = 'データの更新に失敗しました。'
                     this.snackbar = true
                 })
-            }, 500),
+            }, 100),
             deleteSalesDetail (item, idx) {
                 console.log('deleteSalesDetail', item, idx)
             },
@@ -840,6 +859,7 @@
                         tax_rate: this.taxRate,
                     })
                 }
+                data.payment = (this.cardPayment) ? 1 : 0
                 data.sales_service_detail = sales_service_detail
                 data.leave_time = this.leaveTime
                 data.stay_hour = this.stayHour
@@ -919,6 +939,9 @@
                     this.snackbarText = 'データの削除に失敗しました。'
                     console.log(e)
                 })
+            },
+            showDeleteConfirmDialog (item) {
+                this.$refs.deleteConfirmDialog.open(item)
             }
         },
         mixins: [
@@ -937,18 +960,11 @@
     }
 
     .sales_detail_no {
-        text-align: center;
         font-size: 13px;
-        width: 25px;
-        max-width: 50px;
-        height: 25px;
-        border: 1px solid rgba(50, 50, 50, 0.7);
-        color: rgba(50, 50, 50, 0.7);
-        line-height: 25px;
-        border-radius: 4px;
-        margin: 0 0 9px 4px;
-        color: white;
-        background-color: rgb(140, 140, 140);
+        color: rgb(44, 44, 44);
+        .sales_detail_no_val {
+            text-align: left;
+        }
     }
 
     .account_order_history_wrap {

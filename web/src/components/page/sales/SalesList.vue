@@ -458,6 +458,25 @@
                             <b v-else>無</b>
                         </template>
                     </b-table>
+                    <b-row>
+                        <b-col cols="5">
+                            <b-card-sub-title>
+                                Page {{ currentPage }} of {{ Math.floor(totalRows / perPage) + 1 }}
+                            </b-card-sub-title>
+                        </b-col>
+                        <b-col cols="2">
+                            <b-pagination
+                                v-model="currentPage"
+                                :total-rows="totalRows"
+                                :per-page="perPage"
+                                align="fill"
+                                size="sm"
+                                class="my-0"
+                            ></b-pagination>
+                        </b-col>
+                        <b-col cols="5">
+                        </b-col>
+                    </b-row>
                 </b-tab>
             </b-tabs>
         </b-row>

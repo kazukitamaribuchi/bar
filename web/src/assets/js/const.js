@@ -328,6 +328,22 @@ class Const {
         { value: 0, text: '0' },
         { value: 1, text: '1' },
     ]
+    OPTIONS_BASIC_PLAN_TYPE_LIST = [
+        { name: '通常料金(1時間)', id: 1 },
+        { name: '通常料金(2時間)', id: 2 },
+        { name: '通常料金(3時間)', id: 3 },
+        { name: '貸切料金(1時間)', id: 4 },
+        { name: '貸切料金(2時間)', id: 5 },
+        { name: '貸切料金(3時間)', id: 6 },
+    ]
+    OPTIONS_BASIC_PLAN_TYPE_LIST2 = [
+        { value: 1, text: '通常料金(1時間)' },
+        { value: 2, text: '通常料金(2時間)' },
+        { value: 3, text: '通常料金(3時間)' },
+        { value: 4, text: '貸切料金(1時間)' },
+        { value: 5, text: '貸切料金(2時間)' },
+        { value: 6, text: '貸切料金(3時間)' },
+    ]
     BASIC_PLAN_NORMAL_PRICE = [
         6000,
         8000,
@@ -512,7 +528,12 @@ class Const {
     APPOINT_PRICE = 3000
     DOUHAN_PRICE = 5000
     CARD_PAYMENT_TAX = 10
-    TAX_DEFAULT = 35
+    TAX_DEFAULT = 10
+
+    SERVICE_TAX = 10
+    SALES_TAX = 10
+    CARD_TAX = 10
+
     BIRTHDAY_BOTTOM_LIMIT = 80
     BIRTHDAY_TOP_LIMIT = 18
 
@@ -561,6 +582,30 @@ class Const {
     KANA_FILTER_VAL_ALL = [
         'ア', 'カ', 'サ', 'タ', 'ナ', 'ハ', 'マ', 'ヤ', 'ラ', 'ワ', 'All',
     ]
+
+    // 0=通常, 1=貸切
+    BASIC_PLAN_PRICE = [
+        [
+            5000, 9000, 12000
+        ],
+        [
+            10000, 18000, 24000
+        ]
+    ]
+
+    // 延長料金 0=通常, 1=貸切
+    EXTENTION_PRICE = [
+        5000, 10000
+    ]
+
+    // 基本料金の区切り時間 1時間, 2時間, 3時間
+    BASIC_PLAN_SEP_MINUTE = [60, 120, 180]
+
+
+    // 通常1~3, 貸切 4~6
+    BASIC_PLAN_PRICE_FOR_CRM = [null, 5000, 9000, 12000, 10000, 18000, 24000]
+    // 基本料金の区切り時間 1時間, 2時間, 3時間
+    BASIC_PLAN_SEP_MINUTE_FOR_CRM = [null, 60, 120, 180, 60, 120, 180]
 }
 
 export { Const }

@@ -8,7 +8,7 @@
         </b-col>
         <b-col cols="8">
             <b-nav align="right">
-                <!-- <InputSales/> -->
+                <InputSales/>
                 <InputCustomer/>
                 <!-- <InputCast/> -->
                 <!-- <InputAttendance/> -->

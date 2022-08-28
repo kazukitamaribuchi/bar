@@ -305,8 +305,10 @@
     import HomeButton from '@/components/account/HomeButton'
     import SearchCustomerInfo from '@/components/account/SearchCustomerInfo'
     import AccountPageTitleArea from '@/components/account/AccountPageTitleArea'
+    import { Const } from '@/assets/js/const'
     const nowD = dayjs().format('YYYY-MM-DD')
     const nowT = dayjs().format('hh:mm')
+    const Con = new Const()
 
     export default {
         name: 'AccountNewVisitItem',
@@ -327,32 +329,33 @@
                 visitTime: '',
                 remarks: '',
             },
-            basicPlanTypeList: [
-                {
-                    name: '通常料金(1時間)',
-                    id: 1,
-                },
-                {
-                    name: '通常料金(2時間)',
-                    id: 2,
-                },
-                {
-                    name: '通常料金(3時間)',
-                    id: 3,
-                },
-                {
-                    name: '貸切料金(1時間)',
-                    id: 4,
-                },
-                {
-                    name: '貸切料金(2時間)',
-                    id: 5,
-                },
-                {
-                    name: '貸切料金(3時間)',
-                    id: 6,
-                },
-            ],
+            basicPlanTypeList: Con.OPTIONS_BASIC_PLAN_TYPE_LIST,
+            // basicPlanTypeList: [
+            //     {
+            //         name: '通常料金(1時間)',
+            //         id: 1,
+            //     },
+            //     {
+            //         name: '通常料金(2時間)',
+            //         id: 2,
+            //     },
+            //     {
+            //         name: '通常料金(3時間)',
+            //         id: 3,
+            //     },
+            //     {
+            //         name: '貸切料金(1時間)',
+            //         id: 4,
+            //     },
+            //     {
+            //         name: '貸切料金(2時間)',
+            //         id: 5,
+            //     },
+            //     {
+            //         name: '貸切料金(3時間)',
+            //         id: 6,
+            //     },
+            // ],
             rules: {
                 required: val => !!val || '必須項目です。',
                 small: val => !!Number(val) > 0 || '正しい数値を入力して下さい。',

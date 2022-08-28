@@ -145,7 +145,7 @@
                 flat
             >
                 <v-card-title>
-                    ボトルを空に更新します。<br>宜しいですか？
+                    ボトルを消込状態に更新します。<br>宜しいですか？
                 </v-card-title>
                 <v-card-actions>
                     <vs-button

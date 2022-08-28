@@ -34,7 +34,7 @@
             <v-list-item>
                 <v-list-item-content>
                     <v-list-item-subtitle>年齢</v-list-item-subtitle>
-                    <v-list-item-title>{{ customerAge }}</v-list-item-title>
+                    <v-list-item-title>{{ getStrInData(customerAge) }}</v-list-item-title>
                 </v-list-item-content>
                 <v-list-item-content>
                     <v-list-item-subtitle>ランク</v-list-item-subtitle>
@@ -46,6 +46,8 @@
 </template>
 
 <script>
+
+import utilsMixin from '@/mixins/utils'
 
 export default {
     name: 'SearchCustomerInfoItem',
@@ -95,11 +97,14 @@ export default {
                     this.customerNoError = false
                     this.$axios({
                         method: 'get',
-                        url: `/api/customer/${this.customerNo}/`,
+                        url: '/api/customer/search_customer_by_customer_no/',
+                        params: {
+                            customer_no: this.customerNo
+                        }
                     })
                     .then(res => {
                         console.log(res)
-                        this.customerInfo = res.data
+                        this.customerInfo = res.data.data
                         this.custonerNoSuccess = true
                         this.$emit('updateCustomerInfo', this.customerInfo)
                     })
@@ -134,7 +139,10 @@ export default {
             this.customerNoErrorText = ''
             this.custonerNoSuccess = false
         }
-    }
+    },
+    mixins: [
+        utilsMixin,
+    ],
 }
 </script>
 

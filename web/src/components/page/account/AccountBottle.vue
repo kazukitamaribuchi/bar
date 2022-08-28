@@ -22,7 +22,7 @@
                             <i class='bx bx-credit-card' ></i>
                         </template>
                     </vs-input>
-                    <vs-input
+                    <!-- <vs-input
                         class="my-3"
                         placeholder="名前"
                         v-model="searchInfo.customerName"
@@ -30,7 +30,7 @@
                         <template #icon>
                             <i class='bx bx-user'></i>
                         </template>
-                    </vs-input>
+                    </vs-input> -->
 
                 </div>
 
@@ -301,7 +301,19 @@
                     customerNo: '',
                     customerName: '',
                 }
+                this.searchedInfo = {
+                    customerNo: '',
+                    customerName: '',
+                }
                 this.searchLoading = false
+                this.searchResult = {
+                    results: null,
+                    count: 0,
+                    next: '',
+                    previous: '',
+                }
+                this.currentPage = 1
+                this.deleteConfirmDialog = false
             },
             toHome () {
                 this.init()
@@ -341,18 +353,27 @@
                 })
             },
             getPageNumber (pageNumber) {
-                const page = '?page=' + pageNumber
-                let url = '/api/bottle/search/' + page
-                if (this.searchedInfo.customerNo != '') {
-                    url += '&customerNo=' + this.searchedInfo.customerNo
-                }
-                if (this.searchedInfo.customerName != '') {
-                    url += '&customerName=' + this.searchedInfo.customerName
-                }
+                let params = {}
+                // const page = '?page=' + pageNumber
+                // let url = '/api/bottle/search/' + page
+                // if (this.searchedInfo.customerNo != '') {
+                //     url += '&customerNo=' + this.searchedInfo.customerNo
+                // }
+                // if (this.searchedInfo.customerName != '') {
+                //     url += '&customerName=' + this.searchedInfo.customerName
+                // }
+
+                params.page = pageNumber
+                params.end_flg = false
+                params.delete_flg = false
+                if (this.searchedInfo.customerNo != '') params.customerNo = this.searchedInfo.customerNo
+                if (this.searchedInfo.customerName != '') params.customerName = this.searchedInfo.customerName
+
                 this.searchLoading = true
                 this.$axios({
                     method: 'get',
-                    url: url
+                    url: '/api/bottle/search/',
+                    params: params
                 })
                 .then(res => {
                     this.searchLoading = false
@@ -369,8 +390,10 @@
                 this.$refs.bottleDetailDialog.open(item)
             },
             deleteBottleSuccess (item) {
-                this.searchResult.results = this.searchResult.results.filter(s => s.id != item.id)
-                this.searchResult.count = this.searchResult.results.length
+                console.log('deleteBottleSuccess', item, this.searchResult.results)
+                this.init()
+                // this.searchResult.results = this.searchResult.results.filter(s => s.id != item.id)
+                // this.searchResult.count = this.searchResult.results.length
             }
         },
         mixins: [],

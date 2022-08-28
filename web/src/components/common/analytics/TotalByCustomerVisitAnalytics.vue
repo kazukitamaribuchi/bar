@@ -24,7 +24,7 @@
                         {{ totalVisit }}
                     </b-card-title>
                     <b-card-sub-title>
-                        customers
+                        times
                     </b-card-sub-title>
                 </b-col>
             </b-row>

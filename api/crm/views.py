@@ -23,6 +23,7 @@ from .serializers import (
     # QuestionSerializer,
     CustomerSalesSerializer,
     ProductSalesSerializer,
+    ServiceSerializer,
 )
 from .models import (
     MCustomer,
@@ -117,6 +118,8 @@ class AppInitView(generics.ListAPIView):
             seat = SeatSerializer(MSeat.objects.all(), many=True).data
             logger.debug('7')
             setting = SettingSerializer(MSetting.objects.all(), many=True).data
+            logger.debug('8')
+            service = ServiceSerializer(MService.objects.all(), many=True).data
             # cast = CastSerializer(MCast.objects.all(), many=True).data
             # question = QuestionSerializer(MQuestion.objects.all(), many=True).data
 
@@ -129,6 +132,7 @@ class AppInitView(generics.ListAPIView):
                 'bottle': bottle,
                 'seat': seat,
                 'setting': setting,
+                'service': service,
                 # 'question': question,
                 # 'cast': cast,
             }, status=status.HTTP_200_OK)

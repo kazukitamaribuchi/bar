@@ -152,7 +152,7 @@
                                         circle
                                         icon
                                         danger
-                                        @click="deleteProduct(item)"
+                                        @click="showDeleteConfirm(item)"
                                     >
                                         <i class='bx bx-trash' ></i>
                                     </vs-button>
@@ -185,6 +185,11 @@
                 </v-card-text>
             </v-card>
         </v-row>
+
+        <DeleteConfirmDialog
+            ref="deleteConfirmDialog"
+            @delete="deleteProduct"
+        />
     </div>
 </template>
 
@@ -193,6 +198,7 @@
 import SpinButton from '@/components/account/SpinButton'
 import SelectedProductTotalCnt from '@/components/account/parts/SelectedProductTotalCnt'
 import SelectedProductTotalPrice from '@/components/account/parts/SelectedProductTotalPrice'
+import DeleteConfirmDialog from '@/components/account/dialog/DeleteConfirmDialog'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import _ from 'lodash'
 import Vue from 'vue'
@@ -210,6 +216,7 @@ export default {
         SpinButton,
         SelectedProductTotalCnt,
         SelectedProductTotalPrice,
+        DeleteConfirmDialog,
     },
     beforeCreate () {
     },
@@ -284,6 +291,9 @@ export default {
             this.deleteSelectedProduct(item)
             const index = this.items.findIndex(s => s.id === item.id)
             if (index !== -1) this.items = this.items.filter((_, i) => i !== index)
+        },
+        showDeleteConfirm (item) {
+            this.$refs.deleteConfirmDialog.open(item)
         },
         updateTaxFree (item) {
             const payload = _.cloneDeep(item)
