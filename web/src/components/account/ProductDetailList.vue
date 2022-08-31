@@ -271,10 +271,11 @@
                 cols="12"
                 class="pt-4 pb-9 mb-5"
             >
-                <vs-pagination
+                <v-pagination
                     v-model="currentPage"
                     :length="pageNum"
                     @input="changePage"
+                    circle
                 />
             </v-col>
         </v-row>

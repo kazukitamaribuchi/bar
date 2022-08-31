@@ -956,9 +956,9 @@ class SalesViewSet(BaseModelViewSet):
         visit_time_str = request.data['visit_time']
         leave_time_str = request.data['leave_time']
         if visit_time_str != '' and visit_time_str != None:
-            visit_time = datetime.strptime(visit_time_str, '%Y-%m-%d %H:%M:%S').astimezone(timezone('Asia/Tokyo'))
+            visit_time = datetime.strptime(visit_time_str, '%Y-%m-%d %H:%M').astimezone(timezone('Asia/Tokyo'))
         if leave_time_str != '' and leave_time_str != None:
-            leave_time = datetime.strptime(leave_time_str, '%Y-%m-%d %H:%M:%S').astimezone(timezone('Asia/Tokyo'))
+            leave_time = datetime.strptime(leave_time_str, '%Y-%m-%d %H:%M').astimezone(timezone('Asia/Tokyo'))
 
         seat = None
         if seat_id != None and seat_id != '' and seat_id != 0:
@@ -993,6 +993,9 @@ class SalesViewSet(BaseModelViewSet):
             total_tax_sales=total_tax_sales,
             close_flg=True,
             payment=payment,
+            basic_plan_service_tax=basic_plan_service_tax,
+            basic_plan_tax=basic_plan_tax,
+            basic_plan_card_tax=basic_plan_card_tax,
         )
 
         logger.debug('ヘッダー作れた～～～～～～～～～～～～')

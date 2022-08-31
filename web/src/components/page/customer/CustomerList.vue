@@ -192,12 +192,12 @@
                                     class="customer_list_area3_middle customer_sales_ranking"
                                     @click="toCustomerDetail(item)"
                                 >
-                                    <b-col cols="2">
+                                    <b-col cols="2" style="padding-right: 0;">
                                         <b-card-text>{{ i + 1 }}</b-card-text>
                                     </b-col>
-                                    <b-col cols="6">
+                                    <b-col cols="6" style="padding-left: 0;">
                                         <b-card-text>
-                                            {{ item.customer.name }}
+                                            {{ item.customer.name | truncate(10) }}
                                         </b-card-text>
                                     </b-col>
                                     <b-col align="right">
@@ -385,6 +385,12 @@
                             <b v-if="data.value != ''">{{ data.value }} 歳</b>
                             <b v-else>-</b>
                         </template>
+                        <template #cell(name)="data">
+                            <b>{{ data.value | truncate(10) }}</b>
+                        </template>
+                        <template #cell(name_kana)="data">
+                            <b>{{ data.value | truncate(10) }}</b>
+                        </template>
                         <template #cell(birthday)="data">
                             <b v-if="data.value != ''">{{ data.value }}</b>
                             <b v-else>-</b>
@@ -393,7 +399,7 @@
                             <b>{{ data.value }}</b> <b>回</b>
                         </template>
                         <template #cell(total_sales)="data">
-                            <b>￥{{ data.value }}</b>
+                            <b><b-icon icon="currency-yen"></b-icon>{{ data.value | priceLocaleString }}</b>
                         </template>
                         <template #cell(first_visit)="data">
                             <b v-if="data.value != ''"><b>{{ data.value }}</b></b>
@@ -432,6 +438,7 @@
 <script>
 import CreateCustomerDialog from '@/components/common/dialog/CreateCustomerDialog'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
+import utilsMixin from '@/mixins/utils'
 
 export default {
     name: 'CustomerListItem',
@@ -1263,7 +1270,10 @@ export default {
             this.filterIncludedField = []
             this.filterIgnoreField = []
         },
-    }
+    },
+    mixins: [
+        utilsMixin,
+    ]
 }
 </script>
 

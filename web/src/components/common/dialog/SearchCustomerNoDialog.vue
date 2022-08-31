@@ -29,6 +29,9 @@
                         @keypress="setSearch"
                         ref="focusInput"
                     ></b-form-input>
+                    <b-form-invalid-feedback :state="customerNoError.length == 0">
+                        {{ customerNoError }}
+                    </b-form-invalid-feedback>
                 </b-input-group>
             </b-form-group>
 
@@ -108,12 +111,31 @@ export default {
         dialog: false,
         dialog2: false,
         customerNo: '',
-        searchCustomerNoValue: false
+        searchCustomerNoValue: false,
+        customerNoError: '',
     }),
     computed: {
         ...mapGetters([
             'customer',
         ]),
+    },
+    watch: {
+        customerNo: function (val) {
+            const reg = /^[0-9]+$/
+            if (val == null) {
+                this.customerNoError = ''
+                return
+            }
+            if (val.length > 0) {
+                if (val <= 0 || !reg.test(val)) {
+                    this.customerNoError = '正しい値を入力してください'
+                } else {
+                    this.customerNoError = ''
+                }
+            } else {
+                this.customerNoError= ''
+            }
+        }
     },
     beforeRouteUpdate (to, from, next) {
         next();
@@ -132,18 +154,22 @@ export default {
             this.customer_no = ''
         },
         enterSearch () {
-            if (!this.searchCustomerNoValue) return
+            if (!this.searchCustomerNoValue ||
+                this.customerNoError.length != 0)
+            {
+                return
+            }
             this.search()
             this.searchCustomerNoValue = false
         },
         search () {
             let usernameRegex = /^\d+$/
             if (usernameRegex.test(this.customerNo)) {
-                if (this.customer.find(c => c.customer_no == this.customerNo) == undefined) {
-                    this.dialog2 = true
-                    this.customerNo = ''
-                    return
-                }
+                // if (this.customer.find(c => c.customer_no == this.customerNo) == undefined) {
+                //     this.dialog2 = true
+                //     this.customerNo = ''
+                //     return
+                // }
                 this.$router.push({
                     name: 'CustomerDetail',
                     params: {
@@ -158,7 +184,25 @@ export default {
 
                 this.close()
             }
-        }
+        },
+        // checkCustomerNo () {
+        //     const val = this.customerNo
+        //
+        //     const reg = /^[0-9]+$/
+        //     if (val == null) {
+        //         this.customerNoError = ''
+        //         return
+        //     }
+        //     if (val.length > 0) {
+        //         if (val <= 0 || !reg.test(val)) {
+        //             this.customerNoError = '正しい値を入力してください'
+        //         } else {
+        //             this.customerNoError = ''
+        //         }
+        //     } else {
+        //         this.customerNoError= ''
+        //     }
+        // },
     }
 }
 

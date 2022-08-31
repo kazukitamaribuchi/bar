@@ -7,12 +7,12 @@
             :title=createBottleDialogTitle
             header-bg-variant="primary"
             header-text-variant="light"
-            ok-title="登録"
-            cancel-title="閉じる"
-            @ok="createOrUpdate"
-            :ok-disabled=isDisabled
-            @cancel="close"
         >
+        <!-- ok-title="登録"
+        cancel-title="閉じる"
+        @ok="createOrUpdate"
+        :ok-disabled=isDisabled
+        @cancel="close" -->
             <b-form class="create_bottle_form">
                 <b-container fluid>
 
@@ -468,12 +468,81 @@
                     </b-card> -->
                 </b-container>
             </b-form>
+            <template #modal-footer>
+                <b-container fluid>
+                    <b-row>
+                        <b-col align="right" class="add_sales_detail_footer_col">
+                            <b-button
+                                variant="secondary"
+                                @click="close"
+                                class="btn_close"
+                            >
+                                閉じる
+                            </b-button>
+                            <b-button
+                                variant="primary"
+                                :disabled=isDisabled
+                                @click="createOrUpdate"
+                            >
+                                登録
+                            </b-button>
+                        </b-col>
+                    </b-row>
+                </b-container>
+            </template>
         </b-modal>
 
         <AddBottleDialog
             ref="addBottleDialog"
             @update="selectedBottle = $event"
         />
+
+        <b-modal
+            v-model="registerSuccessDialog"
+            hide-header
+        >
+            <div>
+                ボトルデータの作成に成功しました。
+            </div>
+            <template #modal-footer>
+                <b-row>
+                    <b-col
+                        align="right"
+                        style="padding: 0;"
+                    >
+                        <b-button
+                            variant="primary"
+                            @click="init"
+                        >
+                            OK
+                        </b-button>
+                    </b-col>
+                </b-row>
+            </template>
+        </b-modal>
+        <b-modal
+            v-model="registerFailureDialog"
+            hide-header
+        >
+            <div>
+                ボトルデータの作成に失敗しました。
+            </div>
+            <template #modal-footer>
+                <b-row>
+                    <b-col
+                        align="right"
+                        style="padding: 0;"
+                    >
+                        <b-button
+                            variant="primary"
+                            @click="registerFailureDialog = false"
+                        >
+                            閉じる
+                        </b-button>
+                    </b-col>
+                </b-row>
+            </template>
+        </b-modal>
     </div>
 </template>
 
@@ -533,6 +602,9 @@ export default {
         ],
         // selectedBottleList: [],
         selectedBottle: null,
+
+        registerSuccessDialog: false,
+        registerFailureDialog: false,
     }),
     computed: {
         ...mapGetters([
@@ -546,6 +618,10 @@ export default {
             // }
             if (this.selectedBottle == null
                 || this.createBottleData.openDate == '') {
+                return true
+            }
+
+            if (this.createBottleData.openDate == '') {
                 return true
             }
 
@@ -657,12 +733,17 @@ export default {
             .then(res => {
                 console.log(res)
                 this.addBottleList(res.data.data)
-                this.init()
+
+                this.registerSuccessDialog = true
+
+                // this.init()
             })
             .catch(e => {
                 console.log(e)
+
+                this.registerFailureDialog = true
             })
-            this.close()
+            // this.close()
         },
         update () {
             const data = this.createBottleData
@@ -704,9 +785,14 @@ export default {
             this.selectedBottle = null
             this.editId = null
             this.mode = 0
+
+            this.registerSuccessDialog = false
+            this.registerFailureDialog = false
+
+            this.dialog = false
         },
         close () {
-            this.init()
+            // this.init()
             this.dialog = false
         },
         open (data) {
@@ -722,8 +808,12 @@ export default {
             let copyData = _.cloneDeep(data)
             const customerType = copyData.customer_type
             let product = copyData.product
-            this.createBottleData.openDate = copyData.open_date.replace('年', '-').replace('月', '-').replace('日', '')
+            // this.createBottleData.openDate = copyData.open_date.replace('年', '-').replace('月', '-').replace('日', '')
+            this.createBottleData.openDate = copyData.open_date.replaceAll('/', '-')
             this.editId = copyData.id
+
+            console.log('convertData', data)
+            console.log('this.createBottleData', this.createBottleData)
 
             if (customerType == 0) {
                 this.createBottleData.nonMemberName = copyData.customer_name

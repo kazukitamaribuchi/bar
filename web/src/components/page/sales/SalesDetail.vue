@@ -17,7 +17,10 @@
                                     <b-card-sub-title>
                                         伝票No{{ salesData.id }}
                                     </b-card-sub-title>
-                                    <div style="display: flex; margin-left: 30px; margin-top: 20px;">
+                                    <div
+                                        @click="toCustomerDetail"
+                                        style="display: flex; margin-left: 30px; margin-top: 20px; cursor: pointer;"
+                                    >
                                         <div>
                                             <img
                                                 src="@/static/img/男性3.jpg"
@@ -104,7 +107,7 @@
                                 </b-col>
                                 <b-col cols="2">
                                     <div style="height: 55px;">
-                                        <!-- <b-button
+                                        <b-button
                                             size="sm"
                                             @click="showEditSalesDialog"
                                         >
@@ -112,7 +115,7 @@
                                                 icon="pencil"
                                                 aria-hidden="true"
                                             ></b-icon> 編集
-                                        </b-button> -->
+                                        </b-button>
                                         <b-button
                                             size="sm"
                                             style="position: relative; left: 10px;"
@@ -183,10 +186,10 @@
                                 </b-col>
                                 <b-col cols="2">
                                     <b-card-sub-title>
-                                        会計日
+                                        税率
                                     </b-card-sub-title>
                                     <b-card-text>
-                                        {{ salesData.account_date }}
+                                        {{ salesData.total_tax }}%
                                     </b-card-text>
                                 </b-col>
                             </b-row>
@@ -436,6 +439,14 @@ export default {
         },
         updateSalesDetail (data) {
             this.salesData = data
+        },
+        toCustomerDetail () {
+            this.$router.push({
+                name: 'CustomerDetail',
+                params: {
+                    id: this.salesData.customer.id
+                }
+            })
         }
     },
     mixins: [

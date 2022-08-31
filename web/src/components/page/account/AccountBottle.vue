@@ -116,7 +116,7 @@
                                     class="pl-3"
                                 >
                                     <div style="font-size:10px;" class="text-grey">顧客名</div>
-                                    <div>{{ item.customer.name }}</div>
+                                    <div style="font-size:12px;">{{ item.customer.name | truncate(10) }}</div>
                                 </v-col>
                                 <v-col
                                     cols="4"
@@ -172,12 +172,12 @@
                         </vs-card> -->
                     </v-col>
                 </v-row>
-
-                <vs-pagination
+                <v-pagination
                     v-model="currentPage"
-                    :length=pageNum
+                    :length="pageNum"
                     @input="getPageNumber"
-                ></vs-pagination>
+                    circle
+                />
             </v-card-text>
         </v-container>
 

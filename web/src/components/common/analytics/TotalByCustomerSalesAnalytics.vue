@@ -21,7 +21,7 @@
                 </b-col>
                 <b-col cols="6" align="right" class="pt-4 ml-0 pl-0">
                     <b-card-title class="total_sales_content mt-2">
-                        ￥{{ totalSalesStr }}
+                        <b-icon icon="currency-yen"></b-icon>{{ totalSalesStr }}
                     </b-card-title>
                     <b-card-sub-title>
                         sales

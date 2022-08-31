@@ -99,7 +99,7 @@
                                     md="4"
                                 >
                                     <div style="font-size:10px;" class="text-grey">名前</div>
-                                    <div>{{ item.name }}</div>
+                                    <div>{{ item.name | truncate(10) }}</div>
                                 </v-col>
                                 <v-col
                                     cols="3"
@@ -109,7 +109,7 @@
                                     <!-- <div style="font-size:10px;" class="text-grey">会員No</div>
                                     <div>{{ item.customer_no }}</div> -->
                                     <div style="font-size:10px;" class="text-grey">年齢</div>
-                                    <div>{{ item.age }}歳</div>
+                                    <div>{{ getStrInData(item.age) }}歳</div>
                                 </v-col>
                                 <v-col
                                     cols="1"
@@ -149,12 +149,12 @@
                         </vs-card> -->
                     </v-col>
                 </v-row>
-
-                <vs-pagination
+                <v-pagination
                     v-model="currentPage"
                     :length=pageNum
+                    circle
                     @input="getPageNumber"
-                ></vs-pagination>
+                />
             </v-card-text>
         </v-container>
 
@@ -204,6 +204,7 @@
     import { mapGetters } from 'vuex'
     import HomeButton from '@/components/account/HomeButton'
     import AccountPageTitleArea from '@/components/account/AccountPageTitleArea'
+    import utilsMixin from '@/mixins/utils'
 
     export default {
         name: 'AccountCustomerItem',
@@ -327,7 +328,7 @@
                 params.page = pageNumber
                 params.customerNo = this.searchedInfo.customerNo
                 params.customerName = this.searchedInfo.customerName
-                
+
                 this.searchLoading = true
                 this.$axios({
                     method: 'get',
@@ -349,7 +350,9 @@
                 this.$refs.customerDetailDialog.open(item)
             }
         },
-        mixins: [],
+        mixins: [
+            utilsMixin,
+        ],
     }
 </script>
 <style lang="scss" scoped>

@@ -453,9 +453,21 @@
                             <b v-if="data.value">有</b>
                             <b v-else>フリー</b>
                         </template>
+                        <template #cell(customer_name)="data">
+                            <b>{{ data.value | truncate(10) }}</b>
+                        </template>
+                        <template #cell(customer_name_kana)="data">
+                            <b>{{ data.value | truncate(10) }}</b>
+                        </template>
                         <template #cell(douhan)="data">
                             <b v-if="data.value">有</b>
                             <b v-else>無</b>
+                        </template>
+                        <template #cell(total_sales)="data">
+                            <b><b-icon icon="currency-yen"></b-icon>{{ data.value | priceLocaleString }}</b>
+                        </template>
+                        <template #cell(total_tax_sales)="data">
+                            <b><b-icon icon="currency-yen"></b-icon>{{ data.value | priceLocaleString }}</b>
                         </template>
                     </b-table>
                     <b-row>

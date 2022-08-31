@@ -1,6 +1,15 @@
 <template>
     <div id="customer_detail_wrap">
-        <b-row>
+        <div v-if="loading" class="loading">
+            <div class="loading_icon">
+                <b-spinner
+                    style="width: 6rem; height: 6rem; display: block; margin: 0 auto;"
+                    label="Large Spinner"
+                    variant="light"
+                ></b-spinner>
+            </div>
+        </div>
+        <b-row v-else>
             <b-tabs pill>
                 <b-tab
                     title="顧客詳細"
@@ -589,6 +598,7 @@ export default {
         customerOwnBottleList: [],
         // 過去のボトルデータ
         customerBottleHistoryList: [],
+        loading: false,
     }),
     props: {
     },
@@ -682,49 +692,54 @@ export default {
         },
     },
     created () {
-        // this.$axios({
-        //     method: 'GET',
-        //     url: `/api/customer/${this.$route.params['id']}`,
-        // })
-        // .then(res => {
-        //     console.log(res)
-        //     this.customerData = _.cloneDeep(res.data)
-        //     this.isDanger = this.customerData.caution_flg
-        // })
-        // .catch(e => {
-        //     console.log(e)
-        // })
+        this.loading = true
+        this.$axios({
+            method: 'GET',
+            url: `/api/customer/${this.$route.params['id']}/`,
+        })
+        .then(res => {
+            console.log(res)
+            this.customerData = _.cloneDeep(res.data)
+            this.customerOwnBottleList = _.cloneDeep(res.data.bottle)
+            this.loading = false
+        })
+        .catch(e => {
+            console.log(e)
+            this.customerData = {}
+            this.loading = false
+        })
+
         // 検索から詳細きてうまくいかせるやり方わかったら、↓の様にstoreから取得する方法に切り替え
         // const customer_no = this.$route.params['id']
-        const id = this.$route.params['id']
+        // const id = this.$route.params['id']
+        //
+        // if (this.customer.find(c => c.id == id) == undefined) {
+        //     this.customerData = {}
+        // }  else {
+        //     this.customerData = _.cloneDeep(this.customer.find(c => c.id == id))
+        //     const customerNo = this.customerData.customer_no
+        //
+        //     const customerOwnBottleList = this.bottle.filter(function(b) {
+        //         if (b.customer != null
+        //             && b.customer.customer_no == customerNo
+        //             && (!b.end_flg && !b.waste_flg && !b.delete_flg)) {
+        //             return true
+        //         }
+        //     })
+        //
+        //     // const customerBottleHistoryList = this.bottle.filter(function(b) {
+        //     //     if (b.customer != null
+        //     //         && b.customer.customer_no == customer_no
+        //     //         && (b.end_flg || b.waste_flg || b.delete_flg)) {
+        //     //         return true
+        //     //     }
+        //     // })
+        //
+        //     this.customerOwnBottleList = customerOwnBottleList
+        //     // this.customerBottleHistoryList = customerBottleHistoryList
+        // }
 
-        if (this.customer.find(c => c.id == id) == undefined) {
-            this.customerData = {}
-        }  else {
-            this.customerData = _.cloneDeep(this.customer.find(c => c.id == id))
-            const customerNo = this.customerData.customer_no
-
-            const customerOwnBottleList = this.bottle.filter(function(b) {
-                if (b.customer != null
-                    && b.customer.customer_no == customerNo
-                    && (!b.end_flg && !b.waste_flg && !b.delete_flg)) {
-                    return true
-                }
-            })
-
-            // const customerBottleHistoryList = this.bottle.filter(function(b) {
-            //     if (b.customer != null
-            //         && b.customer.customer_no == customer_no
-            //         && (b.end_flg || b.waste_flg || b.delete_flg)) {
-            //         return true
-            //     }
-            // })
-
-            this.customerOwnBottleList = customerOwnBottleList
-            // this.customerBottleHistoryList = customerBottleHistoryList
-        }
-
-        console.log('customerData', this.customerData)
+        // console.log('customerData', this.customerData)
     },
     beforeRouteUpdate (to, from, next) {
         if (from.name == 'CustomerDetail') {
@@ -880,4 +895,14 @@ export default {
 //     margin-bottom: 4px;
 //     background: white !important;
 // }
+
+    .loading {
+        height: 100%;
+        width: 100%;
+        .loading_icon {
+            display: block;
+            margin: 0 auto;
+            padding-top: 20%;
+        }
+    }
 </style>

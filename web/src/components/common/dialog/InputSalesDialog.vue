@@ -44,7 +44,7 @@
                                         <b-form-input
                                             v-model="inputSalesData.customerNo"
                                             required
-                                            autofocus
+                                            :autofocus="autoFucus"
                                             placeholder="会員No(必須)"
                                             @blur="checkCustomerNo"
                                         ></b-form-input>
@@ -181,12 +181,16 @@
                                                         v-model="inputSalesData.visitTime1"
                                                         type="date"
                                                     ></b-form-input>
-                                                    <b-form-timepicker
+                                                    <b-form-input
+                                                        v-model="inputSalesData.visitTime2"
+                                                        type="time"
+                                                    ></b-form-input>
+                                                    <!-- <b-form-timepicker
                                                         v-model="inputSalesData.visitTime2"
                                                         now-button
                                                         reset-button
                                                         locale="en"
-                                                    ></b-form-timepicker>
+                                                    ></b-form-timepicker> -->
                                                 </b-form-group>
                                                 <b-form-group style="display: inline;">
                                                     <b-card-sub-title
@@ -196,12 +200,16 @@
                                                         v-model="inputSalesData.leaveTime1"
                                                         type="date"
                                                     ></b-form-input>
-                                                    <b-form-timepicker
+                                                    <b-form-input
+                                                        v-model="inputSalesData.leaveTime2"
+                                                        type="time"
+                                                    ></b-form-input>
+                                                    <!-- <b-form-timepicker
                                                         v-model="inputSalesData.leaveTime2"
                                                         now-button
                                                         reset-button
                                                         locale="en"
-                                                    ></b-form-timepicker>
+                                                    ></b-form-timepicker> -->
                                                 </b-form-group>
                                                 <b-form-invalid-feedback :state="visitLeaveTimeError.length == 0">
                                                     {{ visitLeaveTimeError }}
@@ -246,6 +254,9 @@
                                                         inline
                                                     ></b-form-spinbutton>
                                                 </b-form-group>
+                                                <b-form-invalid-feedback :state="totalVisitorsError.length == 0">
+                                                    {{ totalVisitorsError }}
+                                                </b-form-invalid-feedback>
                                             </b-col>
                                             <b-col cols="2">
                                                 <b-card-sub-title>
@@ -440,7 +451,7 @@
                             <th>ボトル登録</th>
                             <th>課税</th>
                             <th>総計(税抜)</th>
-                            <th>総計(税込)</th>
+                            <!-- <th>総計(税込)</th> -->
                             <!-- <th>備考</th> -->
                             <th></th>
                         </tr>
@@ -481,7 +492,7 @@
                                 <span v-else>無</span>
                             </td>
                             <td>{{ item.totalPrice | priceLocaleString }}</td>
-                            <td>{{ item.totalTaxPrice | priceLocaleString }}</td>
+                            <!-- <td>{{ item.totalTaxPrice | priceLocaleString }}</td> -->
                             <!-- <td>{{ item.remarks }}</td> -->
                             <td>
                                 <b-icon
@@ -635,6 +646,12 @@
                         ></b-form-textarea>
                     </b-form-group>
                 </b-card>
+
+                <b-button
+                    style="margin-top: 25px;"
+                    @click="initForm"
+                    variant="outline-secondary"
+                >フォーム初期化</b-button>
             </b-form>
             <template #modal-footer>
                 <b-container fluid>
@@ -691,8 +708,8 @@
                             </b-button>
                             <b-button
                                 variant="primary"
-                                @click="registerOrUpdate"
                                 :disabled=isDisabled
+                                @click="registerOrUpdate"
                             >
                                 登録
                             </b-button>
@@ -710,6 +727,53 @@
             ref="errorModal"
             :errorMsg="errorMsg"
         />
+
+        <b-modal
+            v-model="registerSuccessDialog"
+            hide-header
+        >
+            <div>
+                売上データの作成に成功しました。
+            </div>
+            <template #modal-footer>
+                <b-row>
+                    <b-col
+                        align="right"
+                        style="padding: 0;"
+                    >
+                        <b-button
+                            variant="primary"
+                            @click="init"
+                        >
+                            OK
+                        </b-button>
+                    </b-col>
+                </b-row>
+            </template>
+        </b-modal>
+        <b-modal
+            v-model="registerFailureDialog"
+            hide-header
+        >
+            <div>
+                売上データの作成に失敗しました。
+            </div>
+            <template #modal-footer>
+                <b-row>
+                    <b-col
+                        align="right"
+                        style="padding: 0;"
+                    >
+                        <b-button
+                            variant="primary"
+                            @click="registerFailureDialog = false"
+                        >
+                            閉じる
+                        </b-button>
+                    </b-col>
+                </b-row>
+            </template>
+        </b-modal>
     </div>
 </template>
 
@@ -826,6 +890,7 @@ export default {
         ],
         errorMsg: [],
         customerNoError: '',
+        totalVisitorsError: '',
         visitTimeError: '',
         leaveTimeError: '',
         visitLeaveTimeError: '',
@@ -841,6 +906,10 @@ export default {
         totalDetailPrice: 0,
         totalServicePrice: 0,
         bottleDeleteList: [],
+        registerSuccessDialog: false,
+        registerFailureDialog: false,
+
+        autoFucus: false,
     }),
     created () {
         this.$eventHub.$off('addSalesDetail')
@@ -935,12 +1004,14 @@ export default {
             return totalTaxPrice
         },
         isDisabled () {
-            // 席移動選択時には席移動のもののチェックも必要
-            // if (!this.isPositiveNumber(this.inputSalesData.customerNo)
-            //     || !this.isPositiveNumber(this.inputSalesData.totalVisitors)
-            //     || this.totalVisitorsError.length != 0) {
-            //         return true
-            //     }
+            // 正しい会員Noが入力されているか
+            // 正しい来店時間、退店時間が入力されているか
+            // 来店人数が1人以上になっているか
+            //  ➡上記が満たされていない場合、return trueで非活性
+            if (this.checkError()) {
+                return true
+            }
+
             return false
         },
         basicPlanPrice () {
@@ -982,6 +1053,12 @@ export default {
             }
             return false
         },
+        totalVisitorsInvalid () {
+            if (this.totalVisitorsError != '') {
+                return true
+            }
+            return false
+        },
         totalSalesDetailNum () {
             return this.inputSalesDetailData.length
         },
@@ -1007,7 +1084,7 @@ export default {
             const visit = dayjs(this.inputSalesData.visitTime)
 
             const diff = leave.diff(visit, 'minute')
-            console.log('diff', diff)
+            // console.log('diff', diff)
             if (diff < 0) {
                 return '0分'
             }
@@ -1033,9 +1110,24 @@ export default {
         'inputSalesData.basicPlanType': function (val) {
             this.calcBasicPlanDetail()
         },
-        'totalVisitors': function (val) {
-            this.calcBasicPlanDetail()
+
+        // 来店人数が1以上=>0になったらエラーメッセージ
+        // 'totalVisitors': function (val) {
+        //     this.calcBasicPlanDetail()
+        // },
+        totalVisitors: {
+            deep: false,
+            handler(newValue, oldValue) {
+                if (oldValue > 0 && newValue == 0) {
+                    this.totalVisitorsError = '来店客数を入力してください'
+                } else if (newValue > 0) {
+                    this.totalVisitorsError = ''
+                }
+                this.calcBasicPlanDetail()
+            }
         },
+
+
         'inputSalesData.visitTime1': function (val) {
             this.checkVisitTime()
         },
@@ -1161,10 +1253,12 @@ export default {
                 if (res.data.bottle.length != 0) {
                     this.addBottleList(res.data.bottle)
                 }
-                this.init()
+                this.registerSuccessDialog = true
+                // this.init()
             })
             .catch(e => {
                 console.log(e)
+                this.registerFailureDialog = true
             })
         },
         update () {
@@ -1224,6 +1318,7 @@ export default {
             this.inputSalesDetailData = []
             this.errorMsg = []
             this.customerNoError = ''
+            this.totalVisitorsError = ''
             this.editMode = false
             this.salesHeaderId = null
             this.edit_sales_detail = []
@@ -1234,16 +1329,76 @@ export default {
             this.totalDetailPrice = 0
             this.totalServicePrice = 0
             this.bottleDeleteList = []
+
+            this.registerSuccessDialog = false
+            this.registerFailureDialog = false
+
             this.close()
+        },
+        initForm () {
+            this.inputSalesData = {
+                // 選択されている料金タイプの種類
+                // 通常(1, 2, 3) 貸切(4, 5, 6)
+                basicPlanType: 1,
+
+                customerNo: null,
+                maleVisitors: 0,
+                femaleVisitors: 0,
+
+                // 日
+                visitTime1: '',
+                leaveTime1: '',
+                // 時刻
+                visitTime2: '',
+                leaveTime2: '',
+
+                visitTime: null,
+                leaveTime: null,
+                seatId: 0,
+                stayHour: 0,
+
+                basicPlanPrice1: 0,
+                basicPlanNum1: 0,
+                basicPlanPrice2: 0,
+                basicPlanNum2: 0,
+                basicPlanExtentionPrice1: 0,
+                basicPlanExtentionNum1: 0,
+                basicPlanExtentionPrice2: 0,
+                basicPlanExtentionNum2: 0,
+
+                basicPlanServiceTax: 10,
+                basicPlanTax: 10,
+                basicPlanCardTax: 0,
+
+                totalSalesTax: Con.TAX_DEFAULT,
+                cardPayment: false,
+                remarks: '',
+            }
+            this.inputSalesDetailData = []
+            this.errorMsg = []
+            this.customerNoError = ''
+            this.totalVisitorsError = ''
+            this.editMode = false
+            this.salesHeaderId = null
+            this.edit_sales_detail = []
+            this.edit_sales_service_detail = []
+
+            this.customerInfo = null
+            this.totalPrice = 0
+            this.totalDetailPrice = 0
+            this.totalServicePrice = 0
+            this.bottleDeleteList = []
         },
         open (data) {
             this.dialog = true
             if (data) {
+                this.autoFucus = false
                 this.convertData(data)
                 this.editMode = true
                 this.salesHeaderId = data.id
                 // console.log('編集モード')
             } else {
+                this.autoFucus = true
                 this.editMode = false
                 // console.log('新規作成モード')
             }
@@ -1276,37 +1431,70 @@ export default {
             this.edit_sales_detail = data.sales_detail
             this.edit_sales_service_detail = data.sales_service_detail
 
-            this.inputSalesData.basicPlanType = data.basic_plan_type
+            this.inputSalesData.basicPlanType = data.basic_plan_type.id
             this.inputSalesData.customerNo = String(data.customer.customer_no)
-            this.inputSalesData.accountDate = data.account_date.replaceAll('/', '-')
-            this.inputSalesData.stayHour = data.stay_hour
+            this.customerInfo = data.customer
+            this.inputSalesData.maleVisitors = data.male_visitors
+            this.inputSalesData.femaleVisitors = data.female_visitors
+
+            if (data.seat == null) {
+                this.inputSalesData.seatId = 0
+            } else {
+                this.inputSalesData.seatId = data.seat.id
+            }
+
+            this.inputSalesData.basicPlanServiceTax = data.basic_plan_service_tax
+            this.inputSalesData.basicPlanTax = data.basic_plan_tax
+            this.inputSalesData.basicPlanCardTax = data.basic_plan_card_tax
+
+            this.inputSalesData.cardPayment = (data.payment == 1) ? true : false
             this.inputSalesData.remarks = data.remarks
 
-            let visitTime = data.visit_time.split(' ')[1]
-            let leaveTime = data.leave_time.split(' ')[1]
+            let visitTime = data.visit_time.split(' ')
+            let leaveTime = data.leave_time.split(' ')
+            this.inputSalesData.visitTime1 = visitTime[0].replaceAll('/', '-')
+            this.inputSalesData.visitTime2 = visitTime[1]
+            this.inputSalesData.leaveTime1 = leaveTime[0].replaceAll('/', '-')
+            this.inputSalesData.leaveTime2 = leaveTime[1]
 
-
-            this.inputSalesData.totalSalesTax = data.tax_rate
-            this.inputSalesData.cardPayment = (data.payment == 1) ? true : false
+            for (const i in data.sales_service_detail) {
+                const salesServiceDetailItem = data.sales_service_detail[i]
+                if (!salesServiceDetailItem.discount_flg) {
+                    if (salesServiceDetailItem.service.large_category == 0) {
+                        // 通常
+                        this.inputSalesData.basicPlanPrice1 = salesServiceDetailItem.fixed_price
+                        this.inputSalesData.basicPlanNum1 = salesServiceDetailItem.quantity
+                    } else {
+                        // 延長
+                        this.inputSalesData.basicPlanExtentionPrice1 = salesServiceDetailItem.fixed_price
+                        this.inputSalesData.basicPlanExtentionNum1 = salesServiceDetailItem.quantity
+                    }
+                } else {
+                    if (salesServiceDetailItem.service.large_category == 0) {
+                        // 通常（値引）
+                        this.inputSalesData.basicPlanPrice2 = salesServiceDetailItem.fixed_price
+                        this.inputSalesData.basicPlanNum2 = salesServiceDetailItem.quantity
+                    } else {
+                        // 延長（値引）
+                        this.inputSalesData.basicPlanExtentionPrice2 = salesServiceDetailItem.fixed_price
+                        this.inputSalesData.basicPlanExtentionNum2 = salesServiceDetailItem.quantity
+                    }
+                }
+            }
 
             let service_detail_list = []
             for (const i in data.sales_detail) {
                 const salesDetailItem = data.sales_detail[i]
                 service_detail_list.push({
                     actuallyPrice: salesDetailItem.fixed_price,
-                    actuallyTaxPrice: salesDetailItem.fixed_tax_price,
-                    bottle: false,
+                    bottle: salesDetailItem.bottle_register,
                     category: salesDetailItem.product.category,
                     name: salesDetailItem.product.name,
                     price: salesDetailItem.product.price,
                     product: salesDetailItem.product,
-                    quantity: Number(salesDetailItem.quantity),
-                    remarks: '',
-                    taxRate: 35,
-                    taxation: false,
-                    thumbnail: null,
+                    quantity: salesDetailItem.quantity,
+                    taxation: salesDetailItem.tax_free_flg,
                     totalPrice: salesDetailItem.total_price,
-                    totalTaxPrice: salesDetailItem.total_tax_price,
                 })
             }
             this.inputSalesDetailData = service_detail_list
@@ -1386,8 +1574,8 @@ export default {
 
             if (this.inputSalesData.visitTime == null ||
                 this.inputSalesData.leaveTime == null) {
-                console.log(this.inputSalesData.visitTime, this.inputSalesData.leaveTime)
-                console.log('来店時間または退店時間が空')
+                // console.log(this.inputSalesData.visitTime, this.inputSalesData.leaveTime)
+                // console.log('来店時間または退店時間が空')
                 return
             }
 
@@ -1497,7 +1685,32 @@ export default {
                 this.bottleDeleteList = this.bottleDeleteList.filter(e => e.id !== item.id)
             }
             console.log('this.bottleDeleteList', this.bottleDeleteList)
-        }
+        },
+        checkError () {
+            if (this.inputSalesData.customerNo == null ||
+                this.inputSalesData.customerNo.length == 0)
+            {
+                return true
+            }
+
+            if (this.inputSalesData.visitTime == null ||
+                this.inputSalesData.leaveTime == null)
+            {
+                return true
+            }
+
+            if (this.totalVisitors == 0) {
+                return true
+            }
+
+            if (this.customerNoError.length != 0 ||
+                this.visitLeaveTimeError.length != 0 ||
+                this.totalVisitorsError.length != 0)
+            {
+                return true
+            }
+            return false
+        },
     },
     mixins: [
         customerMixin,

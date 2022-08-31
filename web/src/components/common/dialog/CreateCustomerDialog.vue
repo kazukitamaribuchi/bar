@@ -7,12 +7,12 @@
             title="顧客入力"
             header-bg-variant="primary"
             header-text-variant="light"
-            ok-title="登録"
-            cancel-title="閉じる"
-            @ok="createOrUpdate"
-            :ok-disabled=isDisabled
-            @cancel="close"
         >
+        <!-- ok-title="登録"
+        cancel-title="閉じる"
+        @ok="createOrUpdate"
+        :ok-disabled=isDisabled
+        @cancel="close" -->
             <b-form class="create_customer_form">
                 <b-container fluid>
                     <b-card class="mt-4" bg-variant="light">
@@ -291,17 +291,92 @@
                                     ></b-form-textarea>
                                 </b-form-group>
                             </b-col>
-                            <b-col cols="3">
+                            <!-- <b-col cols="3">
                                 <b-button
                                     style="margin-top: 25px;"
                                     @click="init"
                                     variant="outline-secondary"
                                 >フォーム初期化</b-button>
-                            </b-col>
+                            </b-col> -->
                         </b-row>
                     </b-card>
+
+                    <b-button
+                        style="margin-top: 25px;"
+                        @click="init"
+                        variant="outline-secondary"
+                    >フォーム初期化</b-button>
                 </b-container>
             </b-form>
+            <template #modal-footer>
+                <b-container fluid>
+                    <b-row>
+                        <b-col align="right" class="add_sales_detail_footer_col">
+                            <b-button
+                                variant="secondary"
+                                @click="close"
+                                class="btn_close"
+                            >
+                                閉じる
+                            </b-button>
+                            <b-button
+                                variant="primary"
+                                :disabled=isDisabled
+                                @click="createOrUpdate"
+                            >
+                                登録
+                            </b-button>
+                        </b-col>
+                    </b-row>
+                </b-container>
+            </template>
+        </b-modal>
+
+        <b-modal
+            v-model="registerSuccessDialog"
+            hide-header
+        >
+            <div>
+                顧客データの作成に成功しました。
+            </div>
+            <template #modal-footer>
+                <b-row>
+                    <b-col
+                        align="right"
+                        style="padding: 0;"
+                    >
+                        <b-button
+                            variant="primary"
+                            @click="init"
+                        >
+                            OK
+                        </b-button>
+                    </b-col>
+                </b-row>
+            </template>
+        </b-modal>
+        <b-modal
+            v-model="registerFailureDialog"
+            hide-header
+        >
+            <div>
+                顧客データの作成に失敗しました。
+            </div>
+            <template #modal-footer>
+                <b-row>
+                    <b-col
+                        align="right"
+                        style="padding: 0;"
+                    >
+                        <b-button
+                            variant="primary"
+                            @click="registerFailureDialog = false"
+                        >
+                            閉じる
+                        </b-button>
+                    </b-col>
+                </b-row>
+            </template>
         </b-modal>
     </div>
 </template>
@@ -340,6 +415,13 @@ export default {
             // birthday_day: null,
             customerNo: '',
             name: '',
+            name_kana: '',
+            age: '',
+            phone: '',
+            mail: '',
+            job: '',
+            company: '',
+            remarks: '',
             cautionFlg: []
         },
         year: Con.SELECT_BIRTHDAY_YEAR,
@@ -356,6 +438,9 @@ export default {
         cautionOptions: [
             { text: '要注意', value: 1 }
         ],
+
+        registerSuccessDialog: false,
+        registerFailureDialog: false,
     }),
     computed: {
         ...mapGetters([
@@ -450,11 +535,10 @@ export default {
         },
         register () {
             console.log('register', this.createCustomerData)
-            const data = this.createCustomerData
 
             let birthday = ''
-            if (data.birthday != '' && data.birthday != null) {
-                birthday = data.birthday.replaceAll('-', '/')
+            if (this.createCustomerData.birthday != '' && this.createCustomerData.birthday != null) {
+                birthday = this.createCustomerData.birthday.replaceAll('-', '/')
             }
 
             // let birthday = ''
@@ -465,32 +549,54 @@ export default {
 
             const cautionFlg = (this.createCustomerData.cautionFlg.length != 0) ? true : false
 
+            let data = {
+                name: this.createCustomerData.name,
+                birthday_str: birthday,
+                caution_flg: cautionFlg,
+                rank_id: 1,
+            }
+            if (this.createCustomerData.name_kana != '') data.name_kana = this.createCustomerData.name_kana
+            if (this.createCustomerData.age != '') data.age = this.createCustomerData.age
+            if (this.createCustomerData.job != '') data.job = this.createCustomerData.job
+            if (this.createCustomerData.mail != '') data.mail = this.createCustomerData.mail
+            if (this.createCustomerData.phone != '') data.phone = this.createCustomerData.phone
+            if (this.createCustomerData.company != '') data.company = this.createCustomerData.company
+            if (this.createCustomerData.customerNo != '') data.customer_no = this.createCustomerData.customerNo
+            if (this.createCustomerData.remarks != '') data.remarks = this.createCustomerData.remarks
+
+            console.log('data', data)
+
             this.$axios({
                 method: 'POST',
                 url: '/api/customer/',
-                data: {
-                    name: data.name,
-                    name_kana: data.name_kana,
-                    age: data.age,
-                    birthday_str: birthday,
-                    job: data.job,
-                    mail: data.mail,
-                    phone: data.phone,
-                    company: data.company,
-                    customer_no: data.customerNo,
-                    caution_flg: cautionFlg,
-                    remarks: data.remarks,
-                    // ランクは最初から上位で作る事も許容させるか? => マスタでやらせる。
-                    rank_id: 1,
-                }
+                data: data
+                // {
+                //     name: data.name,
+                //     name_kana: data.name_kana,
+                //     age: data.age,
+                //     birthday_str: birthday,
+                //     job: data.job,
+                //     mail: data.mail,
+                //     phone: data.phone,
+                //     company: data.company,
+                //     customer_no: data.customerNo,
+                //     caution_flg: cautionFlg,
+                //     remarks: data.remarks,
+                //     // ランクは最初から上位で作る事も許容させるか? => マスタでやらせる。
+                //     rank_id: 1,
+                // }
             })
             .then(res => {
                 console.log(res)
                 this.addCustomerList(res)
-                this.init()
+
+                this.registerSuccessDialog = true
+                // this.init()
             })
             .catch(e => {
                 console.log(e)
+
+                this.registerFailureDialog = true
             })
         },
         update () {
@@ -548,9 +654,16 @@ export default {
                 // birthday_year: null,
                 // birthday_month: null,
                 // birthday_day: null,
-                customerNo: null,
-                name: null,
-                cautionFlg: [],
+                customerNo: '',
+                name: '',
+                name_kana: '',
+                age: '',
+                phone: '',
+                mail: '',
+                job: '',
+                company: '',
+                remarks: '',
+                cautionFlg: []
             }
             this.customerNoError = ''
             this.customerNameError = ''
@@ -560,9 +673,14 @@ export default {
             this.customerMailError = ''
             this.customerJobError = ''
             this.customerCompanyError = ''
+
+            this.registerSuccessDialog = false
+            this.registerFailureDialog = false
+
+            this.dialog = false
         },
         close () {
-            this.init()
+            // this.init()
             this.dialog = false
         },
         open (data) {
@@ -684,7 +802,8 @@ export default {
             } else {
                 return false
             }
-        }
+        },
+
     },
     mixins: [
         utilsMixin,

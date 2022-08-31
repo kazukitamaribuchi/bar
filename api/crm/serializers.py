@@ -138,7 +138,7 @@ class CustomerSerializer(DynamicFieldsModelSerializer):
     birthday = serializers.SerializerMethodField(allow_null=True)
     birthday_str = serializers.CharField(write_only=True, allow_blank=True, allow_null=True)
     job = serializers.CharField(default='', allow_null=True)
-    mail = serializers.EmailField(default='', allow_null=True)
+    mail = serializers.EmailField(default='', allow_null=True, allow_blank=True)
     phone = serializers.CharField(default='', allow_null=True)
     company = serializers.CharField(default='', allow_null=True)
     created_at = serializers.SerializerMethodField()
@@ -1018,6 +1018,7 @@ class SalesSerializer(DynamicFieldsModelSerializer):
     # sales_appoint_detail = serializers.SerializerMethodField()
     sales_service_detail = serializers.SerializerMethodField()
     total_visitors = serializers.SerializerMethodField()
+    total_tax = serializers.SerializerMethodField()
     visit_time = serializers.SerializerMethodField()
     leave_time = serializers.SerializerMethodField()
     header_id = serializers.SerializerMethodField()
@@ -1054,6 +1055,7 @@ class SalesSerializer(DynamicFieldsModelSerializer):
             'male_visitors',
             'female_visitors',
             'total_visitors',
+            'total_tax',
             # 'move_diff_seat',
             'account_date',
             'visit_time',
@@ -1162,6 +1164,9 @@ class SalesSerializer(DynamicFieldsModelSerializer):
 
     def get_total_visitors(self, obj):
         return obj.male_visitors + obj.female_visitors
+
+    def get_total_tax(self, obj):
+        return obj.basic_plan_card_tax + obj.basic_plan_service_tax + obj.basic_plan_tax
 
     def get_header_id(self, obj):
         return str(obj.id).zfill(8)

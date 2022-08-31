@@ -55,6 +55,7 @@ import Vuetify, {
     VBottomNavigation,
     VResponsive,
     VChip,
+    VPagination,
 } from 'vuetify/lib'
 
 
@@ -116,6 +117,7 @@ Vue.use(Vuetify, {
         VBottomNavigation,
         VResponsive,
         VChip,
+        VPagination,
     }
 })
 
