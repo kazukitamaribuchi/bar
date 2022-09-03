@@ -107,7 +107,7 @@
                                 </b-col>
                                 <b-col cols="2">
                                     <div style="height: 55px;">
-                                        <b-button
+                                        <!-- <b-button
                                             size="sm"
                                             @click="showEditSalesDialog"
                                         >
@@ -115,7 +115,7 @@
                                                 icon="pencil"
                                                 aria-hidden="true"
                                             ></b-icon> 編集
-                                        </b-button>
+                                        </b-button> -->
                                         <b-button
                                             size="sm"
                                             style="position: relative; left: 10px;"
@@ -135,7 +135,7 @@
                                         総計（税込）
                                     </b-card-sub-title>
                                     <b-card-title>
-                                        <b-icon icon="currency-yen"></b-icon> {{ getNumInData(salesData.total_tax_sales) }}
+                                        <b-icon icon="currency-yen"></b-icon> {{ getNumInData(salesData.total_tax_sales) | priceLocaleString }}
                                     </b-card-title>
                                 </b-col>
                                 <b-col cols="2">
@@ -143,7 +143,7 @@
                                         総計（税抜）
                                     </b-card-sub-title>
                                     <b-card-title>
-                                        <b-icon icon="currency-yen"></b-icon> {{ getNumInData(salesData.total_sales) }}
+                                        <b-icon icon="currency-yen"></b-icon> {{ getNumInData(salesData.total_sales) | priceLocaleString }}
                                     </b-card-title>
                                 </b-col>
                                 <b-col cols="2">

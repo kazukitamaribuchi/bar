@@ -28,7 +28,7 @@
                                 <b-form-input
                                     id="filter-input"
                                     v-model="searchNo"
-                                    type="search"
+                                    type="number"
                                     placeholder="会員Noを入力してください"
                                     @input="inputSearchCustomerNo"
                                 ></b-form-input>

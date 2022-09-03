@@ -21,7 +21,7 @@
                 </b-col>
                 <b-col cols="6" align="right" class="pt-4 ml-0 pl-0">
                     <b-card-title class="total_sales_content mt-2">
-                        ￥{{ totalSalesStr }}
+                        <b-icon icon="currency-yen"></b-icon> {{ total | priceLocaleString }}
                     </b-card-title>
                     <b-card-sub-title>
                         sales
@@ -123,7 +123,7 @@
                           return parseInt(val);
                         },
                         color: '#111',
-                        fontSize: '20px',
+                        fontSize: '18px',
                         show: true,
                       }
                     }
@@ -147,6 +147,7 @@
                 },
                 labels: ['total (万)'],
             },
+            total: 0,
             totalSales: 0,
             totalSalesStr: '0',
             loading: true,
@@ -216,9 +217,11 @@
         methods: {
             setTotalSalesData (item) {
                 if (item.data.total_price == null) {
+                    this.total = 0
                     this.totalSales = 0
                     this.totalSalesStr = 0
                 } else {
+                    this.total = item.data.total_price
                     this.totalSales = item.data.total_price / 10000
                     this.totalSalesStr = item.data.total_price.toLocaleString()
                 }
@@ -229,4 +232,7 @@
     }
 </script>
 <style lang="scss" scoped>
+    .total_sales_content {
+        font-size: 20px;
+    }
 </style>

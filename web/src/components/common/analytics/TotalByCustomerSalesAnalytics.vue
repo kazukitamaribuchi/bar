@@ -223,4 +223,7 @@
     }
 </script>
 <style lang="scss" scoped>
+    .total_sales_content {
+        font-size: 20px;
+    }
 </style>

@@ -162,7 +162,7 @@
                                     <b-card-sub-title>定価</b-card-sub-title>
                                     <div class="selected_product_area">
                                         <div v-if="selectedProduct != null">
-                                            ￥{{ selectedProduct.price }}
+                                            ￥{{ selectedProduct.price | priceLocaleString }}
                                         </div>
                                         <div v-else> - </div>
                                     </div>
@@ -272,9 +272,9 @@
                                         :key=id
                                     >
                                         <td>{{ item.name }}</td>
-                                        <td>{{ item.actuallyPrice }}</td>
+                                        <td>{{ item.actuallyPrice | priceLocaleString }}</td>
                                         <td>{{ item.quantity }}</td>
-                                        <td>{{ item.price }}</td>
+                                        <td>{{ item.price | priceLocaleString }}</td>
                                         <td>
                                             <span v-if="item.taxation">課税</span>
                                             <span v-else>非課税</span>
@@ -305,7 +305,7 @@
                             総計(税抜)
                         </b-card-sub-title>
                         <b-card-title class="mb-0">
-                            ￥ {{ totalPrice }}
+                            ￥ {{ totalPrice | priceLocaleString }}
                         </b-card-title>
                     </b-col>
                     <b-col cols="3">
@@ -313,7 +313,7 @@
                             総計(税込)
                         </b-card-sub-title>
                         <b-card-title class="mb-0">
-                            ￥ {{ totalTaxPrice }}
+                            ￥ {{ totalTaxPrice | priceLocaleString }}
                         </b-card-title>
                     </b-col>
                     <b-col align="right" class="add_sales_detail_footer_col">

@@ -195,14 +195,14 @@
                                     <b-col cols="2" style="padding-right: 0;">
                                         <b-card-text>{{ i + 1 }}</b-card-text>
                                     </b-col>
-                                    <b-col cols="6" style="padding-left: 0;">
+                                    <b-col cols="6" style="padding-left: 0; padding-right: 0;">
                                         <b-card-text>
                                             {{ item.customer.name | truncate(10) }}
                                         </b-card-text>
                                     </b-col>
-                                    <b-col align="right">
+                                    <b-col align="right" style="padding-left: 0;">
                                         <b-icon icon="currency-yen"></b-icon>
-                                        <b>{{ item.total }}</b>
+                                        <b>{{ item.total | priceLocaleString }}</b>
                                     </b-col>
                                 </b-row>
                                 <!-- <b-row>
@@ -248,7 +248,7 @@
                                         <b-form-input
                                             id="filter-input"
                                             v-model="searchNo"
-                                            type="search"
+                                            type="number"
                                             placeholder="会員Noを入力してください"
                                             @input="inputSearchCustomerNo"
                                         ></b-form-input>
@@ -1018,6 +1018,7 @@ export default {
             { text: 'プラチナ', value: 'プラチナ' },
             { text: 'ブラック', value: 'ブラック' },
         ],
+        loading: false,
     }),
     components: {
         // ListView,
@@ -1061,6 +1062,7 @@ export default {
         }
     },
     created () {
+        this.loading = true
         if (!this.$store.state.isAuth) {
             this.$router.push('/')
         }
@@ -1077,6 +1079,13 @@ export default {
         }
 
         this.getAllCustomer()
+        // .then(res => {
+        //     console.log('Promiseできてる?')
+        //     this.loading = false
+        // })
+        // .catch(e => {
+        //     this.loading = false
+        // })
         this.getCustomerRank()
         this.getCustomerAge()
         this.getCustomerSalesRanking()
@@ -1084,6 +1093,7 @@ export default {
         this.getActiveCustomerCnt()
         // this.totalCustomer = this.customer.length
         // this.totalRows = this.customer.length
+        this.loading = false
     },
     mounted () {
     },
@@ -1120,7 +1130,7 @@ export default {
             this.$router.push({
                 name: 'CustomerDetail',
                 params: {
-                    id: data.id
+                    id: data.customer_no
                 }
             })
         },
@@ -1128,7 +1138,7 @@ export default {
             this.$router.push({
                 name: 'CustomerDetail',
                 params: {
-                    id: item[0].id
+                    id: item[0].customer_no
                 }
             })
         },
@@ -1136,7 +1146,7 @@ export default {
             this.$router.push({
                 name: 'CustomerDetail',
                 params: {
-                    id: item.customer.id
+                    id: item.customer.customer_no
                 }
             })
         },
@@ -1234,21 +1244,25 @@ export default {
             })
         },
         getAllCustomer () {
-            this.$axios({
-                method: 'GET',
-                url: '/api/customer/get_all_customer/',
-            })
-            .then(res => {
-                // console.log(res.data)
-                this.setCustomerList(res.data.customers)
-                const count = res.data.count
-                this.totalRows = count
-                this.totalCustomer = count
-                this.loadCustomerCnt = false
-            })
-            .catch(e => {
-                console.log(e)
-                this.loadCustomerCnt = false
+            return new Promise((resolve, reject) => {
+                this.$axios({
+                    method: 'GET',
+                    url: '/api/customer/get_all_customer/',
+                })
+                .then(res => {
+                    // console.log(res.data)
+                    this.setCustomerList(res.data.customers)
+                    const count = res.data.count
+                    this.totalRows = count
+                    this.totalCustomer = count
+                    this.loadCustomerCnt = false
+                    resolve(res)
+                })
+                .catch(e => {
+                    console.log(e)
+                    this.loadCustomerCnt = false
+                    reject(e)
+                })
             })
         },
         inputSearchAccountDate (item) {

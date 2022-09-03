@@ -1,7 +1,11 @@
 import Vue from 'vue'
 
 const priceLocaleString = function (value) {
-  return value.toLocaleString()
+  let val = Number(value)
+  if (val > 99999999) {
+      return '99,999,999'
+  }
+  return val.toLocaleString()
 }
 
 export default priceLocaleString

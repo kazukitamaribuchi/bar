@@ -480,7 +480,6 @@
                             </td>
                             <td>{{ item.price | priceLocaleString }}</td>
 
-                            <!-- ★カンマつかないときがある？ -->
                             <td>{{ item.actuallyPrice | priceLocaleString }}</td>
                             <td>{{ item.quantity | priceLocaleString }}</td>
                             <td>

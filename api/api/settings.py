@@ -8,16 +8,18 @@ env = environ.Env()
 env.read_env('.env')
 
 
-logging.basicConfig(
-    level = logging.DEBUG,
-    format = '''%(levelname)s %(asctime)s %(pathname)s:%(funcName)s 行数:%(lineno)s:%(lineno)s
-    %(message)s''')
+# logging.basicConfig(
+#     level = logging.DEBUG,
+#     format = '''%(levelname)s %(asctime)s %(pathname)s:%(funcName)s 行数:%(lineno)s:%(lineno)s
+#     %(message)s''')
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
+
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -33,6 +35,44 @@ SECRET_KEY = 'tk)y1cu0@sqzogczfe222q6fn8w499n!+*@9pkbh(@ojtr(zjj'
 if os.environ['DJANGO_ENV'] == 'production':
     # 本番
     DEBUG = False
+
+    LOG_BASE_DIR = os.path.join("/var", "log", "app")
+
+    # LOGGING = {
+    #     'version': 1,
+    #     'disable_existing_loggers': False,
+    #     'formatters': {
+    #         'production': {
+    #             'format': '%(levelname)s %(asctime)s %(pathname)s:%(funcName)s 行数:%(lineno)s:%(lineno)s%(message)s'
+    #         },
+    #     },
+    #     'handlers': {
+    #         'info': {
+    #             'level': 'INFO',
+    #             'class': 'logging.FileHandler',
+    #             'filename': os.path.join(LOG_BASE_DIR, 'info.log'),
+    #             'fomatter': 'simple',
+    #         },
+    #         'warning': {
+    #             'level': 'WARNING',
+    #             'class': 'logging.FileHandler',
+    #             'filename': os.path.join(LOG_BASE_DIR, 'warning.log'),
+    #             'fomatter': 'simple',
+    #         },
+    #         'error': {
+    #             'level': 'ERROR',
+    #             'class': 'logging.FileHandler',
+    #             'filename': os.path.join(LOG_BASE_DIR, 'error.log'),
+    #             'fomatter': 'simple',
+    #         },
+    #     },
+    #     'root': {
+    #         'handlers': ['info', 'warning', 'error'],
+    #         'level': 'INFO',
+    #     }
+    # }
+
+
 else:
     # 開発
     DEBUG = True

@@ -695,12 +695,15 @@ export default {
         this.loading = true
         this.$axios({
             method: 'GET',
-            url: `/api/customer/${this.$route.params['id']}/`,
+            url: '/api/customer/search_customer_by_customer_no/',
+            params: {
+                customer_no: this.$route.params['id']
+            }
         })
         .then(res => {
             console.log(res)
-            this.customerData = _.cloneDeep(res.data)
-            this.customerOwnBottleList = _.cloneDeep(res.data.bottle)
+            this.customerData = _.cloneDeep(res.data.data)
+            this.customerOwnBottleList = _.cloneDeep(res.data.data.bottle)
             this.loading = false
         })
         .catch(e => {
@@ -743,20 +746,29 @@ export default {
     },
     beforeRouteUpdate (to, from, next) {
         if (from.name == 'CustomerDetail') {
-            // this.$axios({
-            //     method: 'GET',
-            //     url: `/api/customer/${this.$route.params['id']}`,
-            // })
-            // .then(res => {
-            //     console.log(res)
-            //     this.customerData = _.cloneDeep(res.data)
-            //     this.isDanger = this.customerData.caution_flg
-            // })
-            // .catch(e => {
-            //     console.log(e)
-            // })
+            this.loading = true
+
+            this.$axios({
+                method: 'GET',
+                url: '/api/customer/search_customer_by_customer_no/',
+                params: {
+                    customer_no: this.$route.params['id']
+                }
+            })
+            .then(res => {
+                console.log(res)
+                this.customerData = _.cloneDeep(res.data.data)
+                this.customerOwnBottleList = _.cloneDeep(res.data.data.bottle)
+                // this.isDanger = this.customerData.caution_flg
+                this.loading = false
+            })
+            .catch(e => {
+                console.log(e)
+                this.customerData = {}
+                this.loading = false
+            })
             // console.log('this.customer.find(c => c.customer_no == to.params.id)', this.customer.find(c => c.customer_no == to.params.id))
-            this.customerData = _.cloneDeep(this.customer.find(c => c.id == to.params.id))
+            // this.customerData = _.cloneDeep(this.customer.find(c => c.id == to.params.id))
             // console.log('this.customerData', this.customerData)
         }
         // console.log('CustomerDetail => beforeRouteUpdate')
