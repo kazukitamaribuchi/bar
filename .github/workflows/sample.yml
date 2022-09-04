@@ -10,26 +10,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      # - id: step1
-      #   run: echo "test"
-      - name: test
-      # - id: step2
-        # run: ls
-        run: | #
-          ls
-          cd ..
-      - name: test2
-        run: | #
-          ls
-          cd web
-      - name: test3
+      - name: yarn build
         run: | #
           ls
           cd web
           docker build .
-        # run: cd ..
-        # run: ls
-      # - id: step3
-      #   run: docker build .
-      # - id: step4
-      #   run: echo "docker build出来た？"
+          yarn build
+      - name: move files
+        run: | #
+          cd web
+          ls
+      - name: collect static
+        run: | #
+          cd api
+          ls
+      - name: heroku release
+        run : | #
+          ls
