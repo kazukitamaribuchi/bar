@@ -9,15 +9,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - id: step1
-        run: echo "test"
+      # - id: step1
+      #   run: echo "test"
       - name: nametest
       - id: step2
-        run: ls
+        # run: ls
         run: cd ..
+      - name: nametest2
         run: ls
-        run: cd ..
-        run: ls
+        # run: cd ..
+        # run: ls
       # - id: step3
       #   run: docker build .
       # - id: step4
