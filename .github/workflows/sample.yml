@@ -12,7 +12,7 @@ jobs:
       # - id: step1
       #   run: echo "test"
       - name: nametest
-      - id: step2
+      # - id: step2
         # run: ls
         run: cd ..
       - name: nametest2
