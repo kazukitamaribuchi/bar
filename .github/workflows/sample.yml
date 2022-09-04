@@ -1,0 +1,21 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+    - id: step1
+      run: echo "test"
+    - id: step2
+      run: cd web
+    - id: step3
+      run: docker build .
+    - id: step4
+      run: echo "docker build出来た？"
