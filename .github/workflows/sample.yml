@@ -11,7 +11,12 @@ jobs:
     steps:
       - id: step1
         run: echo "test"
+      - name: nametest
       - id: step2
+        run: ls
+        run: cd ..
+        run: ls
+        run: cd ..
         run: ls
       # - id: step3
       #   run: docker build .
