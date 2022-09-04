@@ -24,6 +24,8 @@ jobs:
           cd web
       - name: test3
         run: | #
+          ls
+          cd web
           docker build .
         # run: cd ..
         # run: ls
