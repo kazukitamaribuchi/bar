@@ -15,7 +15,9 @@ jobs:
           ls
           cd web
           docker build .
+          yarn global add @vue/cli@5.0.4
           yarn build
+          docker ps
       - name: move files
         run: | #
           cd web
