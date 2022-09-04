@@ -17,6 +17,19 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# from django.db.models.signals import ModelSignal
+#
+# pre_bulk_create = ModelSignal(use_caching=True)
+# post_bulk_create = ModelSignal(use_caching=True)
+#
+# class CreateManager(models.QuerySet):
+#
+#     def create(self, **kwargs):
+#         pre_bulk_create.send(sender=self.model, queryset=self, update_kwargs=kwargs)
+#         res = super(CreateManager, self).create(**kwargs)
+#         post_bulk_create.send(sender=self.model, queryset=self, update_kwargs=kwargs)
+#         return res
+
 
 class UserManager(BaseUserManager):
 

@@ -101,7 +101,13 @@ def update_customer_rank(customer, sales):
     BLACK_BOTTOM_LINE = 10000000
 
     if NORMAL_BOTTOM_LINE <= sales <= NORMAL_BOTTOM_LINE:
-        pass
+        if customer.rank.id != 1:
+            try:
+                rank = MRank.objects.get(pk=1)
+            except MRank.DoesNotExist:
+                logger.error('顧客のランク更新時、ランクの取得に失敗しました。')
+            customer.rank = rank
+            customer.save()
     elif GOLD_BOTTOM_LINE <= sales <= GOLD_TOP_LINE:
         if customer.rank.id != 2:
             try:

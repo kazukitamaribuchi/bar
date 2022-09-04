@@ -39,6 +39,7 @@ logger = logging.getLogger(__name__)
 from ws.consumers import OrderConsumer
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from threading import Thread
 
 
 @receiver(post_save, sender=SalesDetail)
@@ -62,13 +63,24 @@ def sales_detail_receiver(sender, instance, created, **kwargs):
 
     channel_layer = get_channel_layer()
     logger.debug('食事の明細新規作成➡WS送信')
-    async_to_sync(channel_layer.group_send)(
-        instance.header.user.username,
-        {
-            'type': 'new_order',
-            'content': SalesDetailSerializer(instance).data,
-        },
-    )
+    try:
+        thread = WorkerThread(
+            'new_order',
+            SalesDetailSerializer(instance).data,
+            instance,
+            instance.header.user.username,
+        )
+        thread.start()
+        # async_to_sync(channel_layer.group_send)(
+        #     instance.header.user.username,
+        #     {
+        #         'type': 'new_order',
+        #         'content': SalesDetailSerializer(instance).data,
+        #     },
+        # )
+    except Exception as e:
+        logger.critical('明細新規作成時のWebSocket送信でエラーが発生しました。')
+        logger.critical(e)
 
 @receiver(post_save, sender=SalesHeader)
 def sales_header_receiver(sender, instance, created, **kwargs):
@@ -86,21 +98,68 @@ def sales_header_receiver(sender, instance, created, **kwargs):
     if instance.delete_flg:
         logger.debug('伝票削除➡WS送信')
         channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            instance.user.username,
-            {
-                'type': 'delete_sales_header',
-                'content': SalesSerializer(instance).data,
-            },
-        )
+        try:
+            thread = WorkerThread(
+                'delete_sales_header',
+                SalesSerializer(instance).data,
+                instance,
+                instance.user.username,
+            )
+            thread.start()
+            # async_to_sync(channel_layer.group_send)(
+            #     instance.user.username,
+            #     {
+            #         'type': 'delete_sales_header',
+            #         'content': SalesSerializer(instance).data,
+            #     },
+            # )
+        except Exception as e:
+            logger.critical('伝票削除時のWebSocket送信でエラーが発生しました。')
+            logger.critical(e)
 
     if instance.close_flg:
         logger.debug('伝票締め➡WS送信')
         channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            instance.user.username,
-            {
-                'type': 'close_sales_header',
-                'content': SalesSerializer(instance).data,
-            },
-        )
+        try:
+            thread = WorkerThread(
+                'close_sales_header',
+                SalesSerializer(instance).data,
+                instance,
+                instance.user.username
+            )
+            thread.start()
+            # async_to_sync(channel_layer.group_send)(
+            #     instance.user.username,
+            #         'type': 'close_sales_header',
+            #     {
+            #         'content': SalesSerializer(instance).data,
+            #     },
+            # )
+        except Exception as e:
+            logger.critical('伝票締め時のWebSocket送信でエラーが発生しました。')
+            logger.critical(e)
+
+
+class WorkerThread(Thread):
+
+    channel_layer = get_channel_layer()
+
+    def __init__(self, target_type, content, instance, user):
+        super().__init__()
+        self.target_type = target_type
+        self.content = content
+        self.instance = instance
+        self.user = user
+
+    def run(self) -> None:
+        try:
+            async_to_sync(self.channel_layer.group_send)(
+                self.user,
+                {
+                    'type': self.target_type,
+                    'content': self.content,
+                },
+            )
+        except Exception as e:
+            logger.critical('SignalのWebSocket送信でエラーが発生しました。')
+            logger.critical(e)

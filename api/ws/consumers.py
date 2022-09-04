@@ -38,9 +38,7 @@ class OrderConsumer(AsyncWebsocketConsumer):
     groups = ['broadcast']
 
     async def connect(self):
-        logger.info('★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★')
-        logger.info('CONNECT')
-        logger.info(self.scope)
+        logger.info('OrderConsumer connect')
         self.accept()
         try:
             self.user_group_name = self.scope['url_route']['kwargs']['username']
@@ -50,9 +48,9 @@ class OrderConsumer(AsyncWebsocketConsumer):
             )
             await self.accept()
         except Exception as e:
-            logger.error('Websocket接続でエラーが発生しました。')
-            logger.error(e)
-            raise
+            logger.critical('Websocket接続でエラーが発生しました。')
+            logger.critical(e)
+            # raise
 
     # async def websocket_connect(self, message):
     #     try:
@@ -73,7 +71,7 @@ class OrderConsumer(AsyncWebsocketConsumer):
     #         await self.close()
 
     async def disconnect(self, close_code):
-        logger.debug('【【DISCONNECT】】')
+        logger.info('OrderConsumer disconnect')
         await self.channel_layer.group_discard(
             self.user_group_name,
             self.channel_name
@@ -81,8 +79,7 @@ class OrderConsumer(AsyncWebsocketConsumer):
         await self.close()
 
     async def new_order(self, event):
-        logger.debug('=====Order=====')
-        logger.debug(event)
+        logger.info('OrderConsumer new_order')
         try:
             content = event['content']
             await self.send(text_data=json.dumps({
@@ -90,11 +87,12 @@ class OrderConsumer(AsyncWebsocketConsumer):
                 'content': content,
             }))
         except Exception as e:
-            raise
+            logger.critical('Websocket接続でエラーが発生しました。')
+            logger.critical(e)
+            # raise
 
     async def update_order(self, event):
-        logger.debug('=====Update_Order=====')
-        logger.debug(event)
+        logger.info('OrderConsumer update_order')
         try:
             content = event['content']
             await self.send(text_data=json.dumps({
@@ -102,11 +100,12 @@ class OrderConsumer(AsyncWebsocketConsumer):
                 'content': content,
             }))
         except Exception as e:
-            raise
+            logger.critical('Websocket接続でエラーが発生しました。')
+            logger.critical(e)
+            # raise
 
     async def delete_order(self, event):
-        logger.debug('=====Delete_Order=====')
-        logger.debug(event)
+        logger.info('OrderConsumer delete_order')
         try:
             content = event['content']
             await self.send(text_data=json.dumps({
@@ -114,11 +113,12 @@ class OrderConsumer(AsyncWebsocketConsumer):
                 'content': content,
             }))
         except Exception as e:
-            raise
+            logger.critical('Websocket接続でエラーが発生しました。')
+            logger.critical(e)
+            # raise
 
     async def delete_sales_header(self, event):
-        logger.debug('=====delete_sales_header=====')
-        logger.debug(event)
+        logger.info('OrderConsumer delete_sales_header')
         try:
             content = event['content']
             await self.send(text_data=json.dumps({
@@ -126,11 +126,12 @@ class OrderConsumer(AsyncWebsocketConsumer):
                 'content': content,
             }))
         except Exception as e:
-            raise
+            logger.critical('Websocket接続でエラーが発生しました。')
+            logger.critical(e)
+            # raise
 
     async def close_sales_header(self, event):
-        logger.debug('=====close_sales_header=====')
-        logger.debug(event)
+        logger.info('OrderConsumer close_sales_header')
         try:
             content = event['content']
             await self.send(text_data=json.dumps({
@@ -138,4 +139,6 @@ class OrderConsumer(AsyncWebsocketConsumer):
                 'content': content,
             }))
         except Exception as e:
-            raise
+            logger.critical('Websocket接続でエラーが発生しました。')
+            logger.critical(e)
+            # raise

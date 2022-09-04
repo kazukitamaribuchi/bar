@@ -62,6 +62,14 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+NORMAL_BOTTOM_LINE = 0
+NORMAL_TOP_LINE = 2999999
+GOLD_BOTTOM_LINE = 3000000
+GOLD_TOP_LINE = 6999999
+PLATINUM_BOTTOM_LINE = 7000000
+PLATINUM_TOP_LINE = 9999999
+BLACK_BOTTOM_LINE = 10000000
+
 
 
 class DatetimeMixin:
@@ -161,6 +169,7 @@ class CustomerSerializer(DynamicFieldsModelSerializer):
         source='rank.rank_name',
         read_only=True,
     )
+    # rank = serializers.SerializerMethodField(read_only=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -181,6 +190,7 @@ class CustomerSerializer(DynamicFieldsModelSerializer):
             'address',
             'rank_id',
             'rank_name',
+            # 'rank',
             'remarks',
             # 'card',
             'first_visit',
@@ -281,6 +291,33 @@ class CustomerSerializer(DynamicFieldsModelSerializer):
             Q(close_flg=True)
         ).aggregate(total=Coalesce(models.Sum('total_tax_sales'), 0))['total']
 
+    # def get_rank(self, obj):
+    #
+    #     sales = SalesHeader.objects.filter(
+    #         customer=obj,
+    #     ).aggregate(total=Coalesce(models.Sum('total_tax_sales'), 0))['total']
+    #
+    #     fields=[
+    #         'id', 'rank_id', 'rank_name'
+    #     ]
+    #
+    #     try:
+    #         if NORMAL_BOTTOM_LINE <= sales <= NORMAL_BOTTOM_LINE:
+    #             instance = MRank.objects.get(pk=1)
+    #         elif GOLD_BOTTOM_LINE <= sales <= GOLD_TOP_LINE:
+    #             instance = MRank.objects.get(pk=2)
+    #         elif PLATINUM_BOTTOM_LINE <= sales <= PLATINUM_TOP_LINE:
+    #             instance = MRank.objects.get(pk=3)
+    #         elif BLACK_BOTTOM_LINE <= sales:
+    #             instance = MRank.objects.get(pk=4)
+    #         return RankSerializer(
+    #             instance,
+    #             fields=fields
+    #         ).data
+    #     except:
+    #         return None
+
+
     def create(self, validated_data):
         logger.debug('★Serializerのcreate')
         logger.debug(validated_data)
@@ -342,13 +379,13 @@ class CustomerSerializer(DynamicFieldsModelSerializer):
             logger.error('既に他のユーザーと紐づいているカードです。')
             return None
 
-        try:
-            rank = MRank.objects.get(
-                rank_id = validated_data['rank']['rank_id']
-            )
-        except MRank.DoesNotExist:
-            logger.error('存在しないランクIDです。')
-            return None
+        # try:
+        #     rank = MRank.objects.get(
+        #         rank_id = validated_data['rank']['rank_id']
+        #     )
+        # except MRank.DoesNotExist:
+        #     logger.error('存在しないランクIDです。')
+        #     return None
 
         card, c_created = CardManagement.objects.get_or_create(
             customer_no = validated_data['card']['customer_no']
@@ -367,7 +404,7 @@ class CustomerSerializer(DynamicFieldsModelSerializer):
         instance.card = card
         instance.name = validated_data['name']
         instance.name_kana = validated_data['name_kana']
-        instance.rank = rank
+        # instance.rank = rank
         instance.age = validated_data['age']
         instance.birthday = birthday
         instance.job = job
