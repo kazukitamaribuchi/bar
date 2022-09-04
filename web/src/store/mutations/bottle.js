@@ -13,6 +13,9 @@ const bottleMutations = {
             state.bottle.push(payload)
         }
     },
+    addBottleListTop (state, payload) {
+        state.bottle.splice(0, 0, payload)
+    },
     updateBottleList (state, payload) {
         const index = state.bottle.findIndex(b => b.id === payload.id)
         Vue.set(state.bottle, index, payload)

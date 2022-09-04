@@ -61,7 +61,7 @@
                                     <b-input-group>
                                         <b-form-input
                                             v-model="createCustomerData.customerNo"
-                                            type="text"
+                                            type="number"
                                             placeholder="会員No(必須)"
                                             required
                                             autofocus
@@ -144,6 +144,7 @@
                                     <b-input-group>
                                         <b-form-input
                                             v-model="createCustomerData.age"
+                                            type="number"
                                             placeholder="年齢(任意)"
                                         ></b-form-input>
                                         <b-form-invalid-feedback :state="customerAgeError.length == 0">
@@ -347,7 +348,7 @@
                     >
                         <b-button
                             variant="primary"
-                            @click="init"
+                            @click="initClose"
                         >
                             OK
                         </b-button>
@@ -371,6 +372,52 @@
                         <b-button
                             variant="primary"
                             @click="registerFailureDialog = false"
+                        >
+                            閉じる
+                        </b-button>
+                    </b-col>
+                </b-row>
+            </template>
+        </b-modal>
+        <b-modal
+            v-model="updateSuccessDialog"
+            hide-header
+        >
+            <div>
+                顧客データの更新に成功しました。
+            </div>
+            <template #modal-footer>
+                <b-row>
+                    <b-col
+                        align="right"
+                        style="padding: 0;"
+                    >
+                        <b-button
+                            variant="primary"
+                            @click="initClose"
+                        >
+                            OK
+                        </b-button>
+                    </b-col>
+                </b-row>
+            </template>
+        </b-modal>
+        <b-modal
+            v-model="updateFailureDialog"
+            hide-header
+        >
+            <div>
+                顧客データの更新に失敗しました。
+            </div>
+            <template #modal-footer>
+                <b-row>
+                    <b-col
+                        align="right"
+                        style="padding: 0;"
+                    >
+                        <b-button
+                            variant="primary"
+                            @click="updateFailureDialog = false"
                         >
                             閉じる
                         </b-button>
@@ -441,6 +488,8 @@ export default {
 
         registerSuccessDialog: false,
         registerFailureDialog: false,
+        updateSuccessDialog: false,
+        updateFailureDialog: false,
     }),
     computed: {
         ...mapGetters([
@@ -525,6 +574,7 @@ export default {
         ...mapMutations([
             'addCustomerList',
             'updateCustomerList',
+            'addCustomerListTop',
         ]),
         createOrUpdate () {
             if (this.mode == 0) {
@@ -588,7 +638,7 @@ export default {
             })
             .then(res => {
                 console.log(res)
-                this.addCustomerList(res)
+                this.addCustomerListTop(res.data)
 
                 this.registerSuccessDialog = true
                 // this.init()
@@ -607,9 +657,15 @@ export default {
             // if (data.birthday_year != null && data.birthday_month != null && data.birthday_day != null) {
             //     birthday = [data.birthday_year, data.birthday_month, data.birthday_day].join('/')
             // }
+            console.log('data.birthday', data.birthday)
+            console.log(data.birthday == '-')
             let birthday = ''
-            if (data.birthday != '' && data.birthday != null && data.birthday != '-') {
+            if (data.birthday != '' && data.birthday != null) {
                 birthday = data.birthday.replaceAll('-', '/')
+            }
+
+            if (data.birthday == '-') {
+                birthday = ''
             }
 
             const cautionFlg = (this.createCustomerData.cautionFlg.length != 0) ? true : false
@@ -617,10 +673,11 @@ export default {
             console.log(birthday, data)
 
             this.$axios({
-                url: `/api/customer/${this.$route.params['id']}/`,
+                // url: `/api/customer/${data.id}/`,
+                url: '/api/customer/update_customer_data/',
                 method: 'PUT',
                 data: {
-                    id: this.$route.params['id'],
+                    id: data.id,
                     name: data.name,
                     name_kana: data.name_kana,
                     age: data.age,
@@ -629,24 +686,26 @@ export default {
                     mail: data.mail,
                     phone: data.phone,
                     company: data.company,
-                    customer_no: data.customerNo,
+                    customer_no: Number(data.customerNo),
                     caution_flg: cautionFlg,
                     remarks: data.remarks,
                     // first_visit: data.first_visit,
-                    rank_id: 1,
+                    // rank_id: 1,
                 }
             })
             .then(res => {
                 console.log(res)
                 this.updateCustomerList(res.data)
                 this.$emit('update', res.data)
-                this.close()
+
+                this.updateSuccessDialog = true
             })
             .catch(e => {
                 console.log(e)
+                this.updateFailureDialog = true
             })
 
-            this.close()
+            // this.close()
         },
         init () {
             this.createCustomerData = {
@@ -676,11 +735,17 @@ export default {
 
             this.registerSuccessDialog = false
             this.registerFailureDialog = false
+            this.updateSuccessDialog = false
+            this.updateFailureDialog = false
 
-            this.dialog = false
+            // this.dialog = false
         },
         close () {
             // this.init()
+            this.dialog = false
+        },
+        initClose () {
+            this.init()
             this.dialog = false
         },
         open (data) {
@@ -689,6 +754,7 @@ export default {
                 this.convertData(data)
                 this.mode = 1
             } else {
+                this.init()
                 this.mode = 0
             }
         },
@@ -723,21 +789,32 @@ export default {
         },
         checkCustomerNoDuplicate (customerNo) {
             const id = this.$route.params.id
-            const me = this.customer.find(c => c.id == id)
+            // const me = this.customer.find(c => c.id == id)
+            const selfCustomerNo = this.createCustomerData.customer_no
 
-            if (me != undefined
-                && this.$route.name == 'CustomerDetail'
+            if (this.$route.name == 'CustomerDetail'
                 && this.mode == 1
-                && me.customer_no == Number(customerNo)) {
+                && selfCustomerNo == Number(customerNo)) {
                 this.customerNoError = ''
             } else {
-
-                const isExist = this.customer.find(c => c.customer_no == customerNo)
-                if (isExist == undefined) {
-                    this.customerNoError = ''
-                } else {
-                    this.customerNoError = '既に他のユーザーと紐づいています。'
-                }
+                this.$axios({
+                    method: 'post',
+                    url: '/api/customer/get_customer_no_duplicate/',
+                    data: {
+                        customer_no: customerNo
+                    }
+                })
+                .then(res => {
+                    if (res.data.result) {
+                        this.customerNoError = ''
+                    } else {
+                        this.customerNoError = '既に他のユーザーと紐づいています。'
+                    }
+                })
+                .catch(e => {
+                    console.log(e)
+                    this.customerNoError = '会員No重複確認に失敗しました。'
+                })
             }
 
             // this.$axios({
@@ -756,24 +833,6 @@ export default {
             // .catch(e => {
             //     console.log(e)
             // })
-        },
-        test () {
-            console.log('test1')
-        },
-        testt () {
-            console.log('test2')
-        },
-        testtt () {
-            console.log('test3')
-        },
-        testttt () {
-            console.log('test4')
-        },
-        testtttt () {
-            console.log('test5')
-        },
-        testin () {
-            console.log('tin')
         },
         checkPhoneNumber () {
             this.customerPhoneError = this.validatePhone(this.createCustomerData.phone)

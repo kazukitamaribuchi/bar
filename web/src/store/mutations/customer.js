@@ -7,6 +7,9 @@ const customerMutations = {
     addCustomerList (state, payload) {
         state.customer.push(payload.data)
     },
+    addCustomerListTop (state, payload) {
+        state.customer.splice(0, 0, payload)
+    },
     updateCustomerList (state, payload) {
         const index = state.customer.findIndex(c => c.id === payload.id)
         Vue.set(state.customer, index, payload)

@@ -89,7 +89,7 @@
                                     <b-input-group>
                                         <b-form-input
                                             v-model="createBottleData.customerNo"
-                                            type="text"
+                                            type="number"
                                             placeholder="会員No(必須)"
                                             required
                                             autofocus
@@ -512,7 +512,7 @@
                     >
                         <b-button
                             variant="primary"
-                            @click="init"
+                            @click="initClose"
                         >
                             OK
                         </b-button>
@@ -543,6 +543,52 @@
                 </b-row>
             </template>
         </b-modal>
+        <b-modal
+            v-model="updateSuccessDialog"
+            hide-header
+        >
+            <div>
+                ボトルデータの更新に成功しました。
+            </div>
+            <template #modal-footer>
+                <b-row>
+                    <b-col
+                        align="right"
+                        style="padding: 0;"
+                    >
+                        <b-button
+                            variant="primary"
+                            @click="initClose"
+                        >
+                            OK
+                        </b-button>
+                    </b-col>
+                </b-row>
+            </template>
+        </b-modal>
+        <b-modal
+            v-model="updateFailureDialog"
+            hide-header
+        >
+            <div>
+                ボトルデータの更新に失敗しました。
+            </div>
+            <template #modal-footer>
+                <b-row>
+                    <b-col
+                        align="right"
+                        style="padding: 0;"
+                    >
+                        <b-button
+                            variant="primary"
+                            @click="updateFailureDialog = false"
+                        >
+                            閉じる
+                        </b-button>
+                    </b-col>
+                </b-row>
+            </template>
+        </b-modal>
     </div>
 </template>
 
@@ -564,6 +610,7 @@ dayjs.extend(isSameOrBefore)
 dayjs.extend(isBetween)
 const now = dayjs().format('YYYY-MM-DD')
 import utilsMixin from '@/mixins/utils'
+import customerMixin from '@/mixins/customer'
 import Vue from 'vue'
 
 export default {
@@ -605,6 +652,8 @@ export default {
 
         registerSuccessDialog: false,
         registerFailureDialog: false,
+        updateSuccessDialog: false,
+        updateFailureDialog: false,
     }),
     computed: {
         ...mapGetters([
@@ -673,12 +722,28 @@ export default {
                     this.customerNoError = '正しい値を入力してください'
                     this.customerInfo = null
                 } else {
-                    this.customerInfo = _.cloneDeep(this.customer.find(c => c.customer_no == val))
-                    if (this.customerInfo == undefined) {
-                        this.customerNoError = '存在しない会員Noです。'
-                    } else {
-                        this.customerNoError = ''
-                    }
+                    this.searchCustomerNo(val)
+                    .then(res => {
+                        console.log(res)
+                        if (res.data.status == 'success') {
+                            this.customerInfo = res.data.data
+                            this.customerNoError = ''
+                        } else {
+                            this.customerNoError = '存在しない会員Noです。'
+                            this.customerInfo = null
+                        }
+                    })
+                    .catch(e => {
+                        console.log(e)
+                        this.customerNoError = '顧客データの取得に失敗しました。'
+                        this.customerInfo = null
+                    })
+                    // this.customerInfo = _.cloneDeep(this.customer.find(c => c.customer_no == val))
+                    // if (this.customerInfo == undefined) {
+                    //     this.customerNoError = '存在しない会員Noです。'
+                    // } else {
+                    //     this.customerNoError = ''
+                    // }
                 }
             } else {
                 this.customerNoError= '会員Noを入力してください'
@@ -710,6 +775,7 @@ export default {
         ...mapMutations([
             'addBottleList',
             'updateBottleList',
+            'addBottleListTop',
         ]),
         createOrUpdate () {
             if (this.mode == 0) {
@@ -732,7 +798,7 @@ export default {
             })
             .then(res => {
                 console.log(res)
-                this.addBottleList(res.data.data)
+                this.addBottleListTop(res.data.data)
 
                 this.registerSuccessDialog = true
 
@@ -763,13 +829,17 @@ export default {
                 this.$emit('update', res.data)
 
                 this.$emit('updateCustomerBottleDetail', res.data.data)
-                this.close()
+                // this.close()
+
+                this.updateSuccessDialog = true
             })
             .catch(e => {
                 console.log(e)
+
+                this.updateFailureDialog = true
             })
 
-            this.close()
+            // this.close()
         },
         init () {
             this.createBottleData = {
@@ -788,11 +858,16 @@ export default {
 
             this.registerSuccessDialog = false
             this.registerFailureDialog = false
+            this.updateSuccessDialog = false
+            this.updateFailureDialog = false
 
-            this.dialog = false
+            // this.dialog = false
         },
         close () {
-            // this.init()
+            this.dialog = false
+        },
+        initClose () {
+            this.init()
             this.dialog = false
         },
         open (data) {
@@ -801,12 +876,15 @@ export default {
                 this.convertData(data)
                 this.mode = 1
             } else {
+                this.init()
                 this.mode = 0
             }
         },
         convertData (data) {
             let copyData = _.cloneDeep(data)
-            const customerType = copyData.customer_type
+
+            // customerTypeは廃止
+            // const customerType = copyData.customer_type
             let product = copyData.product
             // this.createBottleData.openDate = copyData.open_date.replace('年', '-').replace('月', '-').replace('日', '')
             this.createBottleData.openDate = copyData.open_date.replaceAll('/', '-')
@@ -815,15 +893,15 @@ export default {
             console.log('convertData', data)
             console.log('this.createBottleData', this.createBottleData)
 
-            if (customerType == 0) {
-                this.createBottleData.nonMemberName = copyData.customer_name
-                this.createBottleData.customer = null
-                this.createBottleData.customerType = 0
-            } else {
+            // if (customerType == 0) {
+            //     this.createBottleData.nonMemberName = copyData.customer_name
+            //     this.createBottleData.customer = null
+            //     this.createBottleData.customerType = 0
+            // } else {
                 this.createBottleData.nonMemberName = null
                 this.createBottleData.customerNo = String(copyData.customer.customer_no)
                 this.createBottleData.customerType = 1
-            }
+            // }
 
             this.selectedBottle = product
         },
@@ -853,7 +931,8 @@ export default {
         }
     },
     mixins: [
-        utilsMixin
+        utilsMixin,
+        customerMixin,
     ]
 }
 

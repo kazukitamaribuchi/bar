@@ -43,10 +43,12 @@
                                     <b-input-group>
                                         <b-form-input
                                             v-model="inputSalesData.customerNo"
+                                            type="number"
                                             required
                                             :autofocus="autoFucus"
                                             placeholder="会員No(必須)"
                                             @blur="checkCustomerNo"
+                                            :disabled="editMode"
                                         ></b-form-input>
                                         <b-form-invalid-feedback :state="customerNoError.length == 0">
                                             {{ customerNoError }}
@@ -57,7 +59,9 @@
                         </b-row>
                         <b-row>
                             <b-col cols="12">
-                                <b-card>
+                                <b-card
+                                    :class="{'disabled': editMode}"
+                                >
                                     <label>
                                         顧客情報
                                     </label>
@@ -305,6 +309,7 @@
                                                         <b-input-group>
                                                             <b-form-input
                                                                 v-model="inputSalesData.basicPlanPrice1"
+                                                                type="number"
                                                                 required
                                                             ></b-form-input>
                                                         </b-input-group>
@@ -327,6 +332,7 @@
                                                         <b-input-group>
                                                             <b-form-input
                                                                 v-model="inputSalesData.basicPlanPrice2"
+                                                                type="number"
                                                                 required
                                                             ></b-form-input>
                                                         </b-input-group>
@@ -358,6 +364,7 @@
                                                         <b-input-group>
                                                             <b-form-input
                                                                 v-model="inputSalesData.basicPlanExtentionPrice1"
+                                                                type="number"
                                                                 required
                                                             ></b-form-input>
                                                         </b-input-group>
@@ -380,6 +387,7 @@
                                                         <b-input-group>
                                                             <b-form-input
                                                                 v-model="inputSalesData.basicPlanExtentionPrice2"
+                                                                type="number"
                                                                 required
                                                             ></b-form-input>
                                                         </b-input-group>
@@ -710,7 +718,7 @@
                                 :disabled=isDisabled
                                 @click="registerOrUpdate"
                             >
-                                登録
+                                {{ registerOrUpdateStr }}
                             </b-button>
                         </b-col>
                     </b-row>
@@ -742,7 +750,7 @@
                     >
                         <b-button
                             variant="primary"
-                            @click="init"
+                            @click="initClose"
                         >
                             OK
                         </b-button>
@@ -766,6 +774,52 @@
                         <b-button
                             variant="primary"
                             @click="registerFailureDialog = false"
+                        >
+                            閉じる
+                        </b-button>
+                    </b-col>
+                </b-row>
+            </template>
+        </b-modal>
+        <b-modal
+            v-model="updateSuccessDialog"
+            hide-header
+        >
+            <div>
+                売上データの更新に成功しました。
+            </div>
+            <template #modal-footer>
+                <b-row>
+                    <b-col
+                        align="right"
+                        style="padding: 0;"
+                    >
+                        <b-button
+                            variant="primary"
+                            @click="initClose"
+                        >
+                            OK
+                        </b-button>
+                    </b-col>
+                </b-row>
+            </template>
+        </b-modal>
+        <b-modal
+            v-model="updateFailureDialog"
+            hide-header
+        >
+            <div>
+                売上データの更新に失敗しました。
+            </div>
+            <template #modal-footer>
+                <b-row>
+                    <b-col
+                        align="right"
+                        style="padding: 0;"
+                    >
+                        <b-button
+                            variant="primary"
+                            @click="updateFailureDialog = false"
                         >
                             閉じる
                         </b-button>
@@ -899,6 +953,7 @@ export default {
         edit_sales_service_detail: [],
         customerInfo: null,
 
+
         // seatOptions: [],
 
         totalPrice: 0,
@@ -907,6 +962,9 @@ export default {
         bottleDeleteList: [],
         registerSuccessDialog: false,
         registerFailureDialog: false,
+
+        updateSuccessDialog: false,
+        updateFailureDialog: false,
 
         autoFucus: false,
     }),
@@ -1096,6 +1154,13 @@ export default {
             } else {
                 return res
             }
+        },
+        registerOrUpdateStr () {
+            if (this.editMode) {
+                return '更新'
+            } else {
+                return '登録'
+            }
         }
     },
     watch: {
@@ -1247,8 +1312,10 @@ export default {
                 data: data
             })
             .then(res => {
-                console.log('createSalesHeader', res)
+                console.log('createSalesData', res)
                 this.addSalesListTop(res.data.data)
+                // 追加したボトル更新
+                // 削除したものは?
                 if (res.data.bottle.length != 0) {
                     this.addBottleList(res.data.bottle)
                 }
@@ -1261,6 +1328,105 @@ export default {
             })
         },
         update () {
+
+            console.log('this.inputSalesData', this.inputSalesData)
+            console.log('this.inputSalesDetailData', this.inputSalesDetailData)
+
+            let salesServiceDetailList = []
+            let salesDetailList = []
+            for (const item of this.inputSalesDetailData) {
+                salesDetailList.push({
+                    id: item.product.id,
+                    quantity: item.quantity,
+                    fixed_price: item.actuallyPrice,
+                    tax_free_flg: item.taxation == false,
+                    bottle: item.bottle,
+                })
+            }
+            const selectedService = _.cloneDeep(this.service.filter(i => i.id == this.inputSalesData.basicPlanType))
+            if (this.inputSalesData.basicPlanNum1 > 0) {
+                salesServiceDetailList.push({
+                    service: selectedService[0],
+                    discount_flg: false,
+                    quantity: this.inputSalesData.basicPlanNum1,
+                    fixed_price: this.inputSalesData.basicPlanPrice1,
+                })
+            }
+            if (this.inputSalesData.basicPlanNum2 > 0) {
+                salesServiceDetailList.push({
+                    service: selectedService[0],
+                    discount_flg: true,
+                    quantity: this.inputSalesData.basicPlanNum2,
+                    fixed_price: this.inputSalesData.basicPlanPrice2,
+                })
+            }
+            if (this.inputSalesData.basicPlanExtentionNum1 > 0) {
+                salesServiceDetailList.push({
+                    service: {
+                        'large_category': 1,
+                        'middle_category': (selectedService.middle_category == 1) ? true: false,
+                        'small_category': 0,
+                    },
+                    discount_flg: false,
+                    quantity: this.inputSalesData.basicPlanExtentionNum1,
+                    fixed_price: this.inputSalesData.basicPlanExtentionPrice1,
+                })
+            }
+            if (this.inputSalesData.basicPlanExtentionNum2 > 0) {
+                salesServiceDetailList.push({
+                    service: {
+                        'large_category': 1,
+                        'middle_category': (selectedService.middle_category == 1) ? true: false,
+                        'small_category': 0,
+                    },
+                    discount_flg: true,
+                    quantity: this.inputSalesData.basicPlanExtentionNum2,
+                    fixed_price: this.inputSalesData.basicPlanExtentionPrice2,
+                })
+            }
+
+            const data = {
+                sales_header_id: this.salesHeaderId,
+                customer_no: this.inputSalesData.customerNo,
+                male_visitors: this.inputSalesData.maleVisitors,
+                female_visitors: this.inputSalesData.femaleVisitors,
+                seat_id: this.inputSalesData.seatId,
+                basic_plan_type: this.inputSalesData.basicPlanType,
+                total_sales: this.totalPrice,
+                total_tax_sales: this.totalTaxPrice,
+                basic_plan_service_tax: this.inputSalesData.basicPlanServiceTax,
+                basic_plan_tax: this.inputSalesData.basicPlanTax,
+                basic_plan_card_tax: this.inputSalesData.basicPlanCardTax,
+                payment: (this.inputSalesData.cardPayment) ? 1 : 0,
+                remarks: this.inputSalesData.remarks,
+                visit_time: this.inputSalesData.visitTime,
+                leave_time: this.inputSalesData.leaveTime,
+                bottle_delete_list: this.bottleDeleteList,
+                sales_service_detail: salesServiceDetailList,
+                sales_detail_list: salesDetailList,
+            }
+            console.log('data', data)
+
+            this.$axios({
+                method: 'PUT',
+                url: '/api/sales/update_sales_data/',
+                data: data
+            })
+            .then(res => {
+                console.log('updateSalesHeader', res)
+
+                // 削除したボトル、追加したボトル更新
+                this.$emit('update', res.data.data)
+
+
+                this.updateSuccessDialog = true
+                // this.init()
+            })
+            .catch(e => {
+                console.log(e)
+                this.updateFailureDialog = true
+            })
+
         },
         createDouhan (data) {
             // 将来的に可変
@@ -1332,6 +1498,13 @@ export default {
             this.registerSuccessDialog = false
             this.registerFailureDialog = false
 
+            this.updateSuccessDialog = false
+            this.updateFailureDialog = false
+
+            // this.close()
+        },
+        initClose () {
+            this.init()
             this.close()
         },
         initForm () {
@@ -1427,8 +1600,9 @@ export default {
         convertData (data) {
             // 編集用にデータを置き換える処理
             console.log('convertData', data)
-            this.edit_sales_detail = data.sales_detail
-            this.edit_sales_service_detail = data.sales_service_detail
+
+            // this.edit_sales_detail = data.sales_detail
+            // this.edit_sales_service_detail = data.sales_service_detail
 
             this.inputSalesData.basicPlanType = data.basic_plan_type.id
             this.inputSalesData.customerNo = String(data.customer.customer_no)
@@ -1860,6 +2034,10 @@ export default {
 
     .bottle_card_product_name_area {
         height: 80px;
+    }
+
+    .disabled {
+        background-color: rgba(170, 170, 170, 0.2);
     }
 
 </style>

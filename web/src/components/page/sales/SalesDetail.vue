@@ -1,6 +1,15 @@
 <template>
     <div id="sales_detail_wrap">
-        <b-row>
+        <div v-if="loading" class="loading">
+            <div class="loading_icon">
+                <b-spinner
+                    style="width: 6rem; height: 6rem; display: block; margin: 0 auto;"
+                    label="Large Spinner"
+                    variant="light"
+                ></b-spinner>
+            </div>
+        </div>
+        <b-row v-else>
             <b-tabs pill>
                 <b-tab
                     title="売上詳細"
@@ -107,7 +116,7 @@
                                 </b-col>
                                 <b-col cols="2">
                                     <div style="height: 55px;">
-                                        <!-- <b-button
+                                        <b-button
                                             size="sm"
                                             @click="showEditSalesDialog"
                                         >
@@ -115,7 +124,7 @@
                                                 icon="pencil"
                                                 aria-hidden="true"
                                             ></b-icon> 編集
-                                        </b-button> -->
+                                        </b-button>
                                         <b-button
                                             size="sm"
                                             style="position: relative; left: 10px;"
@@ -307,6 +316,7 @@
         <InputSalesDialog
             ref="inputSalesDialog"
             @update="salesData = $event"
+
         />
 
         <DeleteSalesDetailDialog
@@ -331,6 +341,7 @@ export default {
         InputSalesDialog,
     },
     data: () => ({
+        loading: false,
         salesData: {},
         editSalesData: {},
         salesServiceDetailFields: [
@@ -423,7 +434,23 @@ export default {
     },
     created () {
         // 検索から詳細きてうまくいかせるやり方わかったら、↓の様にstoreから取得する方法に切り替え
-        this.salesData = this.sales.find(s => s.id == this.$route.params['id'])
+        // this.salesData = this.sales.find(s => s.id == this.$route.params['id'])
+        this.loading = true
+
+        this.$axios({
+            method: 'GET',
+            url: `/api/sales/${this.$route.params['id']}/`
+        })
+        .then(res => {
+            console.log(res)
+            this.salesData = _.cloneDeep(res.data)
+            this.loading = false
+        })
+        .catch(e => {
+            console.log(e)
+            this.loading = false
+        })
+
         this.$eventHub.$off('updateSalesDetail')
         this.$eventHub.$on('updateSalesDetail', this.updateSalesDetail)
         console.log('this.salesData', this.salesData)
@@ -444,7 +471,7 @@ export default {
             this.$router.push({
                 name: 'CustomerDetail',
                 params: {
-                    id: this.salesData.customer.id
+                    id: this.salesData.customer.customer_no
                 }
             })
         }
@@ -506,6 +533,16 @@ export default {
 
         .sales_detail_separate {
             border-top: 1px solid rgba(100, 100, 100, 0.5);
+        }
+    }
+
+    .loading {
+        height: 100%;
+        width: 100%;
+        .loading_icon {
+            display: block;
+            margin: 0 auto;
+            padding-top: 20%;
         }
     }
 </style>

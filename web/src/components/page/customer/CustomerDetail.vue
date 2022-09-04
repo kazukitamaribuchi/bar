@@ -129,12 +129,12 @@
 
                                         <b-row>
                                             <b-col cols="7">
-                                                <b-card-sub-title class="mt-4" style="font-size: 15px;">
+                                                <!-- <b-card-sub-title class="mt-4" style="font-size: 15px;">
                                                     住所
                                                 </b-card-sub-title>
                                                 <b-card-text style="font-size: 20px; white-space: pre-line;">
                                                     {{ strAddress }}
-                                                </b-card-text>
+                                                </b-card-text> -->
                                                 <b-card-sub-title class="mt-3" style="font-size: 15px;">
                                                     会社
                                                 </b-card-sub-title>
@@ -568,6 +568,30 @@
             ref="deleteBottleDetailDialog"
             @deleteCustomerBottleDetail="deleteCustomerBottleDetail"
         />
+
+        <b-modal
+            v-model="searchFailureDialog"
+            hide-header
+        >
+            <div>
+                指定された会員Noの顧客データの取得に失敗しました。
+            </div>
+            <template #modal-footer>
+                <b-row>
+                    <b-col
+                        align="right"
+                        style="padding: 0;"
+                    >
+                        <b-button
+                            variant="primary"
+                            @click="searchFailureDialog = false"
+                        >
+                            閉じる
+                        </b-button>
+                    </b-col>
+                </b-row>
+            </template>
+        </b-modal>
     </div>
 </template>
 
@@ -599,6 +623,7 @@ export default {
         // 過去のボトルデータ
         customerBottleHistoryList: [],
         loading: false,
+        searchFailureDialog: false,
     }),
     props: {
     },
@@ -708,7 +733,9 @@ export default {
         })
         .catch(e => {
             console.log(e)
+            this.searchFailureDialog = true
             this.customerData = {}
+            this.customerOwnBottleList = []
             this.loading = false
         })
 
@@ -748,11 +775,13 @@ export default {
         if (from.name == 'CustomerDetail') {
             this.loading = true
 
+            console.log(to, from, next)
+
             this.$axios({
                 method: 'GET',
                 url: '/api/customer/search_customer_by_customer_no/',
                 params: {
-                    customer_no: this.$route.params['id']
+                    customer_no: to.params.id
                 }
             })
             .then(res => {
@@ -764,7 +793,9 @@ export default {
             })
             .catch(e => {
                 console.log(e)
+                this.searchFailureDialog = true
                 this.customerData = {}
+                this.customerOwnBottleList = []
                 this.loading = false
             })
             // console.log('this.customer.find(c => c.customer_no == to.params.id)', this.customer.find(c => c.customer_no == to.params.id))
@@ -802,6 +833,7 @@ export default {
         showEditBottleDialog (item) {
             console.log('item', item)
             if (item.delete_flg || item.end_flg) return
+            item.customer = this.customerData
             this.$refs.editBottleDialog.open(item)
         },
         showDeleteBottleDetailDialog (item) {
@@ -813,13 +845,17 @@ export default {
             this.$refs.endBottleDetailDialog.open(item)
         },
         deleteCustomerBottleDetail (item) {
-            this.customerData.bottle = this.customerData.bottle.filter(b => b.id != item.id)
+            console.log('this.customerData', this.customerData)
+            // this.customerData.bottle = this.customerData.bottle.filter(b => b.id != item.id)
             this.customerOwnBottleList = this.customerOwnBottleList.filter(b => b.id != item.id)
         },
         updateCustomerBottleDetail (item) {
             console.log('updateCustomerBottleDetail', item)
-            this.customerData.bottle = item.customer.botttle
+            // this.customerData.bottle = item.customer.botttle
             const customerNo = this.customerData.customer_no
+
+            console.log('customerOwnBottleList', this.customerOwnBottleList)
+            console.log('bottle', this.bottle)
 
             const customerOwnBottleList = this.bottle.filter(function(b) {
                 if (b.customer != null

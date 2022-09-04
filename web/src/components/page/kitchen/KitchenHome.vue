@@ -262,7 +262,6 @@
             this.$eventHub.$off('deleteSalesHeader')
             this.$eventHub.$on('deleteSalesHeader', this.deleteSalesHeader)
 
-            console.log('KitchenHome')
             this.$axios({
                 method: 'get',
                 url: '/api/sales/get_non_end_sales_food_detail/'
@@ -307,7 +306,6 @@
                 this.now = dayjs()
             }.bind(this), 1000)
 
-
             const scheme = window.location.protocol === 'https:' ? 'wss' : 'ws'
             const hostName = process.env.NODE_ENV !== 'production' ? process.env.VUE_APP_BASE_URL : window.location.host
             // const hostName = 'localhost:8000'
@@ -320,6 +318,26 @@
                 if (this.ws === undefined || this.ws.readyState !== 1) {
                     this.ws = new WebSocket(url)
                     console.log('this.ws', this.ws)
+                }
+
+                this.ws.onopen = e => {
+                    const noti = this.$vs.notification({
+                        width: '50%',
+                        color: 'success',
+                        position: '',
+                        title: 'サーバー接続成功',
+                        text: 'サーバーとの接続に成功しました。'
+                    })
+                }
+
+                this.ws.onclose = e => {
+                    const noti = this.$vs.notification({
+                        duration: 'none',
+                        width: '100%',
+                        color: 'danger',
+                        title: 'サーバー接続エラー',
+                        text: 'サーバーとの接続が切断されました。システム管理者に問い合わせてください。'
+                    })
                 }
 
                 this.ws.onmessage = e => {
