@@ -15,11 +15,13 @@ jobs:
       - name: nametest
       # - id: step2
         # run: ls
-        run: cd ..
-      - name: nametest2
         run: | #
           ls
           cd ..
+      - name: nametest2
+        run: | #
+          ls
+          cd web
 
         # run: cd ..
         # run: ls
