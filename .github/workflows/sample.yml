@@ -13,9 +13,9 @@ jobs:
         uses: actions/checkout@v3
       - name: yarn build
         with:
-          VUE_APP_AUTH_REDIRECT_URI: ${{ secret.VUE_APP_AUTH_REDIRECT_URI }}
+          VUE_APP_AUTH_REDIRECT_URI: ${{ secrets.VUE_APP_AUTH_REDIRECT_URI }}
           NODE_ENV: production
-          VUE_APP_DEV_REDIS_URL: ${{ secret.VUE_APP_DEV_REDIS_URL }}
+          VUE_APP_DEV_REDIS_URL: ${{ secrets.VUE_APP_DEV_REDIS_URL }}
         run: | #
           ls
           cd web
@@ -38,11 +38,11 @@ jobs:
           ls
       - name: collect static
         with:
-          SECRET_KEY: ${{ secret.SECRET_KEY }}
-          CLOUDINARY_API_KEY: ${{ secret.CLOUDINARY_API_KEY }}
-          CLOUDINARY_API_SECRET: ${{ secret.CLOUDINARY_API_SECRET }}
-          CLOUD_NAME: ${{ secret.CLOUD_NAME }}
-          SENDGRID_API_KEY: ${{ secret.SENDGRID_API_KEY }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          CLOUD_NAME: ${{ secrets.CLOUD_NAME }}
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
         run: | #
           cd api
           docker build .
@@ -67,9 +67,9 @@ jobs:
   #     - name: heroku deploy
   #       uses: akhileshns/heroku-deploy@v3.12.12
   #       with:
-  #         heroku_api_key: ${{ secret.HEROKU_API_KEY }}
-  #         heroku_app_name: ${{ secret.HEROKU_APP_NAME }}
-  #         heroku_email: ${{ secret.HEROKU_EMAIL }}
+  #         heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+  #         heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+  #         heroku_email: ${{ secrets.HEROKU_EMAIL }}
   #         usedocker: true
   #         docker_build_args: |
   #           NODE_ENV
