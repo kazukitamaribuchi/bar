@@ -7,26 +7,66 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    timeout-minutes: 7
     steps:
-      - uses: actions/checkout@v3
+      - name: checkout
+        uses: actions/checkout@v3
       - name: yarn build
         run: | #
           ls
           cd web
           docker build .
-          yarn global add @vue/cli@5.0.4
           rm -rf node_modules package-lock.json && npm install
           yarn build
           docker ps
       - name: move files
         run: | #
-          cd web
+          mv web/dist/templates/index.html api/templates
+          mv web/dist/static/css api/static
+          mv web/dist/static/fonts api/static
+          mv web/dist/static/img api/static
+          mv web/dist/static/js api/static
+          cd api
+          ls
+          cd static
           ls
       - name: collect static
         run: | #
           cd api
+          python manage.py collectstatic
+          ls
+          cd staticfiles
           ls
       - name: heroku release
         run : | #
+          ls
+
+  # test:
+  deploy:
+    needs:
+      - build
+      # - test
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: heroku deploy
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secret.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secret.HEROKU_APP_NAME }}
+          heroku_email: ${{ secret.HEROKU_EMAIL }}
+          usedocker: true
+          docker_build_args: |
+            NODE_ENV
+        env:
+          NODE_ENV: production
+          # SECRET_KEY: ${{ secrets.MY_SECRET_KEY }}
+      - name: deploy
+        runs: | #
+          ls
+          cd web
+          ls
+          cd dist
           ls
