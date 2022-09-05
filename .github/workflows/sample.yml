@@ -12,6 +12,10 @@ jobs:
       - name: checkout
         uses: actions/checkout@v3
       - name: yarn build
+        with:
+          VUE_APP_AUTH_REDIRECT_URI: ${{ secret.VUE_APP_AUTH_REDIRECT_URI }}
+          NODE_ENV: production
+          VUE_APP_DEV_REDIS_URL: ${{ secret.VUE_APP_DEV_REDIS_URL }}
         run: | #
           ls
           cd web
@@ -22,17 +26,23 @@ jobs:
       - name: move files
         run: | #
           mv web/dist/templates/index.html api/templates
-          mv web/dist/static/css/ api/static/
-          mv web/dist/static/fonts/ api/static/
-          mv web/dist/static/img/ api/static/
-          mv web/dist/static/js api/static/
+          mv web/dist/static/css api/staticfiles/
+          mv web/dist/static/fonts api/staticfiles/
+          mv web/dist/static/img api/staticfiles/
+          mv web/dist/static/js api/staticfiles/
           cd api
           ls
       - name: check static
         run: | #
-          cd api/static
+          cd api/staticfiles
           ls
       - name: collect static
+        with:
+          SECRET_KEY: ${{ secret.SECRET_KEY }}
+          CLOUDINARY_API_KEY: ${{ secret.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secret.CLOUDINARY_API_SECRET }}
+          CLOUD_NAME: ${{ secret.CLOUD_NAME }}
+          SENDGRID_API_KEY: ${{ secret.SENDGRID_API_KEY }}
         run: | #
           cd api
           docker build .
