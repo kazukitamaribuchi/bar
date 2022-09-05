@@ -42,31 +42,31 @@ jobs:
           ls
 
   # test:
-  deploy:
-    needs:
-      - build
-      # - test
-    runs-on: ubuntu-latest
-    timeout-minutes: 7
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - name: heroku deploy
-        uses: akhileshns/heroku-deploy@v3.12.12
-        with:
-          heroku_api_key: ${{ secret.HEROKU_API_KEY }}
-          heroku_app_name: ${{ secret.HEROKU_APP_NAME }}
-          heroku_email: ${{ secret.HEROKU_EMAIL }}
-          usedocker: true
-          docker_build_args: |
-            NODE_ENV
-        env:
-          NODE_ENV: production
-          # SECRET_KEY: ${{ secrets.MY_SECRET_KEY }}
-      - name: deploy
-        runs: | #
-          ls
-          cd web
-          ls
-          cd dist
-          ls
+  # deploy:
+  #   needs:
+  #     - build
+  #     # - test
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 7
+  #   steps:
+  #     - name: checkout
+  #       uses: actions/checkout@v3
+  #     - name: heroku deploy
+  #       uses: akhileshns/heroku-deploy@v3.12.12
+  #       with:
+  #         heroku_api_key: ${{ secret.HEROKU_API_KEY }}
+  #         heroku_app_name: ${{ secret.HEROKU_APP_NAME }}
+  #         heroku_email: ${{ secret.HEROKU_EMAIL }}
+  #         usedocker: true
+  #         docker_build_args: |
+  #           NODE_ENV
+  #       env:
+  #         NODE_ENV: production
+  #         # SECRET_KEY: ${{ secrets.MY_SECRET_KEY }}
+  #     - name: deploy
+  #       runs: | #
+  #         ls
+  #         cd web
+  #         ls
+  #         cd dist
+  #         ls
