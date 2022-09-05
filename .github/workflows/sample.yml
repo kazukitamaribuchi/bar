@@ -11,11 +11,16 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
-      - name: yarn build
         with:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          CLOUD_NAME: ${{ secrets.CLOUD_NAME }}
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           VUE_APP_AUTH_REDIRECT_URI: ${{ secrets.VUE_APP_AUTH_REDIRECT_URI }}
           NODE_ENV: production
           VUE_APP_DEV_REDIS_URL: ${{ secrets.VUE_APP_DEV_REDIS_URL }}
+      - name: yarn build
         run: | #
           ls
           cd web
@@ -37,12 +42,6 @@ jobs:
           cd api/staticfiles
           ls
       - name: collect static
-        with:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
-          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
-          CLOUD_NAME: ${{ secrets.CLOUD_NAME }}
-          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
         run: | #
           cd api
           docker build .
