@@ -22,17 +22,20 @@ jobs:
       - name: move files
         run: | #
           mv web/dist/templates/index.html api/templates
-          mv web/dist/static/css api/static
-          mv web/dist/static/fonts api/static
-          mv web/dist/static/img api/static
-          mv web/dist/static/js api/static
+          mv web/dist/static/css/ api/static/
+          mv web/dist/static/fonts/ api/static/
+          mv web/dist/static/img/ api/static/
+          mv web/dist/static/js api/static/
           cd api
           ls
-          cd static
+      - name: check static
+        run: | #
+          cd api/static
           ls
       - name: collect static
         run: | #
           cd api
+          docker build .
           python manage.py collectstatic
           ls
           cd staticfiles
