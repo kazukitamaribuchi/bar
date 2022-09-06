@@ -29,42 +29,40 @@ jobs:
           echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> api/.env
           cat web/.env
           cat api/.env
-      - name: yarn build
-        run: | #
-          ls
-          cd web
-          docker build .
-          rm -rf node_modules package-lock.json && npm install
-          yarn build
-          docker ps
-      - name: check dist
-        run: | #
-          cd web/dist
-          ls
-      - name: check dist static
-        run: | #
-          cd web/dist/static
-          ls
-      - name: move files
-        run: | #
-          mv web/dist/templates/index.html api/templates
-          mv web/dist/static/css api/staticfiles/
-          mv web/dist/static/fonts api/staticfiles/
-          mv web/dist/static/img api/staticfiles/
-          mv web/dist/static/js api/staticfiles/
-          cd api
-          ls
-      - name: check static
-        run: | #
-          cd api/staticfiles
-          ls
+      # - name: yarn build
+      #   run: | #
+      #     ls
+      #     cd web
+      #     docker build .
+      #     rm -rf node_modules package-lock.json && npm install
+      #     yarn build
+      #     docker ps
+      # - name: check dist
+      #   run: | #
+      #     cd web/dist
+      #     ls
+      # - name: check dist static
+      #   run: | #
+      #     cd web/dist/static
+      #     ls
+      # - name: move files
+      #   run: | #
+      #     mv web/dist/templates/index.html api/templates
+      #     mv web/dist/static/css api/staticfiles/
+      #     mv web/dist/static/fonts api/staticfiles/
+      #     mv web/dist/static/img api/staticfiles/
+      #     mv web/dist/static/js api/staticfiles/
+      #     cd api
+      #     ls
+      # - name: check static
+      #   run: | #
+      #     cd api/staticfiles
+      #     ls
       - name: collect static
         run: | #
           cd api
-          docker build .
+          docker build -f Dockerfile_actions .
           python manage.py collectstatic
-          ls
-          cd static
           ls
       - name: heroku release
         run : | #
