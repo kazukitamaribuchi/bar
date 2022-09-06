@@ -4,6 +4,11 @@ on:
   push:
     branches: [ "master" ]
 
+# env:
+#   SECRET_KEY: ${{ secrets.SECRET_KEY }}
+#   NODE_ENV: production
+#   VUE_APP_AUTH_REDIRECT_URI: ${{ secrets.VUE_APP_AUTH_REDIRECT_URI }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,9 +38,9 @@ jobs:
         run: | #
           cd web/dist
           ls
-      - name: check dist css
+      - name: check dist static
         run: | #
-          cd web/dist/css
+          cd web/dist/static
           ls
       - name: move files
         run: | #
