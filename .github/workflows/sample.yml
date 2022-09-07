@@ -61,6 +61,7 @@ jobs:
       - name: collect static
         run: | #
           cd api
+          docker build -f Dockerfile_actions .
           ls
           pip install --upgrade pip
           pip install -r requirements.txt
