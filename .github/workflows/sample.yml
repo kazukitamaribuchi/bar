@@ -24,6 +24,7 @@ jobs:
           echo "VUE_APP_DEV_REDIS_URL=${{ secrets.VUE_APP_DEV_REDIS_URL }}" >> web/.env
           touch api/.env
           echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> api/.env
+          echo "DJANGO_ENV=production" >> api/.env
           echo "CLOUD_NAME=${{ secrets.CLOUD_NAME }}" >> api/.env
           echo "CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}" >> api/.env
           echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> api/.env
