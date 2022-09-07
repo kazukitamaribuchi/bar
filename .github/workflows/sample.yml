@@ -62,7 +62,7 @@ jobs:
         run: | #
           cd api
           docker build -f Dockerfile_actions .
-          python manage.py collectstatic
+          python3 manage.py collectstatic
           ls
       - name: heroku release
         run : | #
