@@ -45,5 +45,12 @@ export default {
             }
             return val
         },
+        getImgLink (link) {
+            let prev = 'http://localhost:8000'
+            if (process.env.NODE_ENV === 'production') {
+                prev = process.env.VUE_APP_AUTH_REDIRECT_URI
+            }
+            return prev + link
+        },
     }
 }

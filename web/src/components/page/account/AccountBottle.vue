@@ -90,11 +90,11 @@
                                             src="http://localhost:8000/media/upload/酒5.png"
                                         > -->
                                         <img
-                                            v-if="item.thumbnail != null"
-                                            :src="item.thumbnail"
+                                            v-if="item.product.thumbnail != null"
+                                            :src="getImgLink(item.product.thumbnail)"
                                         >
                                         <img
-                                            v-if="item.thumbnail == null"
+                                            v-else
                                             src="@/static/img/noimage8.png"
                                         >
                                     </v-avatar>
@@ -228,6 +228,7 @@
     import { mapGetters } from 'vuex'
     import HomeButton from '@/components/account/HomeButton'
     import AccountPageTitleArea from '@/components/account/AccountPageTitleArea'
+    import utilsMixin from '@/mixins/utils'
 
     export default {
         name: 'AccountBottleItem',
@@ -387,6 +388,7 @@
                 })
             },
             showBottleDetail (item) {
+                console.log('item', item)
                 this.$refs.bottleDetailDialog.open(item)
             },
             deleteBottleSuccess (item) {
@@ -396,7 +398,9 @@
                 // this.searchResult.count = this.searchResult.results.length
             }
         },
-        mixins: [],
+        mixins: [
+            utilsMixin
+        ],
     }
 </script>
 <style lang="scss" scoped>

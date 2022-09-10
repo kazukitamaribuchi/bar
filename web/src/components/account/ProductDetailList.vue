@@ -128,12 +128,12 @@
                                     </v-img> -->
                                     <img
                                         v-if="item.thumbnail != null"
-                                        style="height: 100px; width: 100%;"
-                                        :src="item.thumbnail"
+                                        style="height: 90px; width: 100%; border-radius: 5px;"
+                                        :src="getImgLink(item.thumbnail)"
                                     >
                                     <img
                                         v-else
-                                        style="height: 100px; width: 100%;"
+                                        style="height: 90px; width: 100%;"
                                         src="@/static/img/noimage5.png"
                                     >
 
@@ -293,6 +293,7 @@ import AccountAddOption from '@/components/account/dialog/AccountAddOption'
 import SpinButton from '@/components/account/SpinButton'
 import KanaFilterBtn from '@/components/account/parts/KanaFilterBtn'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
+import utilsMixin from '@/mixins/utils'
 import _ from 'lodash'
 
 export default {
@@ -580,8 +581,16 @@ export default {
         isFixed (item) {
             if (item.fixed) return true
             return false
-        }
-    }
+        },
+        // convertImgLink (link) {
+        //     console.log('link1', link)
+        //     console.log('link2', 'http://localhost:8000' + link)
+        //     return 'http://localhost:8000' + link
+        // }
+    },
+    mixins: [
+        utilsMixin,
+    ]
 }
 </script>
 

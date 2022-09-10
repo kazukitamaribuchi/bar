@@ -65,8 +65,8 @@
                                     size="50px"
                                 >
                                     <img
-                                        v-if="bottleInfo.thumbnail != null"
-                                        :src="item.thumbnail"
+                                        v-if="bottleInfo.selectedBottle != null && bottleInfo.selectedBottle.thumbnail != null"
+                                        :src="getImgLink(bottleInfo.selectedBottle.thumbnail)"
                                     >
                                     <img
                                         v-else
@@ -254,6 +254,7 @@
     import BottleSelectDialog from '@/components/account/dialog/BottleSelectDialog'
     import AccountPageTitleArea from '@/components/account/AccountPageTitleArea'
     const nowD = dayjs().format('YYYY-MM-DD')
+    import utilsMixin from '@/mixins/utils'
 
     export default {
         name: 'AccountNewBottleItem',
@@ -375,7 +376,9 @@
                 this.$refs.bottleSelectDialog.open(this.bottleInfo.selectedBottle)
             }
         },
-        mixins: [],
+        mixins: [
+            utilsMixin
+        ],
     }
 </script>
 <style lang="scss" scoped>

@@ -43,7 +43,7 @@
                                 > -->
                                 <img
                                     v-if="item.thumbnail != null"
-                                    :src="item.thumbnail"
+                                    :src="getImgLink(item.thumbnail)"
                                 >
                                 <img
                                     v-else
@@ -87,6 +87,7 @@
 <script>
 
 import { mapGetters } from 'vuex'
+import utilsMixin from '@/mixins/utils'
 
 export default {
     name: 'BottleProductListItem',
@@ -123,7 +124,10 @@ export default {
             }
             return false
         }
-    }
+    },
+    mixins: [
+        utilsMixin,
+    ]
 }
 
 </script>

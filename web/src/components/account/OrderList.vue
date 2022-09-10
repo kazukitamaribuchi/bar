@@ -51,8 +51,8 @@
                             </v-img> -->
                             <img
                                 v-if="item.thumbnail != null"
-                                style="height: 120px; width: 100%;"
-                                :src="item.thumbnail"
+                                style="height: 120px; width: 100%; border-radius: 5px;"
+                                :src="getImgLink(item.thumbnail)"
                             >
                             <img
                                 v-else
@@ -202,6 +202,7 @@ import DeleteConfirmDialog from '@/components/account/dialog/DeleteConfirmDialog
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import _ from 'lodash'
 import Vue from 'vue'
+import utilsMixin from '@/mixins/utils'
 
 export default {
     name: 'OrderListItem',
@@ -323,7 +324,10 @@ export default {
             console.log('focusOutFixedPrice', item)
             this.updateSelectedProduct(item)
         }
-    }
+    },
+    mixins: [
+        utilsMixin,
+    ]
 }
 </script>
 
