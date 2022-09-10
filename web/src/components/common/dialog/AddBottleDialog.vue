@@ -42,6 +42,12 @@
                             ></b-card-img> -->
                             <div class="add_bottle_img">
                                 <img
+                                    v-if="item.thumbnail != null"
+                                    class="add_bottle_default_icon"
+                                    :src="getImgLink(item.thumbnail)"
+                                >
+                                <img
+                                    v-else
                                     src="@/static/img/noimage8.png"
                                     class="add_bottle_default_icon"
                                 >

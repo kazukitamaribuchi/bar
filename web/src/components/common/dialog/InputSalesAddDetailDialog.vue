@@ -54,7 +54,7 @@
                             <img
                                 v-if="item.thumbnail != null"
                                 class="product_item_thumbnail"
-                                :src="item.thumbnail"
+                                :src="getImgLink(item.thumbnail)"
                             >
                             <img
                                 v-else
@@ -101,7 +101,7 @@
                             <img
                                 v-if="item.thumbnail != null"
                                 class="product_item_thumbnail"
-                                :src="item.thumbnail"
+                                :src="getImgLink(item.thumbnail)"
                             >
                             <img
                                 v-else
@@ -136,7 +136,7 @@
                                 <img
                                     v-if="selectedProduct.thumbnail != null"
                                     class="product_item_thumbnail"
-                                    :src="item.thumbnail"
+                                    :src="getImgLink(item.thumbnail)"
                                 >
                                 <img
                                     v-else
