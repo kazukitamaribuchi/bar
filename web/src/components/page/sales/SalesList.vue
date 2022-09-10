@@ -1311,4 +1311,8 @@ export default {
         background-color: #e9ecef !important;
         transition: 0.5s;
     }
+
+    .sr_only {
+        display: none !important;
+    }
 </style>

@@ -739,10 +739,10 @@ export default {
             },
 
             xaxis: {
-                categories: ["normal", "gold", "silver", "platinum", "black"],
+                categories: ["normal", "gold", "platinum", "black"],
                 labels: {
                     style: {
-                        colors: ["#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff"],
+                        colors: ["#ffffff", "#ffffff", "#ffffff", "#ffffff"],
                         fontSize: '10px',
 
                     },

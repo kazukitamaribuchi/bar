@@ -11,7 +11,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db import transaction, models
-from django.db.models import Sum, Q, CharField
+from django.db.models import Sum, Q, CharField, F
 from django.db.models.functions import (
     TruncMonth,
 )
@@ -370,7 +370,7 @@ class CustomerViewSet(BaseModelViewSet):
     def get_customer_rank(self, request):
 
         res = [
-            MCustomer.objects.filter(rank=rank, delete_flg=False).count() for rank in range(1, 6)
+            MCustomer.objects.filter(rank=rank, delete_flg=False).count() for rank in range(1, 5)
         ]
 
         return Response({'status': 'success', 'data': res}, status=status.HTTP_200_OK)
@@ -411,7 +411,7 @@ class CustomerViewSet(BaseModelViewSet):
         ).values(
             'customer'
         ).annotate(
-            cnt=models.Count('customer')
+            cnt=models.Count(F('customer'))
         ).order_by('-cnt')
 
         logger.debug('activeCustomer')
@@ -1151,7 +1151,7 @@ class SalesViewSet(BaseModelViewSet):
         # 顧客のランク更新
         total_sales_for_rank = SalesHeader.objects.filter(
             customer=customer
-        ).aggregate(total=Coalesce(models.Sum('total_tax_sales'), 0))['total']
+        ).aggregate(total=Coalesce(models.Sum(F('total_tax_sales')), 0))['total']
         update_customer_rank(customer, total_sales_for_rank)
 
         return Response({
@@ -1356,7 +1356,7 @@ class SalesViewSet(BaseModelViewSet):
         # 顧客のランク更新
         total_sales_for_rank = SalesHeader.objects.filter(
             customer=customer
-        ).aggregate(total=Coalesce(models.Sum('total_tax_sales'), 0))['total']
+        ).aggregate(total=Coalesce(models.Sum(F('total_tax_sales')), 0))['total']
         update_customer_rank(customer, total_sales_for_rank)
 
         return Response({
@@ -1394,8 +1394,8 @@ class SalesViewSet(BaseModelViewSet):
         data = queryset.annotate(
             month=TruncMonth('leave_time')
         ).values('month').annotate(
-            total=models.Sum('total_tax_sales'),
-            total_visit=models.Count('total_tax_sales'),
+            total=models.Sum(F('total_tax_sales')),
+            total_visit=models.Count(F('total_tax_sales')),
         )
 
         return Response({
@@ -1460,7 +1460,7 @@ class SalesViewSet(BaseModelViewSet):
                 Q(delete_flg=False) &
                 Q(close_flg=True) &
                 Q(leave_time__range=[start_time, end_time])
-            ).aggregate(total=models.Sum('total_tax_sales'))
+            ).aggregate(total=models.Sum(F('total_tax_sales')))
 
             res.append({
                 'date': start_time.strftime('%Y-%m-%d'),
@@ -1524,7 +1524,7 @@ class SalesViewSet(BaseModelViewSet):
                 Q(delete_flg=False) &
                 Q(close_flg=True) &
                 Q(leave_time__range=[start_time,end_time])
-            ).aggregate(total=models.Count('customer'))
+            ).aggregate(total=models.Count(F('customer')))
 
             res.append({
                 'date': start_time.strftime('%Y-%m-%d'),
@@ -1578,8 +1578,8 @@ class SalesViewSet(BaseModelViewSet):
         ).values(
             'customer'
         ).annotate(
-            total=models.Sum('total_tax_sales'),
-            total_visit=models.Count('total_tax_sales')
+            total=models.Sum(F('total_tax_sales')),
+            total_visit=models.Count(F('total_tax_sales'))
         ).order_by('-total')
 
         serializer = CustomerSalesSerializer(data, many=True)
@@ -1649,7 +1649,7 @@ class SalesViewSet(BaseModelViewSet):
                 logger.error('顧客情報の取得に失敗しました。')
 
         data = queryset.aggregate(
-            total_price=Coalesce(models.Sum('total_tax_sales'), 0))
+            total_price=Coalesce(models.Sum(F('total_tax_sales')), 0))
 
         return Response({
             'status': 'success',
@@ -1713,7 +1713,7 @@ class SalesViewSet(BaseModelViewSet):
         data = queryset.values(
             'customer'
         ).annotate(
-            models.Count('customer')
+            models.Count(F('customer'))
         ).values('customer').count()
 
         return Response({
@@ -1772,14 +1772,14 @@ class SalesViewSet(BaseModelViewSet):
                 ).values(
                     'basic_plan_type'
                 ).annotate(
-                    total=models.Count('basic_plan_type')
+                    total=models.Count(F('basic_plan_type'))
                 )
         else:
             # logger.debug('全期間の基本料金比率を取得します')
             data = SalesHeader.objects.values(
                     'basic_plan_type'
                 ).annotate(
-                    total=models.Count('basic_plan_type')
+                    total=models.Count(F('basic_plan_type'))
                 )
 
         # if len(data) == 0:
@@ -1837,8 +1837,8 @@ class SalesViewSet(BaseModelViewSet):
                     Q(order_time__gte=start_time) &
                     Q(order_time__lte=end_time)
                 ).aggregate(
-                    total=Coalesce(models.Sum('fixed_price'), 0),
-                    total_visit=models.Count('header__customer')
+                    total=Coalesce(models.Sum(F('fixed_price')), 0),
+                    total_visit=models.Count(F('header__customer'))
                 )
                 data['time'] = start_time.strftime('%H:%M') + ' ~ ' + end_time.strftime('%H:%M')
                 res.append(data)
@@ -1928,8 +1928,8 @@ class SalesViewSet(BaseModelViewSet):
         ).values(
             'sales_detail__product',
         ).annotate(
-            total=models.Sum('sales_detail__fixed_price'),
-            total_cnt=models.Count('sales_detail__product')
+            total=models.Sum(F('sales_detail__fixed_price')),
+            total_cnt=models.Count(F('sales_detail__product'))
         ).order_by('-total')[:20]
 
         serializer = ProductSalesSerializer(data, many=True)
@@ -1961,8 +1961,8 @@ class SalesViewSet(BaseModelViewSet):
             ).values(
                 'customer'
             ).annotate(
-                total=models.Sum('total_tax_sales'),
-                total_visit=models.Count('total_tax_sales')
+                total=models.Sum(F('total_tax_sales')),
+                total_visit=models.Count(F('total_tax_sales'))
             ).order_by('-total')[:length]
 
             rank = {
@@ -2426,7 +2426,7 @@ class SalesViewSet(BaseModelViewSet):
         # 顧客のランク更新
         total_sales_for_rank = SalesHeader.objects.filter(
             customer=customer
-        ).aggregate(total=Coalesce(models.Sum('total_tax_sales'), 0))['total']
+        ).aggregate(total=Coalesce(models.Sum(F('total_tax_sales')), 0))['total']
         update_customer_rank(customer, total_sales_for_rank)
 
         return Response(SalesSerializer(header).data,

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from django.db.models import Q
+from django.db.models import Q, F
 
 
 from .models import (
@@ -289,7 +289,7 @@ class CustomerSerializer(DynamicFieldsModelSerializer):
             Q(customer__delete_flg=False) &
             Q(delete_flg=False) &
             Q(close_flg=True)
-        ).aggregate(total=Coalesce(models.Sum('total_tax_sales'), 0))['total']
+        ).aggregate(total=Coalesce(models.Sum(F('total_tax_sales')), 0))['total']
 
     # def get_rank(self, obj):
     #
@@ -1182,7 +1182,8 @@ class SalesSerializer(DynamicFieldsModelSerializer):
     #     return utc_to_jst(obj.move_time).strftime('%Y/%m/%d %H:%M')
 
     def get_sales_detail_total_price(self, obj):
-        return obj.sales_detail.all().aggregate(models.Sum('fixed_price', field="fixed_price*quantity"))['fixed_price__sum']
+        # return obj.sales_detail.all().aggregate(models.Sum('fixed_price', field="fixed_price*quantity"))['fixed_price__sum']
+        return obj.sales_detail.all().aggregate(total=models.Sum(F('fixed_price') * F('quantity')))['total']
 
     # def get_sales_detail_total_tax_price(self, obj):
     #     return obj.sales_detail.all().aggregate(models.Sum('total_tax_price'))['total_tax_price__sum']
@@ -1194,7 +1195,7 @@ class SalesSerializer(DynamicFieldsModelSerializer):
     #     return obj.sales_appoint_detail.all().aggregate(models.Sum('total_tax_price'))['total_tax_price__sum']
 
     def get_sales_service_detail_total_price(self, obj):
-        return obj.sales_service_detail.all().aggregate(models.Sum('fixed_price', field="fixed_price*quantity"))['fixed_price__sum']
+        return obj.sales_service_detail.all().aggregate(total=models.Sum(F('fixed_price') * F('quantity')))['total']
 
     # def get_sales_service_detail_total_tax_price(self, obj):
     #     return obj.sales_service_detail.all().aggregate(models.Sum('total_tax_price'))['total_tax_price__sum']
