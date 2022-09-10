@@ -507,7 +507,7 @@
                                     font-scale="1.5"
                                     variant="danger"
                                     class="mt-2 input_sales_delete_product_btn"
-                                    @click="deleteSalesDetail(item)"
+                                    @click="deleteSalesDetail(id)"
                                 ></b-icon>
                             </td>
                         </tr>
@@ -1581,8 +1581,8 @@ export default {
         showAddDetailDialog () {
             this.$refs.inputSalesAddDetailDialog.open()
         },
-        deleteSalesDetail (data) {
-            this.inputSalesDetailData.splice(data.index, 1)
+        deleteSalesDetail (index) {
+            this.inputSalesDetailData.splice(index, 1)
         },
         addSalesDetail (data) {
             this.inputSalesDetailData.push(data)
@@ -1660,7 +1660,9 @@ export default {
                 const salesDetailItem = data.sales_detail[i]
                 service_detail_list.push({
                     actuallyPrice: salesDetailItem.fixed_price,
-                    bottle: salesDetailItem.bottle_register,
+                    // bottle: salesDetailItem.bottle_register,
+                    // 2022/09/10 編集時のボトル登録フラグは折っておく。
+                    bottle: false,
                     category: salesDetailItem.product.category,
                     name: salesDetailItem.product.name,
                     price: salesDetailItem.product.price,

@@ -48,7 +48,7 @@
                         <b-card
                             class="productCard"
                             @click="selectProduct(item)"
-                            @dblclick="directAdd(item)"
+                            @dblclick="directAddStack(item)"
                             body-class="productCardBody"
                         >
                             <img
@@ -95,7 +95,7 @@
                         <b-card
                             class="productCard"
                             @click="selectProduct(item)"
-                            @dblclick="directAdd(item)"
+                            @dblclick="directAddStack(item)"
                             body-class="productCardBody"
                         >
                             <img
@@ -157,7 +157,7 @@
                                     <div v-else class="selected_product_area">-</div>
                                 </div>
                             </b-col>
-                            <b-col cols="3" class="no_margin_no_padding">
+                            <b-col cols="3" align="right" class="no_margin_no_padding">
                                 <div>
                                     <b-card-sub-title>定価</b-card-sub-title>
                                     <div class="selected_product_area">
@@ -227,7 +227,7 @@
                                 </b-form-group>
                             </b-col>
                             <b-col align="center" class="no_margin_no_padding">
-                                <b-card-sub-title>まとめて追加</b-card-sub-title>
+                                <b-card-sub-title>商品を追加する</b-card-sub-title>
                                 <b-icon
                                     icon="plus-square"
                                     font-scale="1.5"
@@ -330,7 +330,7 @@
                             class="add_sales_detail_footer_area4"
                             :disabled=isDisabled
                         >
-                            追加
+                            確定する
                         </b-button>
                     </b-col>
                 </b-row>
@@ -566,8 +566,14 @@ export default {
         showTopPopularProduct () {
             this.selectedProductType = null
         },
+        directAddStack (item) {
+            this.selectProduct(item)
+            this.addStack()
+        },
         addStack () {
             const product = this.selectedProduct
+
+            if (product == null) return
 
             let actuallyTaxPrice = 0
 
@@ -602,6 +608,7 @@ export default {
             this.taxation = [1]
         },
         deleteProduct (id) {
+            console.log('deleteProduct', id, this.selectedProductList)
             this.selectedProductList.splice(id, 1)
         },
     },
