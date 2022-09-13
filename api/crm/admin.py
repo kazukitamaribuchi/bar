@@ -7,6 +7,7 @@ from .models import (
     MCustomer,
     MCast,
     MProduct,
+    MProductCategory,
     MService,
     MSeat,
     # MQuestion,
@@ -31,6 +32,7 @@ admin.site.register(MTax)
 admin.site.register(MCustomer)
 admin.site.register(MCast)
 admin.site.register(MProduct)
+admin.site.register(MProductCategory)
 admin.site.register(MService)
 admin.site.register(MSeat)
 admin.site.register(MPayment)

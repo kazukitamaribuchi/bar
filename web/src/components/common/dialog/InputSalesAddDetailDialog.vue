@@ -8,7 +8,7 @@
         cancel-title="閉じる"
         size="xl"
     >
-        <b-row>
+        <b-row class="add_sales_detail_product_area">
             <b-col cols="2">
                 <b-list-group>
                     <b-list-group-item
@@ -78,18 +78,19 @@
                     </b-col>
                 </b-row>
             </b-col>
-            <b-col v-if="selectedProductType != null">
+            <b-col v-else>
                 <!-- <b-card-title>
                     カテゴリ毎
                 </b-card-title> -->
                 <InputSalesAddDetailDialogHeader
                     :productType=selectedProductType
-                    @update="productByCategoryList = $event"
+                    @update="updateProductByCategoryList"
                 />
+                <!-- @update="productByCategoryList = $event" -->
                 <b-row>
                     <b-col
                         cols="2"
-                        v-for="item in productByCategoryList"
+                        v-for="item in dispItems"
                         :key=item.id
                     >
                         <b-card
@@ -123,6 +124,16 @@
                             </div>
                         </b-card>
                     </b-col>
+
+                    <b-pagination
+                        v-if="dispItems != undefined"
+                        v-model="currentPage"
+                        :total-rows="rows"
+                        :per-page="perPage"
+                        aria-controls="my-table"
+                        align="center"
+                        @change="changePage"
+                    ></b-pagination>
                 </b-row>
             </b-col>
         </b-row>
@@ -136,7 +147,7 @@
                                 <img
                                     v-if="selectedProduct.thumbnail != null"
                                     class="product_item_thumbnail"
-                                    :src="getImgLink(item.thumbnail)"
+                                    :src="getImgLink(selectedProduct.thumbnail)"
                                 >
                                 <img
                                     v-else
@@ -280,7 +291,7 @@
                                             <span v-else>非課税</span>
                                         </td>
                                         <td>
-                                            <span v-if="item.taxation">有</span>
+                                            <span v-if="item.bottle">有</span>
                                             <span v-else>無</span>
                                         </td>
                                         <!-- <td>{{ item.remarks }}</td> -->
@@ -349,7 +360,6 @@ import SelectForm from '@/components/common/parts/SelectForm'
 import Decimal from 'decimal.js'
 import utilsMixin from '@/mixins/utils'
 
-
 export default {
     name: 'InputSalesAddDetailDialogItem',
     props: {
@@ -385,6 +395,10 @@ export default {
         // remarks: '',
         tax: 10,
         taxation: [1],
+        currentPage: 1,
+        rows: 1,
+        perPage: 12,
+        dispItems: [],
     }),
     computed: {
         ...mapGetters([
@@ -542,7 +556,23 @@ export default {
             return !Object.keys(obj).length
         },
         selectProductCategory (item) {
-            this.productByCategoryList = this.popularProduct.top[item.productType]
+            // console.log('this.popularProduct.top', this.popularProduct.top)
+            // console.log('this.productByCategory', this.productByCategory)
+            // console.log('item.productType', item.productType)
+            console.log('item', item)
+
+            // this.productByCategoryList = this.popularProduct.top[item.productType]
+
+            const large = item.largeCategory
+            const middle = item.middleCategory
+            const small = item.smallCategory
+            this.productByCategoryList = this.productByCategory[large][middle][small]
+
+            let slicedArray = this.divideArrIntoPieces(_.cloneDeep(this.productByCategoryList), 12)
+            this.dispItems = slicedArray[0]
+
+            this.rows = this.productByCategoryList.length
+
             this.selectedProductType = item.productType
         },
         selectProduct (item) {
@@ -583,6 +613,8 @@ export default {
                 actuallyTaxPrice = Number(this.actuallyPrice)
             }
 
+            console.log('product', product)
+
             const data = {
                 name: product.name,
                 price: product.price,
@@ -611,6 +643,18 @@ export default {
             console.log('deleteProduct', id, this.selectedProductList)
             this.selectedProductList.splice(id, 1)
         },
+        changePage (pageNumber) {
+            this.currentPage = pageNumber
+            let items = this.divideArrIntoPieces(_.cloneDeep(this.productByCategoryList), 12)
+            this.dispItems = items[pageNumber-1]
+        },
+        updateProductByCategoryList (arr) {
+            this.productByCategoryList = arr
+            let slicedArray = this.divideArrIntoPieces(_.cloneDeep(this.productByCategoryList), 12)
+            this.dispItems = slicedArray[0]
+            this.rows = this.productByCategoryList.length
+            this.currentPage = 1
+        }
     },
     mixins: [
         utilsMixin
@@ -621,104 +665,108 @@ export default {
 
 <style lang="scss" scoped>
 
-.input-group-text {
-    height: 100%;
-    border-radius: 5px 0 0 5px !important;
-}
+    .add_sales_detail_product_area {
+        height: 563px;
+    }
 
-.add_sales_detail_footer_col {
-    margin: 0;
-    padding: 0;
-}
+    .input-group-text {
+        height: 100%;
+        border-radius: 5px 0 0 5px !important;
+    }
+
+    .add_sales_detail_footer_col {
+        margin: 0;
+        padding: 0;
+    }
 
 
-.btn_close {
-    display: inline-block;
-    margin-right: 8px;
-}
+    .btn_close {
+        display: inline-block;
+        margin-right: 8px;
+    }
 
-.productCard {
-    cursor: pointer;
-    padding: 10px;
-    height: 185px;
-    .product_desc_area {
-        height: calc(100% - 80px);
-        .product_name_area {
-            height: calc(100% - 20px);
+    .productCard {
+        cursor: pointer;
+        padding: 10px;
+        height: 185px;
+        .product_desc_area {
+            height: calc(100% - 80px);
+            .product_name_area {
+                height: calc(100% - 20px);
 
-            .product_name {
-                font-size: 12px;
+                .product_name {
+                    font-size: 12px;
+                }
+                .product_long_name {
+                    font-size: 10px;
+                }
             }
-            .product_long_name {
-                font-size: 10px;
-            }
+        }
+
+
+        .product_price_area {
+            height: 20px;
+            line-height: 20px;
+            font-size: 13px;
+            text-align: right;
         }
     }
 
-
-    .product_price_area {
-        height: 20px;
-        line-height: 20px;
-        font-size: 13px;
-        text-align: right;
+    .productCard:hover {
+        box-shadow: 1px 1px 2px 1px rgba(150, 150, 150, 0.5);
+        transition: 0.5s;
     }
-}
 
-.productCard:hover {
-    box-shadow: 1px 1px 2px 1px rgba(150, 150, 150, 0.5);
-    transition: 0.5s;
-}
+    .productCardBody {
+        padding: 0;
+    }
 
-.productCardBody {
-    padding: 0;
-}
+    .selected_product_area {
+        margin-top: 2px;
+        min-height: 50px;
+    }
 
-.selected_product_area {
-    margin-top: 2px;
-    min-height: 50px;
-}
+    .add_cast_footer_area3 {
+        display: inline-block;
+    }
 
-.add_cast_footer_area3 {
-    display: inline-block;
-}
-
-.add_sales_detail_quantity, .add_sales_detail_tax {
-    height: 38px;
-    padding: 4px 9px;
-    border-radius: 3px;
-    border: 1px solid rgba(125, 125, 125, 0.6);
-}
+    .add_sales_detail_quantity, .add_sales_detail_tax {
+        height: 38px;
+        padding: 4px 9px;
+        border-radius: 3px;
+        border: 1px solid rgba(125, 125, 125, 0.6);
+    }
 
 
-.add_sales_detail_footer_area4 {
-    margin-top: 15px;
-    margin-bottom: 13px;
-}
+    .add_sales_detail_footer_area4 {
+        margin-top: 15px;
+        margin-bottom: 13px;
+    }
 
-.add_cast_footer_bottom_area {
-    margin-top: 20px;
-    border-top: 1px solid rgba(155, 155, 155, 0.5);
-}
+    .add_cast_footer_bottom_area {
+        margin-top: 20px;
+        border-top: 1px solid rgba(155, 155, 155, 0.5);
+    }
 
-.isAppointed {
-    background-color: rgba(255, 255, 255, 1);
-    filter: opacity(30%);
-}
+    .isAppointed {
+        background-color: rgba(255, 255, 255, 1);
+        filter: opacity(30%);
+    }
 
-.add_sales_detail_add_product_btn,
-.add_sales_detail_delete_product_btn {
-    cursor: pointer;
-}
+    .add_sales_detail_add_product_btn,
+    .add_sales_detail_delete_product_btn {
+        cursor: pointer;
+    }
 
-.product_item_thumbnail {
-    height: 80px;
-    width: 80px;
-    margin: 0 auto;
-    display: block;
-}
+    .product_item_thumbnail {
+        height: 80px;
+        width: 80px;
+        margin: 0 auto;
+        display: block;
+    }
 
-.no_margin_no_padding {
-    margin: 0;
-    padding: 0;
-}
+    .no_margin_no_padding {
+        margin: 0;
+        padding: 0;
+    }
 </style>

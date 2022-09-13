@@ -490,6 +490,8 @@ export default {
         registerFailureDialog: false,
         updateSuccessDialog: false,
         updateFailureDialog: false,
+
+        waitServerResponse: false,
     }),
     computed: {
         ...mapGetters([
@@ -577,6 +579,11 @@ export default {
             'addCustomerListTop',
         ]),
         createOrUpdate () {
+            if (this.waitServerResponse) {
+                console.log('サーバー応答待ち')
+                return
+            }
+
             if (this.mode == 0) {
                 this.register()
             } else if (this.mode == 1) {
@@ -616,6 +623,8 @@ export default {
 
             console.log('data', data)
 
+            this.waitServerResponse = true
+
             this.$axios({
                 method: 'POST',
                 url: '/api/customer/',
@@ -640,13 +649,14 @@ export default {
                 console.log(res)
                 this.addCustomerListTop(res.data)
 
-                this.registerSuccessDialog = true
-                // this.init()
+                // this.registerSuccessDialog = true
+                this.initClose()
             })
             .catch(e => {
                 console.log(e)
 
                 this.registerFailureDialog = true
+                this.waitServerResponse = false
             })
         },
         update () {
@@ -671,6 +681,8 @@ export default {
             const cautionFlg = (this.createCustomerData.cautionFlg.length != 0) ? true : false
 
             console.log(birthday, data)
+
+            this.waitServerResponse = true
 
             this.$axios({
                 // url: `/api/customer/${data.id}/`,
@@ -698,11 +710,13 @@ export default {
                 this.updateCustomerList(res.data)
                 this.$emit('update', res.data)
 
-                this.updateSuccessDialog = true
+                // this.updateSuccessDialog = true
+                this.initClose()
             })
             .catch(e => {
                 console.log(e)
                 this.updateFailureDialog = true
+                this.waitServerResponse = false
             })
 
             // this.close()
@@ -739,6 +753,7 @@ export default {
             this.updateFailureDialog = false
 
             // this.dialog = false
+            this.waitServerResponse = false
         },
         close () {
             // this.init()

@@ -6,7 +6,7 @@
         ok-title="削除"
         cancel-title="キャンセル"
     >
-        会員No{{ customerDetail.id }}の顧客データを削除しますか？
+        会員No{{ customerDetail.customer_no }}の顧客データを削除しますか？
     </b-modal>
 </template>
 

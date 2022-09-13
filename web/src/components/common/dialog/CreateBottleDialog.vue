@@ -215,7 +215,7 @@
                             <b-col cols="3">
                             </b-col>
                         </b-row>
-                        <b-row>
+                        <b-row v-else>
                             <b-card-sub-title align="right">
                                 <span style="color: red;">*</span> : 必須項目
                             </b-card-sub-title>
@@ -230,6 +230,12 @@
                                                 <div style="display: flex;">
                                                     <div>
                                                         <img
+                                                            v-if="selectedBottle.thumbnail != null"
+                                                            class="create_bottle_customer_icon"
+                                                            :src="getImgLink(selectedBottle.thumbnail)"
+                                                        >
+                                                        <img
+                                                            v-else
                                                             src="@/static/img/noimage8.png"
                                                             class="create_bottle_customer_icon"
                                                         >
@@ -654,6 +660,8 @@ export default {
         registerFailureDialog: false,
         updateSuccessDialog: false,
         updateFailureDialog: false,
+
+        waitServerResponse: false,
     }),
     computed: {
         ...mapGetters([
@@ -778,6 +786,11 @@ export default {
             'addBottleListTop',
         ]),
         createOrUpdate () {
+            if (this.waitServerResponse) {
+                console.log('サーバー応答待ち')
+                return
+            }
+
             if (this.mode == 0) {
                 this.register()
             } else if (this.mode == 1) {
@@ -791,6 +804,8 @@ export default {
 
             console.log('register', data)
 
+            this.waitServerResponse = true
+
             this.$axios({
                 method: 'POST',
                 url: '/api/bottle/create_bottle_data/',
@@ -800,14 +815,14 @@ export default {
                 console.log(res)
                 this.addBottleListTop(res.data.data)
 
-                this.registerSuccessDialog = true
-
-                // this.init()
+                // this.registerSuccessDialog = true
+                this.initClose()
             })
             .catch(e => {
                 console.log(e)
 
                 this.registerFailureDialog = true
+                this.waitServerResponse = false
             })
             // this.close()
         },
@@ -817,6 +832,8 @@ export default {
             data.selectedBottle = this.selectedBottle
             data.id = this.editId
             console.log('update', data)
+
+            this.waitServerResponse = true
 
             this.$axios({
                 url: '/api/bottle/update_bottle_data/',
@@ -831,12 +848,14 @@ export default {
                 this.$emit('updateCustomerBottleDetail', res.data.data)
                 // this.close()
 
-                this.updateSuccessDialog = true
+                // this.updateSuccessDialog = true
+                this.initClose()
             })
             .catch(e => {
                 console.log(e)
 
                 this.updateFailureDialog = true
+                this.waitServerResponse = false
             })
 
             // this.close()
@@ -861,6 +880,7 @@ export default {
             this.updateSuccessDialog = false
             this.updateFailureDialog = false
 
+            this.waitServerResponse = false
             // this.dialog = false
         },
         close () {
@@ -902,6 +922,8 @@ export default {
                 this.createBottleData.customerNo = String(copyData.customer.customer_no)
                 this.createBottleData.customerType = 1
             // }
+
+            console.log('product', product)
 
             this.selectedBottle = product
         },

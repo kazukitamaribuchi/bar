@@ -43,6 +43,7 @@ export default {
         zensaiHeader: Con.INPUT_SALES_DETAIL_PRODUCT_ZENSAI_HEADER,
         agemonoHeader: Con.INPUT_SALES_DETAIL_PRODUCT_AGEMONO_HEADER,
         suimonoHeader: Con.INPUT_SALES_DETAIL_PRODUCT_SUIMONO_HEADER,
+        fruitsHeader: Con.INPUT_SALES_DETAIL_PRODUCT_FRUITS_HEADER,
 
         categoryTitleList: Con.INPUT_SALES_DETAIL_PRODUCT_CATEGORY_LIST,
     }),
@@ -71,6 +72,8 @@ export default {
                     return this.agemonoHeader
                 case 7:
                     return this.suimonoHeader
+                case 8:
+                    return this.fruitsHeader
                 default:
                     return []
             }
@@ -78,11 +81,13 @@ export default {
     },
     methods: {
         filterProductCategory (item) {
+            console.log('filterProductCaterory', item)
             // this.$eventHub.$emit('filterProductCategory', item)
             const large = item.largeCategory
             const middle = item.middleCategory
             const small = item.smallCategory
             const res = this.productByCategory[large][middle][small]
+            console.log('res', res)
             // this.productByCategoryList = _.cloneDeep(res)
             this.$emit('update', _.cloneDeep(res))
         }

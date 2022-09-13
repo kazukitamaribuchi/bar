@@ -45,6 +45,7 @@ from .serializers import (
     # QuestionSerializer,
     CustomerSalesSerializer,
     ProductSalesSerializer,
+    ProductCategorySerializer,
 )
 
 from .models import (
@@ -54,6 +55,7 @@ from .models import (
     MRank,
     MTax,
     MProduct,
+    MProductCategory,
     MSeat,
     MSetting,
     MPayment,
@@ -126,6 +128,7 @@ PRODUCT_CATEGORY = {
         3: [0],
         # 吸い物、御飯物
         4: [0],
+        5: [0],
     }
 }
 
@@ -595,6 +598,25 @@ class ProductViewSet(BaseModelViewSet):
         マスタデータになるため、画面側のlocalStorageに持つ。
         """
 
+        # res = {1:{}, 2:{}}
+        # large = 0
+        # middle = 0
+        # small = 0
+        # dict = {}
+        # logger.debug('★★★★★★★★★★★★★★★★★★★★★★★★★★v★★★★★★★★★★★★★★★★★★★★★★★★★')
+        # for item in MProductCategory.objects.all().order_by('large_category', 'middle_category', 'small_category').values():
+        #     logger.debug(str(item['large_category']) + str(item['middle_category']) + str(large) + str(middle))
+        #
+        #     if large == item['large_category'] and middle == item['middle_category']:
+        #         logger.debug('スキップ')
+        #         continue
+        #
+        #     dict[item['middle_category']] = {}
+        #
+        #     large = item['large_category']
+        #     middle = item['middle_category']
+
+
         res = {
             1: {
                 0: {},
@@ -607,8 +629,11 @@ class ProductViewSet(BaseModelViewSet):
                 2: {},
                 3: {},
                 4: {},
+                5: {},
             },
         }
+
+        logger.debug(res)
 
         for large, items in PRODUCT_CATEGORY.items():
             for middle in items:
@@ -648,6 +673,7 @@ class ProductViewSet(BaseModelViewSet):
                 5: ProductSerializer(MProduct.objects.filter(category__large_category=2, category__middle_category=2)[:12], many=True).data,
                 6: ProductSerializer(MProduct.objects.filter(category__large_category=2, category__middle_category=3)[:12], many=True).data,
                 7: ProductSerializer(MProduct.objects.filter(category__large_category=2, category__middle_category=4)[:12], many=True).data,
+                8: ProductSerializer(MProduct.objects.filter(category__large_category=2, category__middle_category=5)[:12], many=True).data,
             }
             return Response({
                 'status': 'success',
@@ -2440,6 +2466,18 @@ class BookingViewSet(BaseModelViewSet):
     permission_classes = (permissions.AllowAny,)
     queryset = BookingManagement.objects.all()
     serializer_class = BookingSerializer
+
+    # def list(self, request):
+    #     queryset =
+
+
+class ProductCategoryViewSet(BaseModelViewSet):
+    """
+    """
+    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
+    queryset = MProductCategory.objects.all()
+    serializer_class = ProductCategorySerializer
 
     # def list(self, request):
     #     queryset =

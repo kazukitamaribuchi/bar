@@ -363,11 +363,12 @@ class MProductCategory(AbstractBaseModel):
             「1」:ノンアルコール・・・pk:7
             「2」:ソフトドリンク・・・pk:8
         【2】【?】
-            「0」:メイン・・・pk:9
-            「1」:サラダ・・・pk:10
-            「2」:一品物・・・pk:11
-            「3」:揚げ物・・・pk:12
-            「4」:吸い物、御飯物・・・pk:13
+            「0」:一品料理・・・pk:9
+            「1」:おつまみ・・・pk:10
+            「2」:お料理・・・pk:11
+            「3」:御飯物・・・pk:12
+            「4」:お椀物・・・pk:13
+            「5」:フルーツ・・・pk:14
 
     　小カテゴリ
         【1】【0】【?】
@@ -377,6 +378,19 @@ class MProductCategory(AbstractBaseModel):
             「3」:ワイン・・・pk:5
             「4」:ドリンク・・・pk:6
     """
+
+    large_category_name = models.CharField(
+        _('大カテゴリ-名'),
+        max_length=20,
+    )
+    middle_category_name = models.CharField(
+        _('中カテゴリ-名'),
+        max_length=20,
+    )
+    small_category_name = models.CharField(
+        _('小カテゴリ-名'),
+        max_length=20,
+    )
 
     large_category = models.SmallIntegerField(
         _('大カテゴリー'),
@@ -392,7 +406,7 @@ class MProductCategory(AbstractBaseModel):
     )
 
     def __str__(self):
-        return str(self.large_category) + '-' + str(self.middle_category) + '-' + str(self.small_category)
+        return str(self.small_category_name) + ':' + str(self.large_category) + '-' + str(self.middle_category) + '-' + str(self.small_category)
 
     class Meta:
         verbose_name_plural = '商品カテゴリ'
@@ -417,6 +431,29 @@ class MPayment(AbstractBaseModel):
 
 
 
+class MServiceCategory(AbstractBaseModel):
+    """
+    large
+    middle
+    small
+    """
+
+    category_name = models.CharField(
+        _('カテゴリ-名'),
+        max_length=20,
+    )
+
+    large_category = models.SmallIntegerField(
+        _('大カテゴリー'),
+    )
+
+    middle_category = models.SmallIntegerField(
+        _('中カテゴリー'),
+    )
+
+    small_category = models.SmallIntegerField(
+        _('小カテゴリー'),
+    )
 
 
 class MService(AbstractServiceModel):
@@ -436,13 +473,16 @@ class MService(AbstractServiceModel):
             large0, middle1 [0, 1, 2]
             large1, middle0 0
             large1, middle1 0
-
     """
 
     large_category = models.SmallIntegerField(_('大カテゴリ'), default=0)
     middle_category = models.SmallIntegerField(_('中カテゴリ'), default=0)
     small_category = models.SmallIntegerField(_('小カテゴリ'), default=0)
 
+    # category = models.ForeignKey(
+    #     MServiceCategory,
+    #     on_delete=models.PROTECT,
+    # )
 
     description = models.TextField(
         _('説明'),

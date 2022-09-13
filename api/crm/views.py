@@ -76,6 +76,7 @@ PRODUCT_CATEGORY = {
         3: [0],
         # 吸い物、御飯物
         4: [0],
+        5: [0],
     }
 }
 
@@ -95,7 +96,7 @@ class AppInitView(generics.ListAPIView):
                 MCustomer.objects.filter(delete_flg=False).order_by('-rank_id'),
                 many=True).data
             logger.debug('1')
-            product = ProductSerializer(MProduct.objects.filter(delete_flg=False), many=True).data
+            product = ProductSerializer(MProduct.objects.filter(delete_flg=False).order_by('name'), many=True).data
             logger.debug('2')
             product_by_category = get_product_by_category()
             logger.debug('3')
@@ -160,6 +161,7 @@ def get_product_by_category():
             2: {},
             3: {},
             4: {},
+            5: {},
         },
     }
 
@@ -170,7 +172,7 @@ def get_product_by_category():
                     Q(category__middle_category=middle), \
                     Q(category__small_category=small), \
                     Q(delete_flg=False)
-                )
+                ).order_by('name')
                 data = ProductSerializer(q, many=True).data
                 # logger.debug('large=> ' + str(large) + ' middle=> ' + str(middle) + ' small=> ' + str(small))
                 res[large][middle][small] = data
@@ -193,14 +195,15 @@ def get_popular_product():
     try:
         res = MProduct.objects.all()[:12]
         top = {
-            0: ProductSerializer(MProduct.objects.filter(category__large_category=1, category__middle_category=0, delete_flg=False)[:12], many=True).data,
-            1: ProductSerializer(MProduct.objects.filter(category__large_category=1, category__middle_category=1, delete_flg=False)[:12], many=True).data,
-            2: ProductSerializer(MProduct.objects.filter(category__large_category=1, category__middle_category=2, delete_flg=False)[:12], many=True).data,
-            3: ProductSerializer(MProduct.objects.filter(category__large_category=2, category__middle_category=0, delete_flg=False)[:12], many=True).data,
-            4: ProductSerializer(MProduct.objects.filter(category__large_category=2, category__middle_category=1, delete_flg=False)[:12], many=True).data,
-            5: ProductSerializer(MProduct.objects.filter(category__large_category=2, category__middle_category=2, delete_flg=False)[:12], many=True).data,
-            6: ProductSerializer(MProduct.objects.filter(category__large_category=2, category__middle_category=3, delete_flg=False)[:12], many=True).data,
-            7: ProductSerializer(MProduct.objects.filter(category__large_category=2, category__middle_category=4, delete_flg=False)[:12], many=True).data,
+            0: ProductSerializer(MProduct.objects.filter(category__large_category=1, category__middle_category=0, delete_flg=False).order_by('name')[:12], many=True).data,
+            1: ProductSerializer(MProduct.objects.filter(category__large_category=1, category__middle_category=1, delete_flg=False).order_by('name')[:12], many=True).data,
+            2: ProductSerializer(MProduct.objects.filter(category__large_category=1, category__middle_category=2, delete_flg=False).order_by('name')[:12], many=True).data,
+            3: ProductSerializer(MProduct.objects.filter(category__large_category=2, category__middle_category=0, delete_flg=False).order_by('name')[:12], many=True).data,
+            4: ProductSerializer(MProduct.objects.filter(category__large_category=2, category__middle_category=1, delete_flg=False).order_by('name')[:12], many=True).data,
+            5: ProductSerializer(MProduct.objects.filter(category__large_category=2, category__middle_category=2, delete_flg=False).order_by('name')[:12], many=True).data,
+            6: ProductSerializer(MProduct.objects.filter(category__large_category=2, category__middle_category=3, delete_flg=False).order_by('name')[:12], many=True).data,
+            7: ProductSerializer(MProduct.objects.filter(category__large_category=2, category__middle_category=4, delete_flg=False).order_by('name')[:12], many=True).data,
+            8: ProductSerializer(MProduct.objects.filter(category__large_category=2, category__middle_category=5, delete_flg=False).order_by('name')[:12], many=True).data,
         }
         return ProductSerializer(res, many=True).data, top
         # return Response({

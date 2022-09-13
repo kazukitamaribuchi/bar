@@ -372,19 +372,20 @@ class Const {
         {
             text: '飲み物',
             items: [
-                { text: 'アルコール', productType: 0 },
-                { text: 'ノンアルコール', productType: 1 },
-                { text: 'ソフトドリンク', productType: 2 },
+                { text: 'アルコール', productType: 0, largeCategory: 1, middleCategory: 0, smallCategory: 0 },
+                { text: 'ノンアルコール', productType: 1, largeCategory: 1, middleCategory: 1, smallCategory: 0 },
+                { text: 'ソフトドリンク', productType: 2, largeCategory: 1, middleCategory: 2, smallCategory: 0 },
             ]
         },
         {
             text: '食べ物',
             items: [
-                { text: 'メイン', productType: 3 },
-                { text: 'サラダ', productType: 4 },
-                { text: '一品物', productType: 5 },
-                { text: '揚げ物', productType: 6 },
-                { text: '吸い物、御飯物', productType: 7 },
+                { text: '一品料理', productType: 3, largeCategory: 2, middleCategory: 0, smallCategory: 0  },
+                { text: 'おつまみ', productType: 4, largeCategory: 2, middleCategory: 1, smallCategory: 0  },
+                { text: 'お料理', productType: 5, largeCategory: 2, middleCategory: 2, smallCategory: 0   },
+                { text: '御飯物', productType: 6, largeCategory: 2, middleCategory: 3, smallCategory: 0   },
+                { text: 'お椀物', productType: 7, largeCategory: 2, middleCategory: 4, smallCategory: 0   },
+                { text: 'フルーツ', productType: 8, largeCategory: 2, middleCategory: 5, smallCategory: 0   },
             ]
         },
     ]
@@ -416,19 +417,22 @@ class Const {
         { text: 'ソフトドリンク', largeCategory: 1, middleCategory: 2, smallCategory: 0 }
     ]
     INPUT_SALES_DETAIL_PRODUCT_MAIN_HEADER = [
-        { text: 'メイン', largeCategory: 2, middleCategory: 0, smallCategory: 0 },
+        { text: '一品料理', largeCategory: 2, middleCategory: 0, smallCategory: 0 },
     ]
     INPUT_SALES_DETAIL_PRODUCT_SARADA_HEADER = [
-        { text: 'サラダ', largeCategory: 2, middleCategory: 1, smallCategory: 0 }
+        { text: 'おつまみ', largeCategory: 2, middleCategory: 1, smallCategory: 0 }
     ]
     INPUT_SALES_DETAIL_PRODUCT_ZENSAI_HEADER = [
-        { text: '一品物', largeCategory: 2, middleCategory: 2, smallCategory: 0 }
+        { text: 'お料理', largeCategory: 2, middleCategory: 2, smallCategory: 0 }
     ]
     INPUT_SALES_DETAIL_PRODUCT_AGEMONO_HEADER = [
-        { text: '揚げ物', largeCategory: 2, middleCategory: 3, smallCategory: 0 }
+        { text: '御飯物', largeCategory: 2, middleCategory: 3, smallCategory: 0 }
     ]
     INPUT_SALES_DETAIL_PRODUCT_SUIMONO_HEADER = [
-        { text: '吸い物、御飯物', largeCategory: 2, middleCategory: 4, smallCategory: 0 }
+        { text: 'お椀物', largeCategory: 2, middleCategory: 4, smallCategory: 0 }
+    ]
+    INPUT_SALES_DETAIL_PRODUCT_FRUITS_HEADER = [
+        { text: 'フルーツ', largeCategory: 2, middleCategory: 5, smallCategory: 0 }
     ]
     PRODUCT_CATEGORY_DICT = {
         1: {
@@ -448,19 +452,22 @@ class Const {
         },
         2: {
             0: {
-                0: 'メイン',
+                0: '一品料理',
             },
             1: {
-                0: 'サラダ',
+                0: 'おつまみ',
             },
             2: {
-                0: '一品物',
+                0: 'お料理',
             },
             3: {
-                0: '揚げ物',
+                0: '御飯物',
             },
             4: {
-                0: '吸い物、御飯物',
+                0: 'お椀物',
+            },
+            5: {
+                0: 'フルーツ',
             },
         }
     }
@@ -468,11 +475,12 @@ class Const {
         0: 'アルコール',
         1: 'ノンアルコール',
         2: 'ソフトドリンク',
-        3: 'メイン',
-        4: 'サラダ',
-        5: '前菜',
-        6: '揚げ物',
-        7: '吸い物、御飯物',
+        3: '一品料理',
+        4: 'おつまみ',
+        5: 'お料理',
+        6: '御飯物',
+        7: 'お椀物',
+        8: 'フルーツ',
     }
     MONTH = [
         { value: 1, text: '1' },

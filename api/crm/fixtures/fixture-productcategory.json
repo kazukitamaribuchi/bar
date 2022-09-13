@@ -5,7 +5,10 @@
     "fields": {
       "large_category": 1,
       "middle_category": 0,
-      "small_category": 0
+      "small_category": 0,
+      "large_category_name": "飲料",
+      "middle_category_name": "アルコール",
+      "small_category_name": "シャンパン"
     }
   },
   {
@@ -14,7 +17,10 @@
     "fields": {
       "large_category": 1,
       "middle_category": 0,
-      "small_category": 1
+      "small_category": 1,
+      "large_category_name": "飲料",
+      "middle_category_name": "アルコール",
+      "small_category_name": "ウイスキー"
     }
   },
   {
@@ -23,7 +29,10 @@
     "fields": {
       "large_category": 1,
       "middle_category": 0,
-      "small_category": 2
+      "small_category": 2,
+      "large_category_name": "飲料",
+      "middle_category_name": "アルコール",
+      "small_category_name": "焼酎"
     }
   },
   {
@@ -32,7 +41,10 @@
     "fields": {
       "large_category": 1,
       "middle_category": 0,
-      "small_category": 3
+      "small_category": 3,
+      "large_category_name": "飲料",
+      "middle_category_name": "アルコール",
+      "small_category_name": "ワイン"
     }
   },
   {
@@ -41,7 +53,10 @@
     "fields": {
       "large_category": 1,
       "middle_category": 0,
-      "small_category": 4
+      "small_category": 4,
+      "large_category_name": "飲料",
+      "middle_category_name": "アルコール",
+      "small_category_name": "ドリンク"
     }
   },
   {
@@ -49,7 +64,11 @@
     "pk": 6,
     "fields": {
       "large_category": 1,
-      "middle_category": 1
+      "middle_category": 1,
+      "small_category": 0,
+      "large_category_name": "飲料",
+      "middle_category_name": "ノンアルコール",
+      "small_category_name": "ノンアルコール"
     }
   },
   {
@@ -57,7 +76,11 @@
     "pk": 7,
     "fields": {
       "large_category": 1,
-      "middle_category": 2
+      "middle_category": 2,
+      "small_category": 0,
+      "large_category_name": "飲料",
+      "middle_category_name": "ソフトドリンク",
+      "small_category_name": "ソフトドリンク"
     }
   },
   {
@@ -65,7 +88,11 @@
     "pk": 8,
     "fields": {
       "large_category": 2,
-      "middle_category": 0
+      "middle_category": 0,
+      "small_category": 0,
+      "large_category_name": "フード",
+      "middle_category_name": "一品料理",
+      "small_category_name": "一品料理"
     }
   },
   {
@@ -73,7 +100,11 @@
     "pk": 9,
     "fields": {
       "large_category": 2,
-      "middle_category": 1
+      "middle_category": 1,
+      "small_category": 0,
+      "large_category_name": "フード",
+      "middle_category_name": "おつまみ",
+      "small_category_name": "おつまみ"
     }
   },
   {
@@ -81,7 +112,11 @@
     "pk": 10,
     "fields": {
       "large_category": 2,
-      "middle_category": 2
+      "middle_category": 2,
+      "small_category": 0,
+      "large_category_name": "フード",
+      "middle_category_name": "お料理",
+      "small_category_name": "お料理"
     }
   },
   {
@@ -89,7 +124,11 @@
     "pk": 11,
     "fields": {
       "large_category": 2,
-      "middle_category": 3
+      "middle_category": 3,
+      "small_category": 0,
+      "large_category_name": "フード",
+      "middle_category_name": "御飯物",
+      "small_category_name": "御飯物"
     }
   },
   {
@@ -97,7 +136,23 @@
     "pk": 12,
     "fields": {
       "large_category": 2,
-      "middle_category": 4
+      "middle_category": 4,
+      "small_category": 0,
+      "large_category_name": "フード",
+      "middle_category_name": "お椀物",
+      "small_category_name": "お椀物"
+    }
+  },
+  {
+    "model": "crm.mproductcategory",
+    "pk": 13,
+    "fields": {
+      "large_category": 2,
+      "middle_category": 5,
+      "small_category": 0,
+      "large_category_name": "フード",
+      "middle_category_name": "フルーツ",
+      "small_category_name": "フルーツ"
     }
   }
 ]

@@ -456,9 +456,9 @@
                             <th>定価</th>
                             <th>実価格</th>
                             <th>数量</th>
+                            <th>税区分</th>
                             <th>ボトル登録</th>
-                            <th>課税</th>
-                            <th>総計(税抜)</th>
+                            <!-- <th>総計(税抜)</th> -->
                             <!-- <th>総計(税込)</th> -->
                             <!-- <th>備考</th> -->
                             <th></th>
@@ -484,21 +484,49 @@
                                     height="50"
                                     width="50"
                                 ></b-img> -->
-                                <span>{{ item.name }}</span>
+                                <span>{{ item.name | truncate(20) }}</span>
                             </td>
-                            <td>{{ item.price | priceLocaleString }}</td>
+                            <td>
+                                {{ item.price | priceLocaleString }}
+                            </td>
 
-                            <td>{{ item.actuallyPrice | priceLocaleString }}</td>
-                            <td>{{ item.quantity | priceLocaleString }}</td>
                             <td>
-                                <b-card-text v-if="item.bottle">有</b-card-text>
-                                <b-card-text v-else>無</b-card-text>
+                                <!-- {{ item.actuallyPrice | priceLocaleString }} -->
+                                <b-form-input
+                                    v-model="item.actuallyPrice"
+                                    type="number"
+                                    required
+                                ></b-form-input>
                             </td>
                             <td>
-                                <span v-if="item.taxation">有</span>
-                                <span v-else>無</span>
+                                <!-- {{ item.quantity | priceLocaleString }} -->
+                                <b-form-spinbutton
+                                    v-model="item.quantity"
+                                    inline
+                                    min=1
+                                    size="sm"
+                                ></b-form-spinbutton>
                             </td>
-                            <td>{{ item.totalPrice | priceLocaleString }}</td>
+
+                            <td>
+                                <span v-if="item.taxation">課税</span>
+                                <span v-else>非課税</span>
+                                <!-- <v-checkbox
+                                    class="mt-3"
+                                    v-model="item.taxation"
+                                ></v-checkbox> -->
+                            </td>
+                            <td>
+                                <!-- <b-card-text v-if="item.bottle">有</b-card-text>
+                                <b-card-text v-else>無</b-card-text> -->
+                                <v-checkbox
+                                    class="mt-3"
+                                    v-model="item.bottle"
+                                ></v-checkbox>
+                            </td>
+                            <!-- <td>
+                                {{ item.totalPrice | priceLocaleString }}
+                            </td> -->
                             <!-- <td>{{ item.totalTaxPrice | priceLocaleString }}</td> -->
                             <!-- <td>{{ item.remarks }}</td> -->
                             <td>
@@ -506,7 +534,7 @@
                                     icon="dash-square"
                                     font-scale="1.5"
                                     variant="danger"
-                                    class="mt-2 input_sales_delete_product_btn"
+                                    class="mt-0 input_sales_delete_product_btn"
                                     @click="deleteSalesDetail(id)"
                                 ></b-icon>
                             </td>
@@ -773,7 +801,7 @@
                     >
                         <b-button
                             variant="primary"
-                            @click="registerFailureDialog = false"
+                            @click="registerFailure"
                         >
                             閉じる
                         </b-button>
@@ -819,7 +847,7 @@
                     >
                         <b-button
                             variant="primary"
-                            @click="updateFailureDialog = false"
+                            @click="updateFailure"
                         >
                             閉じる
                         </b-button>
@@ -879,8 +907,8 @@ export default {
             femaleVisitors: 0,
 
             // 日
-            visitTime1: '',
-            leaveTime1: '',
+            visitTime1: now,
+            leaveTime1: now,
             // 時刻
             visitTime2: '',
             leaveTime2: '',
@@ -967,6 +995,8 @@ export default {
         updateFailureDialog: false,
 
         autoFucus: false,
+
+        waitServerResponse: false,
     }),
     created () {
         this.$eventHub.$off('addSalesDetail')
@@ -1026,16 +1056,21 @@ export default {
             // 非課税の明細総計
             let totalTaxFreeDetailPrice = 0
 
+            console.log('this.inputSalesDetailData', this.inputSalesDetailData)
+
             // 明細の計算
             for (const item of this.inputSalesDetailData) {
                 if (item.taxation) {
+                    console.log('課税対象')
                     // 課税
                     totalTaxDetailPrice += item.actuallyPrice * item.quantity
                 } else {
+                    console.log('非課税')
                     // 非課税
                     totalTaxFreeDetailPrice += item.actuallyPrice * item.quantity
                 }
             }
+            // 明細の合計(税抜)
             totalDetailPrice = (totalTaxDetailPrice + totalTaxFreeDetailPrice)
 
             // サービス料金の計算
@@ -1043,6 +1078,7 @@ export default {
             const normal2 = this.inputSalesData.basicPlanPrice2 * this.inputSalesData.basicPlanNum2
             const extention1 = this.inputSalesData.basicPlanExtentionPrice1 * this.inputSalesData.basicPlanExtentionNum1
             const extention2 = this.inputSalesData.basicPlanExtentionPrice2 * this.inputSalesData.basicPlanExtentionNum2
+            // サービス料金の合計(税抜)
             totalServicePrice += (normal1 + normal2 + extention1 + extention2)
 
             // 非課税は単純に全て足して算出
@@ -1050,8 +1086,11 @@ export default {
 
             // 課税分の計算
             let taxRate = this.inputSalesData.basicPlanServiceTax + this.inputSalesData.basicPlanTax + this.inputSalesData.basicPlanCardTax
-            let taxTargetPrice = totalDetailPrice + totalServicePrice
+            // 課税対象の明細と税抜のサービス料金に税をかける
+            let taxTargetPrice = totalTaxDetailPrice + totalServicePrice
             totalTaxPrice += this.roundDown(taxTargetPrice + taxTargetPrice * (taxRate/100))
+            // 非課税分は単純に足す
+            totalTaxPrice += totalTaxFreeDetailPrice
 
             // 諸々セット
             this.setTotalPrice(totalPrice)
@@ -1218,6 +1257,10 @@ export default {
             'deleteBottleList',
         ]),
         registerOrUpdate () {
+            if (this.waitServerResponse) {
+                console.log('サーバー応答待ち')
+                return
+            }
             if (!this.editMode) {
                 this.register()
             } else {
@@ -1306,6 +1349,8 @@ export default {
 
             console.log('data', data)
 
+            this.waitServerResponse = true
+
             this.$axios({
                 method: 'POST',
                 url: '/api/sales/create_sales_data/',
@@ -1319,12 +1364,13 @@ export default {
                 if (res.data.bottle.length != 0) {
                     this.addBottleList(res.data.bottle)
                 }
-                this.registerSuccessDialog = true
-                // this.init()
+                // this.registerSuccessDialog = true
+                this.initClose()
             })
             .catch(e => {
                 console.log(e)
                 this.registerFailureDialog = true
+                this.waitServerResponse = false
             })
         },
         update () {
@@ -1407,6 +1453,8 @@ export default {
             }
             console.log('data', data)
 
+            this.waitServerResponse = true
+
             this.$axios({
                 method: 'PUT',
                 url: '/api/sales/update_sales_data/',
@@ -1418,13 +1466,13 @@ export default {
                 // 削除したボトル、追加したボトル更新
                 this.$emit('update', res.data.data)
 
-
-                this.updateSuccessDialog = true
-                // this.init()
+                // this.updateSuccessDialog = true
+                this.initClose()
             })
             .catch(e => {
                 console.log(e)
                 this.updateFailureDialog = true
+                this.waitServerResponse = false
             })
 
         },
@@ -1452,8 +1500,8 @@ export default {
                 femaleVisitors: 0,
 
                 // 日
-                visitTime1: '',
-                leaveTime1: '',
+                visitTime1: now,
+                leaveTime1: now,
                 // 時刻
                 visitTime2: '',
                 leaveTime2: '',
@@ -1501,6 +1549,8 @@ export default {
             this.updateSuccessDialog = false
             this.updateFailureDialog = false
 
+            this.waitServerResponse = false
+
             // this.close()
         },
         initClose () {
@@ -1518,8 +1568,8 @@ export default {
                 femaleVisitors: 0,
 
                 // 日
-                visitTime1: '',
-                leaveTime1: '',
+                visitTime1: now,
+                leaveTime1: now,
                 // 時刻
                 visitTime2: '',
                 leaveTime2: '',
@@ -1590,6 +1640,7 @@ export default {
         addSalesDetailList (data) {
             console.log('addSalesDetailList', data)
             this.inputSalesDetailData = this.inputSalesDetailData.concat(data)
+            console.log('this.inputSalesDetailData', this.inputSalesDetailData)
         },
         getStayHourStr (stayHour) {
             const h = Math.floor(stayHour / 60)
@@ -1886,6 +1937,21 @@ export default {
             }
             return false
         },
+        dispTotalPrice (item) {
+            // console.log('dispTotalPrice', item)
+            if (item.actuallyPrice != null && item.actuallyPrice > 0) {
+                return item.actuallyPrice * item.quantity
+            }
+            return 0
+        },
+        registerFailure () {
+            this.registerFailureDialog = false
+            this.waitServerResponse = false
+        },
+        updateFailure () {
+            this.updateFailureDialog = false
+            this.waitServerResponse = false
+        },
     },
     mixins: [
         customerMixin,
@@ -2040,6 +2106,10 @@ export default {
 
     .disabled {
         background-color: rgba(170, 170, 170, 0.2);
+    }
+
+    .input_sales_delete_product_btn {
+        cursor: pointer;
     }
 
 </style>

@@ -57,6 +57,31 @@
                 >Login</b-button>
             </b-form>
         </b-card>
+
+        <b-modal
+            v-model="loginFailureDialog"
+            hide-header
+        >
+            <div>
+                ログインに失敗しました。
+                IDとパスワードを確認してください。
+            </div>
+            <template #modal-footer>
+                <b-row>
+                    <b-col
+                        align="right"
+                        style="padding: 0;"
+                    >
+                        <b-button
+                            variant="primary"
+                            @click="loginFailureDialog = false"
+                        >
+                            閉じる
+                        </b-button>
+                    </b-col>
+                </b-row>
+            </template>
+        </b-modal>
     </div>
 
 </template>
@@ -73,6 +98,7 @@ export default {
         passwordError: '',
         loginNameValue: false,
         loginPassValue: false,
+        loginFailureDialog: false,
     }),
     created () {
     },
@@ -139,8 +165,10 @@ export default {
                 || !this.passState
                 || !this.loginNameValue
                 || !this.loginPassValue) {
+                    console.log('値がおかしい')
                 return
             }
+            console.log('ログイン試行')
             this.checkAuthToken(this.credentials)
             .then(res => {
                 this.initState()
@@ -150,6 +178,7 @@ export default {
             })
             .catch(e => {
                 console.log(e)
+                this.loginFailureDialog = true
             })
         },
     }

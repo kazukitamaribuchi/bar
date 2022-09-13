@@ -46,11 +46,19 @@ export default {
             return val
         },
         getImgLink (link) {
-            let prev = 'http://localhost:8000'
             if (process.env.NODE_ENV === 'production') {
-                prev = process.env.VUE_APP_AUTH_REDIRECT_URI
+                return link
             }
+            let prev = 'http://localhost:8000'
             return prev + link
+        },
+        divideArrIntoPieces (arr, n){
+            var arrList = [];
+            var idx = 0;
+            while(idx < arr.length){
+                arrList.push(arr.splice(idx,idx+n));
+            }
+            return arrList;
         },
     }
 }

@@ -640,37 +640,37 @@ class ProductCategorySerializer(DynamicFieldsModelSerializer):
         2: 'フード'
     }
 
-    CATEGORIES = {
-        # 0: {
-        #     0: '基本料金',
-        #     1: '指名料',
-        #     2: '場内指名料',
-        #     3: 'VIP料金',
-        #     4: '同伴料金',
-        # },
-        1: {
-            0: [
-                'アルコール',
-                {
-                    0: 'シャンパン1',
-                    # 1: 'シャンパン2',
-                    1: 'ウイスキー',
-                    2: '焼酎',
-                    3: 'ワイン',
-                    4: 'ドリンク',
-                },
-            ],
-            1: 'ノンアルコール',
-            2: 'ソフトドリンク',
-        },
-        2: {
-            0: 'メイン',
-            1: 'サラダ',
-            2: '一品物',
-            3: '揚げ物',
-            4: '吸い物、御飯物',
-        }
-    }
+    # CATEGORIES = {
+    #     # 0: {
+    #     #     0: '基本料金',
+    #     #     1: '指名料',
+    #     #     2: '場内指名料',
+    #     #     3: 'VIP料金',
+    #     #     4: '同伴料金',
+    #     # },
+    #     1: {
+    #         0: [
+    #             'アルコール',
+    #             {
+    #                 0: 'シャンパン1',
+    #                 # 1: 'シャンパン2',
+    #                 1: 'ウイスキー',
+    #                 2: '焼酎',
+    #                 3: 'ワイン',
+    #                 4: 'ドリンク',
+    #             },
+    #         ],
+    #         1: 'ノンアルコール',
+    #         2: 'ソフトドリンク',
+    #     },
+    #     2: {
+    #         0: 'メイン',
+    #         1: 'サラダ',
+    #         2: '一品物',
+    #         3: '揚げ物',
+    #         4: '吸い物、御飯物',
+    #     }
+    # }
 
     large_category_label = serializers.SerializerMethodField()
     middle_category_label = serializers.SerializerMethodField()
@@ -689,20 +689,25 @@ class ProductCategorySerializer(DynamicFieldsModelSerializer):
         ]
 
     def get_large_category_label(self, obj):
-        return self.LARGE_CATEGORIES[obj.large_category]
+        # return self.LARGE_CATEGORIES[obj.large_category]
+        return obj.large_category_name
 
     def get_middle_category_label(self, obj):
         # logger.debug('large' + str(obj.large_category))
         # logger.debug('middle' + str(obj.middle_category))
         # logger.debug('small' + str(obj.small_category))
-        if obj.large_category == 1 and obj.middle_category == 0:
-            return self.CATEGORIES[obj.large_category][obj.middle_category][0]
-        return self.CATEGORIES[obj.large_category][obj.middle_category]
+        # if obj.large_category == 1 and obj.middle_category == 0:
+        #     return self.CATEGORIES[obj.large_category][obj.middle_category][0]
+        # return self.CATEGORIES[obj.large_category][obj.middle_category]
+
+        return obj.middle_category_name
 
     def get_small_category_label(self, obj):
-        if obj.large_category == 1 and obj.middle_category == 0:
-            return self.CATEGORIES[obj.large_category][obj.middle_category][1][obj.small_category]
-        return 'なし'
+        # if obj.large_category == 1 and obj.middle_category == 0:
+        #     return self.CATEGORIES[obj.large_category][obj.middle_category][1][obj.small_category]
+        # return 'なし'
+
+        return obj.small_category_name
 
 
 class ProductSerializer(DynamicFieldsModelSerializer):

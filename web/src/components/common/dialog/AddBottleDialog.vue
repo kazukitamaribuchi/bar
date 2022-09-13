@@ -211,6 +211,8 @@ export default {
             this.productByCategoryList = _.cloneDeep(this.productByCategory[1][0][0])
 
             let slicedArray = this.divideArrIntoPieces(_.cloneDeep(this.productByCategoryList), 12)
+
+            console.log('slicedArray', slicedArray)
             this.dispItems = slicedArray[0]
             this.rows = this.productByCategoryList.length
 
@@ -230,14 +232,6 @@ export default {
             this.rows = items.length
             this.dispItems = slicedArray[0]
             this.currentPage = 1
-        },
-        divideArrIntoPieces (arr,n){
-            var arrList = [];
-            var idx = 0;
-            while(idx < arr.length){
-                arrList.push(arr.splice(idx,idx+n));
-            }
-            return arrList;
         },
         changePage (pageNumber) {
             this.currentPage = pageNumber
