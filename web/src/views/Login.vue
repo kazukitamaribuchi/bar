@@ -16,12 +16,13 @@
                             v-model="credentials.username"
                             type="text"
                             placeholder="username"
-                            required
                             :state="nameState"
-                            @keyup.enter="checkLogin"
-                            @keypress="setlogin1"
+                            required
+                            @keypress.prevent.enter.exact="login"
                         ></b-form-input>
-                        <b-form-invalid-feedback id="input-live-feedback">
+                        <!-- @keyup.enter="checkLogin"
+                        @keypress="setlogin1" -->
+                        <b-form-invalid-feedback :state="usernameError.length == 0">
                             {{ usernameError }}
                         </b-form-invalid-feedback>
                     </b-input-group>
@@ -38,12 +39,13 @@
                             v-model="credentials.password"
                             type="password"
                             placeholder="password"
-                            :state="passState"
                             required
-                            @keyup.enter="checkLogin"
-                            @keypress="setlogin2"
+                            :state="passState"
+                            @keypress.prevent.enter.exact="login"
                         ></b-form-input>
-                        <b-form-invalid-feedback id="input-live-feedback">
+                        <!-- @keyup.enter="checkLogin"
+                        @keypress="setlogin2" -->
+                        <b-form-invalid-feedback :state="passwordError.length == 0">
                             {{ passwordError }}
                         </b-form-invalid-feedback>
                     </b-input-group>
@@ -108,7 +110,7 @@ export default {
                 return false
             }
             if (this.credentials.username == '') {
-                this.setNameErrorMsg(0)
+                // this.setNameErrorMsg(0)
                 return false
             }
             return true
@@ -118,11 +120,41 @@ export default {
                 return false
             }
             if (this.credentials.password == '') {
-                this.setPassErrorMsg(0)
+                // this.setPassErrorMsg(0)
                 return false
             }
             return true
         }
+    },
+    watch: {
+        'credentials.username': function (val) {
+            let reg = /^[a-zA-Z0-9]+$/
+            console.log('val', val)
+            if (val == null) {
+                this.usernameError = ''
+                return
+            }
+            if (val.length > 0) {
+                if (val <= 0 || !reg.test(val)) {
+                    this.usernameError = '正しい値を入力してください'
+                } else {
+                    this.usernameError = ''
+                }
+            } else {
+                this.usernameError= 'ユーザーネームを入力してください'
+            }
+        },
+        'credentials.password': function (val) {
+            if (val == null) {
+                this.passwordError = ''
+                return
+            }
+            if (val.length > 0) {
+                this.passwordError = ''
+            } else {
+                this.passwordError= 'パスワードを入力してください'
+            }
+        },
     },
     methods: {
         setlogin1 () {
@@ -163,8 +195,8 @@ export default {
             // バリデーション
             if (!this.nameState
                 || !this.passState
-                || !this.loginNameValue
-                || !this.loginPassValue) {
+                || this.usernameError.length != 0
+                || this.passwordError.length != 0) {
                     console.log('値がおかしい')
                 return
             }
