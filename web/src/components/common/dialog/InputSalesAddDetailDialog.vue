@@ -215,7 +215,7 @@
                                         />%
                                     </b-form-group>
                                 </b-form-group> -->
-                                <b-card-sub-title>税区分</b-card-sub-title>
+                                <b-card-sub-title>課税</b-card-sub-title>
                                 <b-form-group>
                                     <b-form-checkbox-group
                                         v-model="taxation"
@@ -272,8 +272,7 @@
                                         <th>商品名</th>
                                         <th>実価格</th>
                                         <th>数量</th>
-                                        <th>定価</th>
-                                        <th>課税対象</th>
+                                        <th>課税</th>
                                         <th>ボトル登録</th>
                                         <!-- <th>備考</th> -->
                                         <th></th>
@@ -283,16 +282,39 @@
                                         :key=id
                                     >
                                         <td>{{ item.name }}</td>
-                                        <td>{{ item.actuallyPrice | priceLocaleString }}</td>
-                                        <td>{{ item.quantity }}</td>
-                                        <td>{{ item.price | priceLocaleString }}</td>
                                         <td>
-                                            <span v-if="item.taxation">課税</span>
-                                            <span v-else>非課税</span>
+                                            <!-- {{ item.actuallyPrice | priceLocaleString }} -->
+                                            <b-form-input
+                                                v-model="item.actuallyPrice"
+                                                type="number"
+                                                required
+                                                style="width: 90%;"
+                                            ></b-form-input>
                                         </td>
                                         <td>
-                                            <span v-if="item.bottle">有</span>
-                                            <span v-else>無</span>
+                                            <!-- {{ item.quantity }} -->
+                                            <b-form-spinbutton
+                                                v-model="item.quantity"
+                                                inline
+                                                min=1
+                                                size="sm"
+                                            ></b-form-spinbutton>
+                                        </td>
+                                        <td>
+                                            <!-- <span v-if="item.taxation">課税</span>
+                                            <span v-else>非課税</span> -->
+                                            <v-checkbox
+                                                class="mt-3"
+                                                v-model="item.taxation"
+                                            ></v-checkbox>
+                                        </td>
+                                        <td>
+                                            <!-- <span v-if="item.bottle">有</span>
+                                            <span v-else>無</span> -->
+                                            <v-checkbox
+                                                class="mt-3"
+                                                v-model="item.bottle"
+                                            ></v-checkbox>
                                         </td>
                                         <!-- <td>{{ item.remarks }}</td> -->
                                         <td>
@@ -433,45 +455,49 @@ export default {
                     Number(this.selectedProductList[i].actuallyPrice),
                 )
             }
-            if (this.selectedProduct == null) return total
-            total += this.calcQuantityPrice(Number(this.actuallyPrice), this.quantity)
             return total
+            // if (this.selectedProduct == null) return total
+            // total += this.calcQuantityPrice(Number(this.actuallyPrice), this.quantity)
+            // return total
         },
         totalTaxPrice () {
-            let total = 0
+            let totalTaxFree = 0
+            let totalTax = 0
             // 商品毎にtaxが設定されている場合も考慮
             for (const i in this.selectedProductList) {
                 // let q = new Decimal(this.selectedProductList[i].quantity)
                 let q = this.selectedProductList[i].quantity
                 if (!this.selectedProductList[i].taxation) {
                     // TAX無しの場合
-                    total += Math.ceil(q * Number(this.selectedProductList[i].actuallyPrice))
+                    totalTaxFree += Math.ceil(q * Number(this.selectedProductList[i].actuallyPrice))
                     // total += Math.ceil(q.times(this.selectedProductList[i].actuallyPrice).toNumber())
                 } else {
                     // TAX有の場合
-                    total += this.calcAddTaxPrice(
-                        Number(this.selectedProductList[i].actuallyPrice),
+                    totalTax += this.calcAddTaxPrice(
+                        Math.ceil(q * Number(this.selectedProductList[i].actuallyPrice)),
                         Con.SALES_TAX,
                     )
                 }
             }
-
-            if (this.selectedProduct == null) return total
-            if (this.taxation.length == 0) {
-                total += this.calcQuantityPrice(
-                    Number(this.actuallyPrice),
-                    this.quantity
-                )
-            } else {
-                total += this.calcAddTaxPrice(
-                    this.calcQuantityPrice(
-                        Number(this.actuallyPrice),
-                        this.quantity
-                    ),
-                    Con.SALES_TAX,
-                )
-            }
+            const total = totalTaxFree + totalTax
             return total
+
+            // if (this.selectedProduct == null) return total
+            // if (this.taxation.length == 0) {
+            //     total += this.calcQuantityPrice(
+            //         Number(this.actuallyPrice),
+            //         this.quantity
+            //     )
+            // } else {
+            //     total += this.calcAddTaxPrice(
+            //         this.calcQuantityPrice(
+            //             Number(this.actuallyPrice),
+            //             this.quantity
+            //         ),
+            //         Con.SALES_TAX,
+            //     )
+            // }
+            // return total
         },
     },
     watch: {

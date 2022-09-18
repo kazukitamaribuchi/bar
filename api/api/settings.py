@@ -125,14 +125,13 @@ REST_FRAMEWORK = {
 
 
 JWT_AUTH = {
-    # 'JWT_VERIFY': True, #default=True, SECRETが間違っていた場合にDecodeError発生。Falseで引き続きpayloadを取得
-    'JWT_VERIFY_EXPIRATION': False,
-    # 'JWT_LEEWAY': 0, #default=0
+    'JWT_VERIFY': True, #default=True, SECRETが間違っていた場合にDecodeError発生。Falseで引き続きpayloadを取得
+    'JWT_VERIFY_EXPIRATION': True,
+    'JWT_LEEWAY': 0, #default=0
     # 'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=86400), # Sessionの保存期間を設定(24時間)
-    # 'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7), # Sessionの保存期間を設定(1週間)
-    # 'JWT_ALLOW_REFRESH': True,
-    # 'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
-    # 'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(seconds=1),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1), # Sessionの保存期間を設定(1日)
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=1),
 }
 
 CHANNEL_LAYERS = {

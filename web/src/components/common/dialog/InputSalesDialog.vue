@@ -218,6 +218,13 @@
                                                 <b-form-invalid-feedback :state="visitLeaveTimeError.length == 0">
                                                     {{ visitLeaveTimeError }}
                                                 </b-form-invalid-feedback>
+
+                                                <AutoInputLeaveTime
+                                                    :inputSalesData="inputSalesData"
+                                                    :visitTime="inputSalesData.visitTime"
+                                                    @update="updateInputSalesData"
+                                                    class="mt-3"
+                                                />
                                             </b-col>
                                             <b-col cols="6">
                                                 <b-card-sub-title
@@ -450,13 +457,13 @@
                             </b-col>
                         </b-row>
                     </b-form-group>
-                    <table>
+                    <table v-if="inputSalesDetailData.length > 0">
                         <tr>
                             <th>商品名</th>
                             <th>定価</th>
                             <th>実価格</th>
                             <th>数量</th>
-                            <th>税区分</th>
+                            <th>課税</th>
                             <th>ボトル登録</th>
                             <!-- <th>総計(税抜)</th> -->
                             <!-- <th>総計(税込)</th> -->
@@ -509,12 +516,12 @@
                             </td>
 
                             <td>
-                                <span v-if="item.taxation">課税</span>
-                                <span v-else>非課税</span>
-                                <!-- <v-checkbox
+                                <!-- <span v-if="item.taxation">課税</span>
+                                <span v-else>非課税</span> -->
+                                <v-checkbox
                                     class="mt-3"
                                     v-model="item.taxation"
-                                ></v-checkbox> -->
+                                ></v-checkbox>
                             </td>
                             <td>
                                 <!-- <b-card-text v-if="item.bottle">有</b-card-text>
@@ -883,6 +890,7 @@ import customerMixin from '@/mixins/customer'
 import utilsMixin from '@/mixins/utils'
 import validateMixin from '@/mixins/validate'
 
+import AutoInputLeaveTime from '@/components/common/dialog/parts/inputSalesDialog/AutoInputLeaveTime'
 
 export default {
     name: 'InputSalesDialogItem',
@@ -893,7 +901,8 @@ export default {
         InputSalesAddDetailDialog,
         SelectForm,
         CheckboxForm,
-        ErrorModal
+        ErrorModal,
+        AutoInputLeaveTime,
     },
     data: () => ({
         dialog: false,
@@ -1952,6 +1961,9 @@ export default {
             this.updateFailureDialog = false
             this.waitServerResponse = false
         },
+        updateInputSalesData (val) {
+            this.inputSalesData = val
+        }
     },
     mixins: [
         customerMixin,

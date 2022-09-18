@@ -315,6 +315,9 @@
             const url = scheme + '://' + hostName + '/ws/order/' + this.$store.state.loginUser + '/'
 
             if (this.$store.state.isAuth) {
+
+                console.log('kichenhome')
+
                 if (this.ws === undefined || this.ws.readyState !== 1) {
                     this.ws = new WebSocket(url)
                     console.log('this.ws', this.ws)

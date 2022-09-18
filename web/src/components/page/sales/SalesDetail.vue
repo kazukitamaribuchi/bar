@@ -184,7 +184,7 @@
                                 </b-col>
                                 <b-col cols="1">
                                     <b-card-sub-title>
-                                        支払い方法
+                                        支払い
                                     </b-card-sub-title>
                                     <b-card-text v-if="salesData.payment == 0">
                                         現金

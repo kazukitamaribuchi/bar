@@ -53,6 +53,7 @@
 
                 <b-button
                     block
+                    :disabled=isDisabled
                     variant="primary"
                     class="submit_btn"
                     @click="login"
@@ -124,6 +125,16 @@ export default {
                 return false
             }
             return true
+        },
+        isDisabled () {
+            if (!this.nameState
+                || !this.passState
+                || this.usernameError.length != 0
+                || this.passwordError.length != 0)
+            {
+                return true
+            }
+            return false
         }
     },
     watch: {
