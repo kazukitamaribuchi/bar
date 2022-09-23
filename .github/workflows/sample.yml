@@ -2,7 +2,7 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "release" ]
 
 jobs:
   build:
@@ -73,7 +73,7 @@ jobs:
           appdir: "api"
           usedocker: true
 
-          
+
       # - name: heroku release2
       #   uses: gonuit/heroku-docker-deploy@v1.3.3
       #   with:
