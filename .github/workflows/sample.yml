@@ -70,11 +70,15 @@ jobs:
           python3 manage.py collectstatic
       - name: heroku release
         uses: akhileshns/heroku-deploy@v3.12.12
+        run: | #
+          cd  api
         with:
-            heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-            heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-            heroku_email: ${{ secrets.HEROKU_EMAIL }}
-            usedocker: true
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          # heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          # heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          heroku_app_name: "alphapos-test"
+          heroku_email: "kazuki.tamaribuchi2@gmail.com"
+          usedocker: true
 
   # test:
   # deploy:
