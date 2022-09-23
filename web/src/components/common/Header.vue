@@ -4,7 +4,7 @@
             <router-link
                 to='/'
                 class="header_title"
-            >Customer Management System</router-link>
+            >Customer Management System Test</router-link>
         </b-col>
         <b-col cols="8">
             <b-nav align="right">
