@@ -48,11 +48,12 @@ jobs:
       #     ls
       - name: move files
         run: | #
+          ls
           mv web/dist/templates/index.html api/templates
-          mv web/dist/static/css api/staticfiles/
-          mv web/dist/static/fonts api/staticfiles/
-          mv web/dist/static/img api/staticfiles/
-          mv web/dist/static/js api/staticfiles/
+          mv web/dist/static/css/ api/staticfiles/
+          mv web/dist/static/fonts/ api/staticfiles/
+          mv web/dist/static/img/ api/staticfiles/
+          mv web/dist/static/js/ api/staticfiles/
           cd api
           ls
       - name: check static
