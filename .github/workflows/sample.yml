@@ -57,9 +57,9 @@ jobs:
           python3 manage.py collectstatic
       - name: move Dockerfile
         run: | #
-          mv api/Dockerfile_actions /.
+          mv api/Dockerfile_actions ./
           ls
-          mv /Dockerfile_actions /Dockerfile
+          mv ./Dockerfile_actions ./Dockerfile
       - name: heroku release
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
