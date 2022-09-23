@@ -4,11 +4,6 @@ on:
   push:
     branches: [ "master" ]
 
-# env:
-#   SECRET_KEY: ${{ secrets.SECRET_KEY }}
-#   NODE_ENV: production
-#   VUE_APP_AUTH_REDIRECT_URI: ${{ secrets.VUE_APP_AUTH_REDIRECT_URI }}
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -38,14 +33,6 @@ jobs:
           rm -rf node_modules package-lock.json && npm install
           yarn build
           docker ps
-      # - name: check dist
-      #   run: | #
-      #     cd web/dist
-      #     ls
-      # - name: check dist static
-      #   run: | #
-      #     cd web/dist/static
-      #     ls
       - name: move files
         run: | #
           ls
@@ -70,45 +57,15 @@ jobs:
           python3 manage.py collectstatic
       - name: move Dockerfile
         run: | #
+          mv api/Dockerfile_actions /.
           ls
-          mv api/Dockerfile_actions .
           mv /Dockerfile_actions /Dockerfile
       - name: heroku release
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          # heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-          # heroku_email: ${{ secrets.HEROKU_EMAIL }}
-          heroku_app_name: "alphapos-test"
-          heroku_email: "kazuki.tamaribuchi2@gmail.com"
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          # heroku_app_name: "alphapos-test"
+          # heroku_email: "kazuki.tamaribuchi2@gmail.com"
           usedocker: true
-
-  # test:
-  # deploy:
-  #   needs:
-  #     - build
-  #     # - test
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 7
-  #   steps:
-  #     - name: checkout
-  #       uses: actions/checkout@v3
-  #     - name: heroku deploy
-  #       uses: akhileshns/heroku-deploy@v3.12.12
-  #       with:
-  #         heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-  #         heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-  #         heroku_email: ${{ secrets.HEROKU_EMAIL }}
-  #         usedocker: true
-  #         docker_build_args: |
-  #           NODE_ENV
-  #       env:
-  #         NODE_ENV: production
-  #         # SECRET_KEY: ${{ secrets.MY_SECRET_KEY }}
-  #     - name: deploy
-  #       runs: | #
-  #         ls
-  #         cd web
-  #         ls
-  #         cd dist
-  #         ls
