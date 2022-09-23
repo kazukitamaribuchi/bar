@@ -50,10 +50,10 @@ jobs:
         run: | #
           ls
           mv web/dist/templates/index.html api/templates
-          mv web/dist/static/css/ api/staticfiles/
-          mv web/dist/static/fonts/ api/staticfiles/
-          mv web/dist/static/img/ api/staticfiles/
-          mv web/dist/static/js/ api/staticfiles/
+          rm -r api/staticfiles
+          rm -r api/static
+          mv web/dist/static api/.
+          mv api/static api/staticfiles
           cd api
           ls
       - name: check static
