@@ -60,6 +60,7 @@ jobs:
           mv api/Dockerfile_actions ./
           ls
           mv ./Dockerfile_actions ./Dockerfile
+          mv api/requirements.txt ./
       - name: heroku release
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
