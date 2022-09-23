@@ -68,6 +68,11 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           python3 manage.py collectstatic
+      - name: move Dockerfile
+        run: | #
+          ls
+          mv api/Dockerfile_actions .
+          mv /Dockerfile_actions /Dockerfile
       - name: heroku release
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
