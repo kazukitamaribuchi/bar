@@ -38,14 +38,14 @@ jobs:
           rm -rf node_modules package-lock.json && npm install
           yarn build
           docker ps
-      - name: check dist
-        run: | #
-          cd web/dist
-          ls
-      - name: check dist static
-        run: | #
-          cd web/dist/static
-          ls
+      # - name: check dist
+      #   run: | #
+      #     cd web/dist
+      #     ls
+      # - name: check dist static
+      #   run: | #
+      #     cd web/dist/static
+      #     ls
       - name: move files
         run: | #
           mv web/dist/templates/index.html api/templates
