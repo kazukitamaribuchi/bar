@@ -138,13 +138,13 @@ class SalesHeader(AbstractBaseModel):
     """
 
     # on_delete要検討
-    customer = models.ForeignKey(
-        'crm.MCustomer',
-        on_delete=models.DO_NOTHING,
-        related_name='sales_header',
-        null=True,
-        blank=True,
-    )
+    # customer = models.ForeignKey(
+    #     'crm.MCustomer',
+    #     on_delete=models.DO_NOTHING,
+    #     related_name='sales_header',
+    #     null=True,
+    #     blank=True,
+    # )
 
     male_visitors = models.SmallIntegerField(
         _('男性来店人数'),
@@ -245,6 +245,11 @@ class SalesHeader(AbstractBaseModel):
         default=0,
     )
 
+    fixed_total_tax_sales = models.IntegerField(
+        _('総計（税込）の実価格'),
+        default=0,
+    )
+
     # tax_free_flg = models.BooleanField(
     #     _('非課税フラグ'),
     #     default=False,
@@ -264,19 +269,6 @@ class SalesHeader(AbstractBaseModel):
         _('税率'),
         default=10,
     )
-
-    basic_plan_card_tax = models.SmallIntegerField(
-        _('税率'),
-        default=0,
-    )
-
-    payment = models.ForeignKey(
-        'crm.MPayment',
-        on_delete=models.CASCADE,
-        related_name='sales_header',
-        null=True,
-    )
-
 
     seat = models.ForeignKey(
         'crm.MSeat',
@@ -299,11 +291,11 @@ class SalesHeader(AbstractBaseModel):
     def __str__(self):
         return '売上No.' + str(self.id) + ' ' + str(self.total_tax_sales) + '円'
 
-    class Meta:
-        verbose_name_plural = '売上ヘッダ'
-        indexes = [
-            models.Index(fields=['customer'], name='sales_header_customer_idx'),
-        ]
+    # class Meta:
+    #     verbose_name_plural = '売上ヘッダ'
+    #     indexes = [
+    #         models.Index(fields=['customer'], name='sales_header_customer_idx'),
+    #     ]
 
 
 class SalesServiceDetail(AbstractBaseModel):
@@ -315,13 +307,13 @@ class SalesServiceDetail(AbstractBaseModel):
     header = models.ForeignKey(
         SalesHeader,
         on_delete=models.CASCADE,
-        related_name='sales_service_detail'
+        related_name='sales_service_detail',
     )
 
     service = models.ForeignKey(
         'crm.MService',
         on_delete=models.CASCADE,
-        related_name="sales_service_detail"
+        related_name="sales_service_detail",
     )
 
     # cast = models.ForeignKey(
@@ -527,8 +519,8 @@ class SalesDetail(AbstractBaseModel):
 
     order_time = models.DateTimeField(
         _('注文時間'),
-        # null=True,
-        # blank=True,
+        null=True,
+        blank=True,
     )
 
     bottle_register = models.BooleanField(
@@ -570,6 +562,59 @@ class SalesDetail(AbstractBaseModel):
 #     appoint_time = models.IntegerField(
 #         _('指名時間'),
 #     )
+
+class SalesPayment(AbstractBaseModel):
+    """
+    伝票毎の支払い情報
+    """
+    sales_header = models.ForeignKey(
+        'crm.SalesHeader',
+        on_delete=models.DO_NOTHING,
+        related_name='sales_payment_sales_header'
+    )
+
+    customer = models.ForeignKey(
+        'crm.MCustomer',
+        on_delete=models.DO_NOTHING,
+        related_name='sales_payment_customer',
+    )
+
+    amount_paid = models.IntegerField(
+        _('支払い総額'),
+        default=0,
+    )
+
+    payment = models.SmallIntegerField(
+        _('支払い方法'),
+        default=0,
+    )
+
+    basic_plan_card_tax = models.SmallIntegerField(
+        _('税率'),
+        default=0,
+    )
+
+    sales_detail = models.ManyToManyField(
+        'crm.SalesDetail',
+        blank=True,
+        related_name='sales_payment_sales_detail',
+    )
+
+    sales_service_detail = models.ManyToManyField(
+        'crm.SalesServiceDetail',
+        blank=True,
+        related_name='sales_payment_sales_service_detail',
+    )
+
+    def __str__(self):
+        return '伝票pk: ' + str(self.sales_header.id) + ' 会員No: ' + str(self.customer.card.customer_no)
+
+# class SalesPaymentDetail(AbstractBaseModel):
+#     """
+#     伝票毎の支払い情報の明細
+#     　→明細毎に割り勘とか？
+#     """
+
 
 
 class BookingManagement(AbstractBaseModel):

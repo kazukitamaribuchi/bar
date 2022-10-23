@@ -20,7 +20,7 @@
                         <b-card-sub-title align="right">
                             <span style="color: red;">*</span> : 必須項目
                         </b-card-sub-title>
-                        <b-row>
+                        <!-- <b-row>
                             <b-col cols="3">
                                 <b-form-group>
                                     <label
@@ -56,18 +56,48 @@
                                     </b-input-group>
                                 </b-form-group>
                             </b-col>
-                        </b-row>
+                        </b-row> -->
                         <b-row>
                             <b-col cols="12">
                                 <b-card
                                     :class="{'disabled': editMode}"
+                                    style="min-height: 150px;"
                                 >
-                                    <label>
-                                        顧客情報
-                                    </label>
+                                    <div style="display: flex;">
+                                        <label>
+                                            顧客情報1
+                                        </label>
+                                        <div style="margin-left: auto;" v-if="customerInfo != null && customerInfo.length > 0 && !editMode">
+                                            <b-button
+                                                size="sm"
+                                                variant="outline-primary"
+                                                @click="showEditCustomerDialog(customerInfo[0], 0)"
+                                            >
+                                                <b-icon
+                                                    icon="pencil"
+                                                    aria-hidden="true"
+                                                    variant="success"
+                                                    class="edit_icon"
+                                                ></b-icon>
+                                            </b-button>
+                                            <b-button
+                                                size="sm"
+                                                style="position: relative; left: 10px;"
+                                                variant="outline-danger"
+                                                @click="deleteCustomerInfo(0)"
+                                            >
+                                                <b-icon
+                                                    icon="trash"
+                                                    aria-hidden="true"
+                                                    variant="danger"
+                                                    class="trash_icon"
+                                                ></b-icon>
+                                            </b-button>
+                                        </div>
+                                    </div>
                                     <b-container>
                                         <b-row>
-                                            <b-col cols="5" class="mt-0 pt-0">
+                                            <b-col cols="6" class="mt-0 pt-0">
                                                 <div style="display: flex;">
                                                     <div>
                                                         <img
@@ -75,21 +105,29 @@
                                                             class="customer_detail_customer_icon"
                                                         >
                                                     </div>
-                                                    <div class="mt-2" style="margin-left: 15px;" v-if="customerInfo != null">
-                                                        <b-card-title style="font-size: 15px;">
-                                                            {{ customerInfo.name}}
-                                                        </b-card-title>
-                                                        <b-card-sub-title style="font-size: 12px;">
-                                                            {{ customerInfo.name_kana }}
+
+                                                    <div class="mt-0" style="margin-left: 30px;">
+                                                        <b-card-sub-title>
+                                                            会員No
                                                         </b-card-sub-title>
+                                                        <b-card-text v-if="customerInfo != null && customerInfo.length > 0" style="font-size: 15px;">
+                                                            {{ customerInfo[0].customer_no}}
+                                                        </b-card-text>
+                                                        <b-card-text v-else style="font-size: 15px;">
+                                                            -
+                                                        </b-card-text>
                                                     </div>
-                                                    <div class="mt-2" style="margin-left: 15px;" v-else>
-                                                        <b-card-title style="font-size: 15px;">
-                                                            -
-                                                        </b-card-title>
-                                                        <b-card-sub-title style="font-size: 12px;">
-                                                            -
+
+                                                    <div class="mt-0" style="margin-left: 30px;">
+                                                        <b-card-sub-title>
+                                                            名前
                                                         </b-card-sub-title>
+                                                        <b-card-text v-if="customerInfo != null && customerInfo.length > 0" style="font-size: 15px;">
+                                                            {{ customerInfo[0].name | truncate(20) }}
+                                                        </b-card-text>
+                                                        <b-card-text v-else style="font-size: 15px;">
+                                                            -
+                                                        </b-card-text>
                                                     </div>
                                                 </div>
                                             </b-col>
@@ -97,19 +135,19 @@
                                                 <b-card-sub-title>
                                                     年齢
                                                 </b-card-sub-title>
-                                                <b-card-text v-if="customerInfo != null">
-                                                    {{ customerInfo.age }} 歳
+                                                <b-card-text v-if="customerInfo != null && customerInfo.length > 0">
+                                                    {{ getStrInData(customerInfo[0].age) }} 歳
                                                 </b-card-text>
                                                 <b-card-text v-else>
                                                     -
                                                 </b-card-text>
                                             </b-col>
-                                            <b-col cols="3" class="mt-0 pt-0">
+                                            <b-col cols="2" class="mt-0 pt-0">
                                                 <b-card-sub-title>
                                                     誕生日
                                                 </b-card-sub-title>
-                                                <b-card-text v-if="customerInfo != null">
-                                                    {{ getStrInData(customerInfo.birthday) }}
+                                                <b-card-text v-if="customerInfo != null && customerInfo.length > 0">
+                                                    {{ getStrInData(customerInfo[0].birthday) }}
                                                 </b-card-text>
                                                 <b-card-text v-else>
                                                     -
@@ -119,8 +157,8 @@
                                                 <b-card-sub-title>
                                                     ランク
                                                 </b-card-sub-title>
-                                                <b-card-text v-if="customerInfo != null">
-                                                    {{ getStrInData(customerInfo.rank_name) }}
+                                                <b-card-text v-if="customerInfo != null && customerInfo.length > 0">
+                                                    {{ getStrInData(customerInfo[0].rank_name) }}
                                                 </b-card-text>
                                                 <b-card-text v-else>
                                                     -
@@ -129,6 +167,101 @@
                                         </b-row>
                                     </b-container>
                                 </b-card>
+                                <b-row v-if="customerInfo != null && customerInfo.length > 1">
+                                    <b-col
+                                        cols="4"
+                                        v-for="(item, i) in customerInfo.slice(1)"
+                                        :key="i"
+                                        class="pa-0"
+                                    >
+                                        <b-card
+                                            :class="{'disabled': editMode}"
+                                        >
+                                            <div style="display: flex;">
+                                                <label>
+                                                    顧客情報{{ i + 2 }}
+                                                </label>
+                                                <div style="margin-left: auto;" v-if="!editMode">
+                                                    <b-button
+                                                        size="sm"
+                                                        variant="outline-primary"
+                                                        @click="showEditCustomerDialog(item, i+1)"
+                                                    >
+                                                        <b-icon
+                                                            icon="pencil"
+                                                            aria-hidden="true"
+                                                            variant="success"
+                                                            class="edit_icon"
+                                                        ></b-icon>
+                                                    </b-button>
+                                                    <b-button
+                                                        size="sm"
+                                                        style="position: relative; left: 10px;"
+                                                        variant="outline-danger"
+                                                        @click="deleteCustomerInfo(i+1)"
+                                                    >
+                                                        <b-icon
+                                                            icon="trash"
+                                                            aria-hidden="true"
+                                                            variant="danger"
+                                                            class="trash_icon"
+                                                        ></b-icon>
+                                                    </b-button>
+                                                </div>
+                                            </div>
+                                            <b-container>
+                                                <b-row>
+                                                    <b-col cols="4">
+                                                        <div>
+                                                            <img
+                                                                src="@/assets/img/男性3.jpg"
+                                                                class="customer_detail_customer_icon"
+                                                            >
+                                                        </div>
+                                                        <b-card-sub-title style="font-size: 12px; margin-top: 10px;">
+                                                            会員No
+                                                        </b-card-sub-title>
+                                                        <b-card-text style="font-size: 13px;">
+                                                            {{ item.customer_no }}
+                                                        </b-card-text>
+                                                    </b-col>
+                                                    <b-col cols="8">
+                                                        <div style="margin-left: 15px;">
+                                                            <b-card-sub-title>
+                                                                名前
+                                                            </b-card-sub-title>
+                                                            <b-card-text style="font-size: 15px;">
+                                                                {{ item.name }}
+                                                            </b-card-text>
+                                                            <b-card-sub-title>
+                                                                ランク
+                                                            </b-card-sub-title>
+                                                            <b-card-text style="font-size: 15px;">
+                                                                {{ getStrInData(item.rank_name) }}
+                                                            </b-card-text>
+                                                        </div>
+                                                    </b-col>
+                                                </b-row>
+                                            </b-container>
+
+                                        </b-card>
+                                    </b-col>
+                                </b-row>
+
+                                <div class="mt-3" v-if="!editMode">
+                                    <b-button
+                                        size="sm"
+                                        @click="showAddCustomerDialog"
+                                        class="mb-3"
+                                        variant="primary"
+                                    >
+                                        <b-icon
+                                            icon="plus-circle"
+                                            aria-hidden="true"
+                                        ></b-icon> 会員を追加...
+                                    </b-button>
+                                </div>
+
                             </b-col>
                         </b-row>
                         <b-row>
@@ -465,9 +598,7 @@
                             <th>数量</th>
                             <th>課税</th>
                             <th>ボトル登録</th>
-                            <!-- <th>総計(税抜)</th> -->
-                            <!-- <th>総計(税込)</th> -->
-                            <!-- <th>備考</th> -->
+                            <th>ボトル登録会員</th>
                             <th></th>
                         </tr>
                         <tr
@@ -475,22 +606,6 @@
                             :key=id
                         >
                             <td>
-                                <!-- <b-img
-                                    v-if="item.thumbnail != null"
-                                    :src="apiPath + item.thumbnail"
-                                    alt="Selected Product"
-                                    rounded
-                                    height="50"
-                                    width="50"
-                                ></b-img>
-                                <b-img
-                                    v-else
-                                    :src="defaultIcon"
-                                    alt="Selected Product"
-                                    rounded
-                                    height="50"
-                                    width="50"
-                                ></b-img> -->
                                 <span>{{ item.name | truncate(20) }}</span>
                             </td>
                             <td>
@@ -498,7 +613,6 @@
                             </td>
 
                             <td>
-                                <!-- {{ item.actuallyPrice | priceLocaleString }} -->
                                 <b-form-input
                                     v-model="item.actuallyPrice"
                                     type="number"
@@ -506,7 +620,6 @@
                                 ></b-form-input>
                             </td>
                             <td>
-                                <!-- {{ item.quantity | priceLocaleString }} -->
                                 <b-form-spinbutton
                                     v-model="item.quantity"
                                     inline
@@ -514,28 +627,36 @@
                                     size="sm"
                                 ></b-form-spinbutton>
                             </td>
-
                             <td>
-                                <!-- <span v-if="item.taxation">課税</span>
-                                <span v-else>非課税</span> -->
                                 <v-checkbox
                                     class="mt-3"
                                     v-model="item.taxation"
                                 ></v-checkbox>
                             </td>
                             <td>
-                                <!-- <b-card-text v-if="item.bottle">有</b-card-text>
-                                <b-card-text v-else>無</b-card-text> -->
-                                <v-checkbox
-                                    class="mt-3"
-                                    v-model="item.bottle"
-                                ></v-checkbox>
+                                <div v-if="!isBottleCustomerDisabledRow(item)">
+                                    <b-button
+                                        v-if="item.customer == null"
+                                        variant="primary"
+                                        @click="addBottleCustomerInfo(2, id)"
+                                        :disabled="customerInfo == null || customerInfo.length == 0"
+                                    >
+                                        顧客選択
+                                    </b-button>
+                                    <b-button
+                                        v-else
+                                        variant="danger"
+                                        @click="deleteCustomerSelectedProductList(id)"
+                                    >
+                                        選択解除
+                                    </b-button>
+                                </div>
+                                <div v-else>-</div>
                             </td>
-                            <!-- <td>
-                                {{ item.totalPrice | priceLocaleString }}
-                            </td> -->
-                            <!-- <td>{{ item.totalTaxPrice | priceLocaleString }}</td> -->
-                            <!-- <td>{{ item.remarks }}</td> -->
+                            <td>
+                                <div v-if="item.customer != null">{{ item.customer.name }}</div>
+                                <div v-else>-</div>
+                            </td>
                             <td>
                                 <b-icon
                                     icon="dash-square"
@@ -570,6 +691,7 @@
                             <small style="display: block;" class="text-muted">カード支払</small>
                             <SelectForm
                                 :dispOptions="basicPlanServiceTaxList"
+                                :formDisabled="inputFixedPrice"
                                 v-model="inputSalesData.basicPlanCardTax"
                             />
                         </b-col>
@@ -593,6 +715,7 @@
                                 <v-checkbox
                                     class="mt-0"
                                     v-model="inputSalesData.cardPayment"
+                                    :disabled=inputFixedPrice
                                 ></v-checkbox>
                             </b-card-text>
                         </b-col>
@@ -608,10 +731,6 @@
 
                 </b-card>
                 <b-card bg-variant="light" class="mt-3">
-                    <!-- label-cols-lg="3"
-                    label="ボトル情報"
-                    label-size="lg"
-                    label-class="font-weight-bold pt-0" -->
                     <b-form-group
                         class="mb-0"
                     >
@@ -629,23 +748,36 @@
                             target="bottle_info_icon"
                             title="消込を行うボトルを選択してください。"
                         ></b-tooltip>
-                        <b-card-text v-if="customerInfo == null || inputSalesData.customerNo == '' || inputSalesData.customerNo == null">
-                            正しい会員Noを入力してください。
+
+                        <b-card-text v-if="customerInfo == null || customerInfo.length == 0">
+                            会員情報を入力してください。
                         </b-card-text>
-                        <b-card-text v-else-if="customerInfo.bottle.length == 0">
+                        <b-card-text v-else-if="bottleInfo.length == 0">
                             ボトル情報がありません。
                         </b-card-text>
                         <b-row v-else>
                             <b-col
-                                v-for="(item, i) in customerInfo.bottle"
+                                v-for="(item, i) in bottleInfo"
                                 :key="i"
                                 cols="4"
                             >
                                 <b-card>
-                                    <div>
-                                        <small class="text-muted">
-                                            No.{{ i+1 }}
-                                        </small>
+                                    <div style="dispaly: flex; justify-content: space-between;">
+                                        <div>
+                                            <small class="text-muted">
+                                                No.{{ i+1 }}
+                                            </small>
+                                        </div>
+
+                                        <div class="bottle_card_customer_no_area">
+                                            <small class="text-muted">会員No</small>
+                                            <b-card-text>{{ item.customer.customer_no }}</b-card-text>
+                                        </div>
+                                    </div>
+
+                                    <div class="bottle_card_customer_name_area">
+                                        <small class="text-muted">会員名</small>
+                                        <b-card-text>{{ item.customer.name | truncate(15) }}</b-card-text>
                                     </div>
 
                                     <div class="bottle_card_product_name_area">
@@ -696,6 +828,111 @@
                 >フォーム初期化</b-button>
             </b-form>
             <template #modal-footer>
+                <b-container fluid v-if="inputFixedPrice">
+                    <b-card bg-variant="light">
+                        <label>実支払価格</label>
+                        <span
+                            style="display: inline-block; margin-left: 0.4rem;"
+                        >
+                            <b-icon
+                                id="fixed_payment_info_icon"
+                                icon="info-circle"
+                                variant="primary"
+                            ></b-icon>
+                        </span>
+                        <b-tooltip
+                            target="fixed_payment_info_icon"
+                            title="実際に支払った価格を入力してください。"
+                        ></b-tooltip>
+                        <b-row>
+                            <b-col cols="2">
+                                会員No
+                            </b-col>
+                            <b-col cols="3">
+                                名前
+                            </b-col>
+                            <b-col cols="3">
+                                支払額
+                            </b-col>
+                            <b-col cols="2">
+                                カード支払い
+                            </b-col>
+                            <b-col cols="2">
+                                カード手数料
+                            </b-col>
+                        </b-row>
+                        <!-- <b-row>
+                            <b-col cols="2">
+                                No. {{ customerInfo.customer_no }}
+                            </b-col>
+                            <b-col cols="3">
+                                {{ customerInfo.name }}
+                            </b-col>
+                            <b-col cols="3">
+                                <b-form-input
+                                    type="number"
+                                    required
+                                ></b-form-input>
+                            </b-col>
+                            <b-col cols="2">
+                                <v-checkbox
+                                    class="mt-0"
+                                ></v-checkbox>
+                            </b-col>
+                            <b-col cols="2">
+                                <SelectForm
+                                    :dispOptions="basicPlanServiceTaxList"
+                                    v-model="inputSalesData.basicPlanCardTax"
+                                />
+                            </b-col>
+                        </b-row> -->
+                        <b-row
+                            v-for="(item, i) in customerInfo"
+                            :key="i"
+                        >
+                            <b-col cols="2">
+                                No. {{ item.customer_no }}
+                            </b-col>
+                            <b-col cols="3">
+                                {{ item.name }}
+                            </b-col>
+                            <b-col cols="3">
+                                <b-form-input
+                                    type="number"
+                                    required
+                                    v-model="item.amountPaid"
+                                    @change="calcTotalAmountPaid"
+                                    min="0"
+                                ></b-form-input>
+                            </b-col>
+                            <b-col cols="2">
+                                <v-checkbox
+                                    class="mt-0"
+                                    v-model="item.cardPayment"
+                                    @change="changeCardPayment(item.cardPayment, i)"
+                                ></v-checkbox>
+                            </b-col>
+                            <b-col cols="2">
+                                <SelectForm
+                                    :dispOptions="basicPlanServiceTaxList"
+                                    v-model="item.basicPlanCardTax"
+                                />
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col cols="7">
+                            </b-col>
+                            <b-col cols="2" align="right">
+                                実支払総額
+                            </b-col>
+                            <b-col align="right">
+                                <b-card-title style="color: red;">
+                                    <b-icon icon="currency-yen"></b-icon> {{ totalAmountPaid | priceLocaleString }}
+                                </b-card-title>
+                            </b-col>
+                        </b-row>
+                    </b-card>
+                </b-container>
                 <b-container fluid>
                     <b-row>
                         <b-col cols="3">
@@ -715,8 +952,22 @@
                             </b-card-title>
                         </b-col>
 
+                        <b-col cols="2">
+                            <b-card-sub-title>
+                                実価格を入力
+                            </b-card-sub-title>
+
+                            <b-card-text>
+                                <v-checkbox
+                                    class="mt-0"
+                                    v-model="inputFixedPrice"
+                                    :disabled="customerInfo == null || customerInfo.length == 0"
+                                ></v-checkbox>
+                            </b-card-text>
+                        </b-col>
+
                         <b-col
-                            cols="2"
+                            cols="1"
                         >
                             <b-card-sub-title>
                                 注文数
@@ -727,12 +978,12 @@
                         </b-col>
 
                         <b-col
-                            cols="2"
+                            cols="1"
                         >
                             <b-card-sub-title>
                                 支払方法
                             </b-card-sub-title>
-                            <b-card-title class="mb-0" v-if="inputSalesData.cardPayment">
+                            <b-card-title style="font-size: 15px;" class="mb-0" v-if="inputSalesData.cardPayment">
                                 カード
                             </b-card-title>
                             <b-card-title class="mb-0" v-else>
@@ -763,6 +1014,32 @@
 
         <InputSalesAddDetailDialog
             ref="inputSalesAddDetailDialog"
+            :customerList="customerInfo"
+            @addSalesDetail="addSalesDetail"
+            @addSalesDetailList="addSalesDetailList"
+        />
+
+        <InputSalesAddCustomerDialog
+            ref="inputSalesAddCustomerDialog"
+            :customerList="customerInfo"
+            @addCustomer="addCustomer"
+            @updateCustomer="updateCustomer"
+        />
+
+        <InputSalesSelectCustomerDialog
+            ref="inputSalesSelectCustomerDialog"
+            :customerList="customerInfo"
+            @selectCustomer="selectCustomer"
+            msg="会計をした会員を選択してください。"
+            title="支払会員選択"
+        />
+
+        <InputSalesSelectCustomerDialog
+            ref="inputSalesBottleSelectCustomerDialog"
+            :customerList="customerInfo"
+            @selectBottleCustomerProductList="selectBottleCustomerProductList"
+            msg="ボトル登録を行う会員を選択してください。"
+            title="ボトル登録会員選択"
         />
 
         <ErrorModal
@@ -871,6 +1148,8 @@ import Vue from 'vue'
 import _ from 'lodash'
 import InputSalesDetailDialog from '@/components/common/dialog/InputSalesDetailDialog'
 import InputSalesAddDetailDialog from '@/components/common/dialog/InputSalesAddDetailDialog'
+import InputSalesAddCustomerDialog from '@/components/common/dialog/InputSalesAddCustomerDialog'
+import InputSalesSelectCustomerDialog from '@/components/common/dialog/InputSalesSelectCustomerDialog'
 import SelectForm from '@/components/common/parts/SelectForm'
 import ErrorModal from '@/components/common/dialog/ErrorModal'
 import CheckboxForm from '@/components/common/parts/CheckboxForm'
@@ -899,6 +1178,8 @@ export default {
     components: {
         InputSalesDetailDialog,
         InputSalesAddDetailDialog,
+        InputSalesAddCustomerDialog,
+        InputSalesSelectCustomerDialog,
         SelectForm,
         CheckboxForm,
         ErrorModal,
@@ -911,7 +1192,7 @@ export default {
             // 通常(1, 2, 3) 貸切(4, 5, 6)
             basicPlanType: 1,
 
-            customerNo: null,
+            // customerNo: null,
             maleVisitors: 0,
             femaleVisitors: 0,
 
@@ -949,6 +1230,13 @@ export default {
 
         inputSalesDetailDialog: false,
 
+        inputFixedPrice: false,
+
+        totalAmountPaid: 0,
+
+        bottleInfo: [],
+
+
         taxOptions: Con.OPTIONS_TAX,
         numOptions: Con.OPTIONS_NUM,
         hourOptions: Con.OPTIONS_HOUR,
@@ -979,7 +1267,7 @@ export default {
             { text: '0%', value: 0 },
         ],
         errorMsg: [],
-        customerNoError: '',
+        // customerNoError: '',
         totalVisitorsError: '',
         visitTimeError: '',
         leaveTimeError: '',
@@ -988,8 +1276,7 @@ export default {
         salesHeaderId: null,
         edit_sales_detail: [],
         edit_sales_service_detail: [],
-        customerInfo: null,
-
+        customerInfo: [],
 
         // seatOptions: [],
 
@@ -1008,10 +1295,10 @@ export default {
         waitServerResponse: false,
     }),
     created () {
-        this.$eventHub.$off('addSalesDetail')
-        this.$eventHub.$on('addSalesDetail', this.addSalesDetail)
-        this.$eventHub.$off('addSalesDetailList')
-        this.$eventHub.$on('addSalesDetailList', this.addSalesDetailList)
+        // this.$eventHub.$off('addSalesDetail')
+        // this.$eventHub.$on('addSalesDetail', this.addSalesDetail)
+        // this.$eventHub.$off('addSalesDetailList')
+        // this.$eventHub.$on('addSalesDetailList', this.addSalesDetailList)
 
         // let arr = []
         // for (const item of this.seat) {
@@ -1065,16 +1352,16 @@ export default {
             // 非課税の明細総計
             let totalTaxFreeDetailPrice = 0
 
-            console.log('this.inputSalesDetailData', this.inputSalesDetailData)
+            // console.log('this.inputSalesDetailData', this.inputSalesDetailData)
 
             // 明細の計算
             for (const item of this.inputSalesDetailData) {
                 if (item.taxation) {
-                    console.log('課税対象')
+                    // console.log('課税対象')
                     // 課税
                     totalTaxDetailPrice += item.actuallyPrice * item.quantity
                 } else {
-                    console.log('非課税')
+                    // console.log('非課税')
                     // 非課税
                     totalTaxFreeDetailPrice += item.actuallyPrice * item.quantity
                 }
@@ -1093,8 +1380,14 @@ export default {
             // 非課税は単純に全て足して算出
             totalPrice += (totalDetailPrice + totalServicePrice)
 
+            let cardTax = 0
+
             // 課税分の計算
-            let taxRate = this.inputSalesData.basicPlanServiceTax + this.inputSalesData.basicPlanTax + this.inputSalesData.basicPlanCardTax
+            if (!this.inputFixedPrice) {
+                cardTax = this.inputSalesData.basicPlanCardTax
+            }
+
+            let taxRate = this.inputSalesData.basicPlanServiceTax + this.inputSalesData.basicPlanTax + cardTax
             // 課税対象の明細と税抜のサービス料金に税をかける
             let taxTargetPrice = totalTaxDetailPrice + totalServicePrice
             totalTaxPrice += this.roundDown(taxTargetPrice + taxTargetPrice * (taxRate/100))
@@ -1152,12 +1445,12 @@ export default {
             }
             return false
         },
-        customerNoInvalid () {
-            if (this.customerNoError != '') {
-                return true
-            }
-            return false
-        },
+        // customerNoInvalid () {
+        //     if (this.customerNoError != '') {
+        //         return true
+        //     }
+        //     return false
+        // },
         totalVisitorsInvalid () {
             if (this.totalVisitorsError != '') {
                 return true
@@ -1209,7 +1502,7 @@ export default {
             } else {
                 return '登録'
             }
-        }
+        },
     },
     watch: {
         'inputSalesData.cardPayment': function (val) {
@@ -1270,15 +1563,22 @@ export default {
                 console.log('サーバー応答待ち')
                 return
             }
-            if (!this.editMode) {
-                this.register()
+            if (this.customerInfo.length >= 2 &&
+                !this.inputFixedPrice
+            ) {
+                // 複数顧客入力で実価格入力がされない場合、選択モーダル表示
+                this.$refs.inputSalesSelectCustomerDialog.open()
             } else {
-                this.update()
+                if (!this.editMode) {
+                    this.register()
+                } else {
+                    this.update()
+                }
             }
         },
         register () {
 
-            console.log('this.inputSalesDetailData', this.inputSalesDetailData)
+            // console.log('this.inputSalesDetailData', this.inputSalesDetailData)
 
             let salesServiceDetailList = []
             let salesDetailList = []
@@ -1289,10 +1589,10 @@ export default {
                     quantity: item.quantity,
                     fixed_price: item.actuallyPrice,
                     tax_free_flg: item.taxation == false,
-                    bottle: item.bottle,
+                    bottle: item.customer != null,
+                    customer: item.customer,
                 })
             }
-
 
             const selectedService = _.cloneDeep(this.service.filter(i => i.id == this.inputSalesData.basicPlanType))
             if (this.inputSalesData.basicPlanNum1 > 0) {
@@ -1336,8 +1636,41 @@ export default {
                 })
             }
 
+            // 20221016 会員情報複数入力
+            // 実価格入力（paymentが会員分）
+            // 入力しなければ、一番上の会員がpayment全額、他は0
+            let salesPayment = []
+
+            let fixedTotalTaxSales = (!this.inputFixedPrice) ? this.totalTaxPrice : this.totalAmountPaid
+
+            if (this.inputFixedPrice) {
+                for (const item of this.customerInfo) {
+                    salesPayment.push({
+                        customer_no: item.customer_no,
+                        name: item.name,
+                        amount_paid: item.amountPaid,
+                        payment: item.cardPayment,
+                        basic_plan_card_tax: item.basicPlanCardTax,
+                    })
+                }
+            } else {
+                for (const item of this.customerInfo) {
+                    salesPayment.push({
+                        customer_no: item.customer_no,
+                        name: item.name,
+                        amount_paid: 0,
+                        payment: false,
+                        basic_plan_card_tax: 0,
+                    })
+                }
+                salesPayment[0].amount_paid = this.totalTaxPrice
+                salesPayment[0].payment = this.inputSalesData.cardPayment
+                salesPayment[0].basic_plan_card_tax = this.inputSalesData.basicPlanCardTax
+            }
+
             const data = {
-                customer_no: this.inputSalesData.customerNo,
+                sales_payment: salesPayment,
+                // customer_no: this.inputSalesData.customerNo,
                 male_visitors: this.inputSalesData.maleVisitors,
                 female_visitors: this.inputSalesData.femaleVisitors,
                 seat_id: this.inputSalesData.seatId,
@@ -1354,6 +1687,7 @@ export default {
                 bottle_delete_list: this.bottleDeleteList,
                 sales_service_detail: salesServiceDetailList,
                 sales_detail_list: salesDetailList,
+                fixed_total_tax_sales: fixedTotalTaxSales,
             }
 
             console.log('data', data)
@@ -1370,9 +1704,9 @@ export default {
                 this.addSalesListTop(res.data.data)
                 // 追加したボトル更新
                 // 削除したものは?
-                if (res.data.bottle.length != 0) {
-                    this.addBottleList(res.data.bottle)
-                }
+                // if (res.data.bottle.length > 0) {
+                //     this.addBottleList(res.data.bottle)
+                // }
                 // this.registerSuccessDialog = true
                 this.initClose()
             })
@@ -1384,18 +1718,20 @@ export default {
         },
         update () {
 
-            console.log('this.inputSalesData', this.inputSalesData)
-            console.log('this.inputSalesDetailData', this.inputSalesDetailData)
+            // console.log('this.inputSalesData', this.inputSalesData)
+            // console.log('this.inputSalesDetailData', this.inputSalesDetailData)
 
             let salesServiceDetailList = []
             let salesDetailList = []
+
             for (const item of this.inputSalesDetailData) {
                 salesDetailList.push({
                     id: item.product.id,
                     quantity: item.quantity,
                     fixed_price: item.actuallyPrice,
                     tax_free_flg: item.taxation == false,
-                    bottle: item.bottle,
+                    bottle: item.customer != null,
+                    customer: item.customer,
                 })
             }
             const selectedService = _.cloneDeep(this.service.filter(i => i.id == this.inputSalesData.basicPlanType))
@@ -1440,9 +1776,42 @@ export default {
                 })
             }
 
+            // 20221016 会員情報複数入力
+            // 実価格入力（paymentが会員分）
+            // 入力しなければ、一番上の会員がpayment全額、他は0
+            let salesPayment = []
+
+            let fixedTotalTaxSales = (this.inputFixedPrice) ? this.totalTaxPrice : this.totalAmountPaid
+
+            if (this.inputFixedPrice) {
+                for (const item of this.customerInfo) {
+                    salesPayment.push({
+                        customer_no: item.customer_no,
+                        name: item.name,
+                        amount_paid: item.amountPaid,
+                        payment: item.cardPayment,
+                        basic_plan_card_tax: item.basicPlanCardTax,
+                    })
+                }
+            } else {
+                for (const item of this.customerInfo) {
+                    salesPayment.push({
+                        customer_no: item.customer_no,
+                        name: item.name,
+                        amount_paid: 0,
+                        payment: false,
+                        basic_plan_card_tax: 0,
+                    })
+                }
+                salesPayment[0].amount_paid = this.totalTaxPrice
+                salesPayment[0].payment = this.inputSalesData.cardPayment
+                salesPayment[0].basic_plan_card_tax = this.inputSalesData.basicPlanCardTax
+            }
+
             const data = {
+                sales_payment: salesPayment,
                 sales_header_id: this.salesHeaderId,
-                customer_no: this.inputSalesData.customerNo,
+                // customer_no: this.inputSalesData.customerNo,
                 male_visitors: this.inputSalesData.maleVisitors,
                 female_visitors: this.inputSalesData.femaleVisitors,
                 seat_id: this.inputSalesData.seatId,
@@ -1459,6 +1828,7 @@ export default {
                 bottle_delete_list: this.bottleDeleteList,
                 sales_service_detail: salesServiceDetailList,
                 sales_detail_list: salesDetailList,
+                fixed_total_tax_sales: fixedTotalTaxSales,
             }
             console.log('data', data)
 
@@ -1504,7 +1874,7 @@ export default {
                 // 通常(1, 2, 3) 貸切(4, 5, 6)
                 basicPlanType: 1,
 
-                customerNo: null,
+                // customerNo: null,
                 maleVisitors: 0,
                 femaleVisitors: 0,
 
@@ -1539,14 +1909,18 @@ export default {
             }
             this.inputSalesDetailData = []
             this.errorMsg = []
-            this.customerNoError = ''
+            // this.customerNoError = ''
             this.totalVisitorsError = ''
             this.editMode = false
             this.salesHeaderId = null
             this.edit_sales_detail = []
             this.edit_sales_service_detail = []
 
-            this.customerInfo = null
+            this.customerInfo = []
+
+            this.inputFixedPrice = false
+            this.totalAmountPaid = 0
+
             this.totalPrice = 0
             this.totalDetailPrice = 0
             this.totalServicePrice = 0
@@ -1572,7 +1946,7 @@ export default {
                 // 通常(1, 2, 3) 貸切(4, 5, 6)
                 basicPlanType: 1,
 
-                customerNo: null,
+                // customerNo: null,
                 maleVisitors: 0,
                 femaleVisitors: 0,
 
@@ -1607,14 +1981,17 @@ export default {
             }
             this.inputSalesDetailData = []
             this.errorMsg = []
-            this.customerNoError = ''
+            // this.customerNoError = ''
             this.totalVisitorsError = ''
             this.editMode = false
             this.salesHeaderId = null
             this.edit_sales_detail = []
             this.edit_sales_service_detail = []
 
-            this.customerInfo = null
+            this.inputFixedPrice = false
+            this.totalAmountPaid = 0
+
+            this.customerInfo = []
             this.totalPrice = 0
             this.totalDetailPrice = 0
             this.totalServicePrice = 0
@@ -1640,6 +2017,46 @@ export default {
         showAddDetailDialog () {
             this.$refs.inputSalesAddDetailDialog.open()
         },
+        showAddCustomerDialog () {
+            this.$refs.inputSalesAddCustomerDialog.open()
+        },
+        showEditCustomerDialog (data, index) {
+            this.$refs.inputSalesAddCustomerDialog.open(data, index)
+        },
+        addCustomer (data) {
+            console.log('addCustomer', data)
+            this.customerInfo.push(data)
+            this.updateBottleInfo()
+        },
+        updateCustomer (data, index) {
+            console.log('updateCustomer', data)
+            Vue.set(this.customerInfo, index, data)
+            // this.customerInfo.push(data)
+            this.updateBottleInfo()
+            this.updateSelectedProductList()
+        },
+        selectCustomer (idx) {
+            // 複数顧客選択時に支払った会員を選択するモーダルから選択した際のメソッド
+            // console.log('selectCustomer', idx, this.customerInfo)
+            this.inputFixedPrice = true
+            this.customerInfo.map(val => val.amountPaid = 0)
+            this.customerInfo.map(val => val.cardPayment = false)
+            this.customerInfo.map(val => val.basicPlanCardTax = 0)
+            this.customerInfo[idx].amountPaid = this.totalTaxPrice
+            this.customerInfo[idx].cardPayment = this.inputSalesData.cardPayment
+            this.customerInfo[idx].basicPlanCardTax = this.inputSalesData.basicPlanCardTax
+            this.calcTotalAmountPaid()
+            // console.log('選択後', this.customerInfo)
+        },
+        deleteCustomerInfo (index) {
+            this.customerInfo.splice(index, 1)
+            if (this.customerInfo.length == 0) {
+                this.inputFixedPrice = false
+                this.totalAmountPaid = 0
+            }
+            this.updateBottleInfo()
+            this.updateSelectedProductList()
+        },
         deleteSalesDetail (index) {
             this.inputSalesDetailData.splice(index, 1)
         },
@@ -1647,9 +2064,8 @@ export default {
             this.inputSalesDetailData.push(data)
         },
         addSalesDetailList (data) {
-            console.log('addSalesDetailList', data)
-            this.inputSalesDetailData = this.inputSalesDetailData.concat(data)
-            console.log('this.inputSalesDetailData', this.inputSalesDetailData)
+            const arr = this.inputSalesDetailData.concat(data)
+            this.inputSalesDetailData = arr
         },
         getStayHourStr (stayHour) {
             const h = Math.floor(stayHour / 60)
@@ -1661,12 +2077,21 @@ export default {
             // 編集用にデータを置き換える処理
             console.log('convertData', data)
 
-            // this.edit_sales_detail = data.sales_detail
-            // this.edit_sales_service_detail = data.sales_service_detail
-
             this.inputSalesData.basicPlanType = data.basic_plan_type.id
-            this.inputSalesData.customerNo = String(data.customer.customer_no)
-            this.customerInfo = data.customer
+            let c_list = data.customer_list
+            // this.customerInfo = data.customer_list
+            for (const c of c_list) {
+                for (const p of data.sales_payment) {
+                    if (c.customer_no == p.customer.customer_no) {
+                        c.amountPaid = p.amount_paid
+                        c.cardPayment = p.pamynet
+                        c.basicPlanCardTax = p.basic_plan_card_tax
+                    }
+                }
+            }
+            this.customerInfo = c_list
+            // console.log('this.customerInfo', this.customerInfo)
+
             this.inputSalesData.maleVisitors = data.male_visitors
             this.inputSalesData.femaleVisitors = data.female_visitors
 
@@ -1678,10 +2103,12 @@ export default {
 
             this.inputSalesData.basicPlanServiceTax = data.basic_plan_service_tax
             this.inputSalesData.basicPlanTax = data.basic_plan_tax
-            this.inputSalesData.basicPlanCardTax = data.basic_plan_card_tax
 
             this.inputSalesData.cardPayment = (data.payment == 1) ? true : false
             this.inputSalesData.remarks = data.remarks
+
+            this.inputFixedPrice = true
+
 
             let visitTime = data.visit_time.split(' ')
             let leaveTime = data.leave_time.split(' ')
@@ -1723,6 +2150,7 @@ export default {
                     // bottle: salesDetailItem.bottle_register,
                     // 2022/09/10 編集時のボトル登録フラグは折っておく。
                     bottle: false,
+                    customer: null,
                     category: salesDetailItem.product.category,
                     name: salesDetailItem.product.name,
                     price: salesDetailItem.product.price,
@@ -1733,48 +2161,49 @@ export default {
                 })
             }
             this.inputSalesDetailData = service_detail_list
+            console.log('this.inputSalesDetailData', this.inputSalesDetailData)
         },
-        checkCustomerNo () {
-            const val = this.inputSalesData.customerNo
-
-            const reg = /^[0-9]+$/
-            if (val == null) {
-                this.customerNoError = ''
-                return
-            }
-            if (val.length > 0) {
-                if (val <= 0 || !reg.test(val)) {
-                    this.customerNoError = '正しい値を入力してください'
-                    this.customerInfo = null
-                } else {
-                    // this.customerInfo = _.cloneDeep(this.customer.find(c => c.customer_no == val))
-                    // if (this.customerInfo == undefined) {
-                    //     this.customerNoError = '存在しない会員Noです。'
-                    // } else {
-                    //     this.customerNoError = ''
-                    // }
-                    this.searchCustomerNo(val)
-                    .then(res => {
-                        console.log(res)
-                        this.customerInfo = res.data.data
-                        this.customerNoError = ''
-                    })
-                    .catch(e => {
-                        console.log(e)
-                        this.customerNoError = '存在しない会員Noです。'
-                        this.customerInfo = null
-                    })
-                }
-            } else {
-                // this.customerNoError= ''
-                this.customerNoError= '会員Noを入力してください'
-                this.customerInfo = null
-            }
-        },
+        // checkCustomerNo () {
+        //     const val = this.inputSalesData.customerNo
+        //
+        //     const reg = /^[0-9]+$/
+        //     if (val == null) {
+        //         this.customerNoError = ''
+        //         return
+        //     }
+        //     if (val.length > 0) {
+        //         if (val <= 0 || !reg.test(val)) {
+        //             this.customerNoError = '正しい値を入力してください'
+        //             this.customerInfo = null
+        //         } else {
+        //             // this.customerInfo = _.cloneDeep(this.customer.find(c => c.customer_no == val))
+        //             // if (this.customerInfo == undefined) {
+        //             //     this.customerNoError = '存在しない会員Noです。'
+        //             // } else {
+        //             //     this.customerNoError = ''
+        //             // }
+        //             this.searchCustomerNo(val)
+        //             .then(res => {
+        //                 console.log(res)
+        //                 this.customerInfo = res.data.data
+        //                 this.customerNoError = ''
+        //             })
+        //             .catch(e => {
+        //                 console.log(e)
+        //                 this.customerNoError = '存在しない会員Noです。'
+        //                 this.customerInfo = null
+        //             })
+        //         }
+        //     } else {
+        //         // this.customerNoError= ''
+        //         this.customerNoError= '会員Noを入力してください'
+        //         this.customerInfo = null
+        //     }
+        // },
         calcBasicPlanDetail () {
 
             if (this.totalVisitors == 0) {
-                console.log('来店人数が0')
+                // console.log('来店人数が0')
                 this.initBasicPlanPrice()
                 return
             }
@@ -1922,11 +2351,11 @@ export default {
             console.log('this.bottleDeleteList', this.bottleDeleteList)
         },
         checkError () {
-            if (this.inputSalesData.customerNo == null ||
-                this.inputSalesData.customerNo.length == 0)
-            {
-                return true
-            }
+            // if (this.inputSalesData.customerNo == null ||
+            //     this.inputSalesData.customerNo.length == 0)
+            // {
+            //     return true
+            // }
 
             if (this.inputSalesData.visitTime == null ||
                 this.inputSalesData.leaveTime == null)
@@ -1938,8 +2367,7 @@ export default {
                 return true
             }
 
-            if (this.customerNoError.length != 0 ||
-                this.visitLeaveTimeError.length != 0 ||
+            if (this.visitLeaveTimeError.length != 0 ||
                 this.totalVisitorsError.length != 0)
             {
                 return true
@@ -1963,7 +2391,80 @@ export default {
         },
         updateInputSalesData (val) {
             this.inputSalesData = val
-        }
+        },
+        calcTotalAmountPaid () {
+            let result = 0
+            for (const item of this.customerInfo) {
+                result += Number(item.amountPaid)
+            }
+            this.totalAmountPaid = result
+        },
+        changeCardPayment (val, idx) {
+            let res = 0
+            if (val) res = 10
+            this.customerInfo[idx].basicPlanCardTax = res
+        },
+        updateBottleInfo () {
+            let result = []
+            for (const item of this.customerInfo) {
+                for (const b of item.bottle) {
+                    result.push(b)
+                }
+            }
+            this.bottleInfo = result
+        },
+        updateSelectedProductList () {
+            // console.log('updateSelectedProductList')
+            // console.log('this.customerInfo', this.customerInfo)
+            // console.log('this.inputSalesDetailData', this.inputSalesDetailData)
+            let customerNoList = []
+            for (const item of this.customerInfo) {
+                customerNoList.push(item.customer_no)
+            }
+
+            // console.log('customerNoList', customerNoList)
+
+            for (const detail of this.inputSalesDetailData) {
+                if (detail.customer != null) {
+                    if (!customerNoList.includes(detail.customer.customer_no)) {
+                        // console.log('削除or更新された会員なのでボトル登録削除')
+                        // console.log('detail', detail)
+                        detail.bottle = false
+                        detail.customer = null
+                    }
+                }
+            }
+
+        },
+        addBottleCustomerInfo (val, updateIdx) {
+            this.$refs.inputSalesBottleSelectCustomerDialog.open(val, updateIdx)
+        },
+        selectBottleCustomerProductList (idx, updateIdx) {
+            console.log('before ', this.inputSalesDetailData)
+            this.inputSalesDetailData[updateIdx].customer = this.customerInfo[idx]
+            console.log('after ', this.inputSalesDetailData)
+        },
+        deleteCustomerSelectedProductList (idx) {
+            this.inputSalesDetailData[idx].customer = null
+        },
+        isBottleCustomerDisabledRow (item) {
+            if (item.product.category.large_category == 1 &&
+                item.product.category.middle_category == 0)
+            {
+                if (item.product.category.small_category != 4) {
+                    return false
+                } else {
+                    return true
+                }
+            }
+            return true
+        },
+        // isSalesDetailBottleCustomerDisabled () {
+        //     if (this.customerInfo == null || this.customerInfo.length == 0) {
+        //         return true
+        //     }
+        //     return false
+        // },
     },
     mixins: [
         customerMixin,

@@ -26,6 +26,7 @@ from .sub_models import (
     # AttendanceManagement,
     BookingManagement,
     # QuestionAnswer,
+    SalesPayment,
 )
 
 from .utils import (
@@ -151,8 +152,6 @@ class CustomerSerializer(DynamicFieldsModelSerializer):
     company = serializers.CharField(default='', allow_null=True)
     created_at = serializers.SerializerMethodField()
     updated_at = serializers.SerializerMethodField()
-    # total_visit = serializers.IntegerField(default=0, allow_null=True)
-    # total_sales = serializers.IntegerField(default=0, allow_null=True)
     total_visit = serializers.SerializerMethodField(allow_null=True)
     total_sales = serializers.SerializerMethodField(allow_null=True)
     customer_no = serializers.IntegerField(source='card.customer_no', allow_null=True)
@@ -210,9 +209,9 @@ class CustomerSerializer(DynamicFieldsModelSerializer):
         #     return ''
         # return obj.first_visit.strftime('%Y/%m/%d')
         sales_data = SalesHeader.objects.filter(
-            Q(customer__delete_flg=False) &
+            Q(sales_payment_sales_header__customer__delete_flg=False) &
             Q(delete_flg=False) &
-            Q(customer=obj) &
+            Q(sales_payment_sales_header__customer=obj) &
             Q(close_flg=True)
         )
         if len(sales_data) != 0:
@@ -269,27 +268,28 @@ class CustomerSerializer(DynamicFieldsModelSerializer):
                 'end_flg',
                 'waste_flg',
                 'remarks',
+                'customer',
             ],
             many=True,
         ).data
 
     def get_total_visit(self, obj):
         return SalesHeader.objects.filter(
-            Q(customer__isnull=False) &
-            Q(customer=obj) &
-            Q(customer__delete_flg=False) &
+            Q(sales_payment_sales_header__customer__isnull=False) &
+            Q(sales_payment_sales_header__customer=obj) &
+            Q(sales_payment_sales_header__customer__delete_flg=False) &
             Q(delete_flg=False) &
             Q(close_flg=True)
         ).count()
 
     def get_total_sales(self, obj):
         return SalesHeader.objects.filter(
-            Q(customer__isnull=False) &
-            Q(customer=obj) &
-            Q(customer__delete_flg=False) &
+            Q(sales_payment_sales_header__customer__isnull=False) &
+            Q(sales_payment_sales_header__customer=obj) &
+            Q(sales_payment_sales_header__customer__delete_flg=False) &
             Q(delete_flg=False) &
             Q(close_flg=True)
-        ).aggregate(total=Coalesce(models.Sum(F('total_tax_sales')), 0))['total']
+        ).aggregate(total=Coalesce(models.Sum(F('sales_payment_sales_header__amount_paid')), 0))['total']
 
     # def get_rank(self, obj):
     #
@@ -1051,11 +1051,18 @@ class SalesServiceDetailSerializer(DynamicFieldsModelSerializer):
 
 class SalesSerializer(DynamicFieldsModelSerializer):
 
-    customer = CustomerSerializer()
+    # customer = CustomerSerializer()
+    customer_list = serializers.SerializerMethodField()
+    customer_no_list = serializers.SerializerMethodField()
+    customer_name_list = serializers.SerializerMethodField()
+
     basic_plan_type = ServiceSerializer()
     seat = SeatSerializer()
     created_at = serializers.SerializerMethodField()
     updated_at = serializers.SerializerMethodField()
+
+    sales_payment = serializers.SerializerMethodField()
+
     sales_detail = serializers.SerializerMethodField()
     # sales_appoint_detail = serializers.SerializerMethodField()
     sales_service_detail = serializers.SerializerMethodField()
@@ -1074,9 +1081,9 @@ class SalesSerializer(DynamicFieldsModelSerializer):
     # sales_appoint_detail_total_tax_price = serializers.SerializerMethodField()
     sales_service_detail_total_price = serializers.SerializerMethodField()
     # sales_service_detail_total_tax_price = serializers.SerializerMethodField()
-    customer_no = serializers.CharField(source="customer.card", allow_null=True, allow_blank=True)
-    customer_name = serializers.CharField(source="customer.name", allow_null=True, allow_blank=True)
-    customer_name_kana = serializers.CharField(source="customer.name_kana", allow_null=True, allow_blank=True)
+    # customer_no = serializers.CharField(source="customer.card", allow_null=True, allow_blank=True)
+    # customer_name = serializers.CharField(source="customer.name", allow_null=True, allow_blank=True)
+    # customer_name_kana = serializers.CharField(source="customer.name_kana", allow_null=True, allow_blank=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1085,13 +1092,16 @@ class SalesSerializer(DynamicFieldsModelSerializer):
         model = SalesHeader
         fields = [
             'id',
-            'customer',
+            # 'customer',
 
             # ↓b-tableの検索用・・・
-            'customer_no',
-            'customer_name',
-            'customer_name_kana',
+            # 'customer_no',
+            # 'customer_name',
+            # 'customer_name_kana',
 
+            'customer_list',
+            'customer_no_list',
+            'customer_name_list',
 
             # 'total_visitors',
             'male_visitors',
@@ -1103,7 +1113,7 @@ class SalesSerializer(DynamicFieldsModelSerializer):
             'visit_time',
             'leave_time',
             # 'move_time',
-            'payment',
+            # 'payment',
             # 'appoint',
             # 'douhan',
             # 'is_charterd',
@@ -1115,9 +1125,13 @@ class SalesSerializer(DynamicFieldsModelSerializer):
             # 'total_stay_hour',
             'total_sales',
             'total_tax_sales',
+            'fixed_total_tax_sales',
             'created_at',
             'updated_at',
             'delete_flg',
+
+            'sales_payment',
+
             'sales_detail',
             # 'sales_appoint_detail',
             'sales_service_detail',
@@ -1134,8 +1148,35 @@ class SalesSerializer(DynamicFieldsModelSerializer):
             'disp_seat_name',
             'basic_plan_service_tax',
             'basic_plan_tax',
-            'basic_plan_card_tax',
+            # 'basic_plan_card_tax',
         ]
+
+    def get_customer_no_list(self, obj):
+        return [sp.customer.card.customer_no for sp in obj.sales_payment_sales_header.all()]
+
+    def get_customer_name_list(self, obj):
+        return [sp.customer.name for sp in obj.sales_payment_sales_header.all()]
+
+    def get_customer_list(self, obj):
+        return [
+            CustomerSerializer(sp.customer,
+                fields=[
+                   'id',
+                   'name',
+                   'age',
+                   'birthday',
+                   'rank_id',
+                   'rank_name',
+                   'customer_no',
+                   'delete_flg',
+            ]).data for sp in obj.sales_payment_sales_header.all()
+        ]
+
+    def get_sales_payment(self, obj):
+        return SalesPaymentSerializer(
+            SalesPayment.objects.filter(sales_header=obj),
+            many=True
+        ).data
 
     def get_sales_detail(self, obj):
         return SalesDetailSerializer(
@@ -1209,7 +1250,8 @@ class SalesSerializer(DynamicFieldsModelSerializer):
         return obj.male_visitors + obj.female_visitors
 
     def get_total_tax(self, obj):
-        return obj.basic_plan_card_tax + obj.basic_plan_service_tax + obj.basic_plan_tax
+        # return obj.basic_plan_card_tax + obj.basic_plan_service_tax + obj.basic_plan_tax
+        return 0
 
     def get_header_id(self, obj):
         return str(obj.id).zfill(8)
@@ -1218,6 +1260,42 @@ class SalesSerializer(DynamicFieldsModelSerializer):
         if obj.seat == None:
             return '席指定無し'
         return obj.seat.seat_name
+
+class SalesPaymentSerializer(DynamicFieldsModelSerializer):
+
+    customer = CustomerSerializer(
+        fields=[
+            'id',
+            'name',
+            'age',
+            'birthday',
+            'rank_id',
+            'rank_name',
+            'customer_no',
+            'delete_flg',
+        ]
+    )
+
+    disp_payment = serializers.SerializerMethodField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = SalesPayment
+        fields = [
+            'sales_header',
+            'customer',
+            'amount_paid',
+            'payment',
+            'disp_payment',
+            'basic_plan_card_tax',
+        ]
+
+    def get_disp_payment(self, obj):
+        return '現金払い' if obj.payment == 0 else 'カード払い'
+
+
 
 class CustomerSalesSerializer(serializers.Serializer):
 

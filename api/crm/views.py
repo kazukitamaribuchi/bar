@@ -104,7 +104,7 @@ class AppInitView(generics.ListAPIView):
             logger.debug('4')
             sales = SalesSerializer(
                 SalesHeader.objects.filter(
-                    Q(customer__delete_flg=False) &
+                    # Q(sales_payment_sales_header__customer__delete_flg=False) &
                     Q(close_flg=True) &
                     Q(delete_flg=False)
                 ).order_by('-leave_time'),

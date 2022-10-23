@@ -7,6 +7,7 @@
             text-field="text"
             class="basic_select"
             :class="{'full_size': fullSize}"
+            :disabled="formDisabled"
         >
             <template #first v-if="initValue != ''">
                 <b-form-select-option :value="firstValue" :disabled="disabled">{{ initValue }}</b-form-select-option>
@@ -75,6 +76,11 @@ export default {
             type: Boolean,
             required: false,
             default: true,
+        },
+        formDisabled: {
+            type: Boolean,
+            required: false,
+            default: false,
         },
         firstValue: {
             type: Number,

@@ -96,7 +96,7 @@ INSTALLED_APPS = [
     # 'corsheaders',
     # 'webpack_loader',
     'ws.apps.WsConfig',
-    'channels',
+    # 'channels',
 ]
 
 REST_FRAMEWORK = {
@@ -134,25 +134,25 @@ JWT_AUTH = {
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=1),
 }
 
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('redis', 6379)],
-        },
-        # 'CONFIG': {
-        #     'hosts':[os.environ.get('REDIS_URL', 'redis://localhost:6379')],
-        # },
-    },
-}
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('redis', 6379)],
+#         },
+#         # 'CONFIG': {
+#         #     'hosts':[os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+#         # },
+#     },
+# }
 
 
-if not DEBUG:
-    CHANNEL_LAYERS['default'].update({
-        'CONFIG': {
-            'hosts':[os.environ.get('REDIS_URL', ('redis', 6379))],
-        },
-    })
+# if not DEBUG:
+#     CHANNEL_LAYERS['default'].update({
+#         'CONFIG': {
+#             'hosts':[os.environ.get('REDIS_URL', ('redis', 6379))],
+#         },
+#     })
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

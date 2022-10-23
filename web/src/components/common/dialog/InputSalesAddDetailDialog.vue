@@ -141,7 +141,7 @@
             <b-container fluid>
                 <b-row>
                     <b-col cols="4">
-                        <b-card-sub-title>選択商品</b-card-sub-title>
+                        <b-card-title>選択商品</b-card-title>
                         <div class="selected_product_area">
                             <div v-if="selectedProduct != null">
                                 <img
@@ -159,7 +159,7 @@
                     </b-col>
                     <b-col cols="8">
                         <b-row>
-                            <b-col cols="9" class="no_margin_no_padding">
+                            <b-col cols="8" class="no_margin_no_padding">
                                 <div>
                                     <b-card-sub-title>商品名</b-card-sub-title>
                                     <div v-if="selectedProduct != null" class="selected_product_area">
@@ -168,7 +168,7 @@
                                     <div v-else class="selected_product_area">-</div>
                                 </div>
                             </b-col>
-                            <b-col cols="3" align="right" class="no_margin_no_padding">
+                            <b-col cols="2" class="no_margin_no_padding">
                                 <div>
                                     <b-card-sub-title>定価</b-card-sub-title>
                                     <div class="selected_product_area">
@@ -179,7 +179,17 @@
                                     </div>
                                 </div>
                             </b-col>
-                            <b-col cols="3" class="no_margin_no_padding">
+                            <b-col cols="2" align="center" class="no_margin_no_padding">
+                                <b-card-sub-title>商品を追加する</b-card-sub-title>
+                                <b-icon
+                                    icon="plus-square"
+                                    font-scale="1.5"
+                                    variant="success"
+                                    class="mt-2 add_sales_detail_add_product_btn"
+                                    @click="addStack"
+                                ></b-icon>
+                            </b-col>
+                            <b-col cols="2" class="no_margin_no_padding">
                                 <div>
                                     <b-card-sub-title>実価格</b-card-sub-title>
                                     <b-form-input
@@ -190,7 +200,7 @@
                                     ></b-form-input>
                                 </div>
                             </b-col>
-                            <b-col cols="2" align="right" class="no_margin_no_padding">
+                            <b-col cols="2" align="center" class="no_margin_no_padding">
                                 <b-card-sub-title>数量</b-card-sub-title>
                                 <b-form-group>
                                     <b-form-group
@@ -203,7 +213,7 @@
                                     </b-form-group>
                                 </b-form-group>
                             </b-col>
-                            <b-col align="center" class="no_margin_no_padding">
+                            <b-col cols="2" align="center" class="no_margin_no_padding">
                                 <!-- <b-card-sub-title>税率</b-card-sub-title>
                                 <b-form-group>
                                     <b-form-group
@@ -225,27 +235,30 @@
                                     ></b-form-checkbox-group>
                                 </b-form-group>
                             </b-col>
-                            <b-col align="center" class="no_margin_no_padding">
+                            <b-col cols="2" align="center" class="no_margin_no_padding">
                                 <b-card-sub-title>ボトル登録</b-card-sub-title>
-                                <b-form-group>
-                                    <b-form-checkbox-group
-                                        v-model="isBottle"
-                                        :options=bottleOptions
-                                        buttons
-                                        :disabled=!isDrink
-                                        bg-variant="success"
-                                    ></b-form-checkbox-group>
-                                </b-form-group>
+                                <b-button
+                                    v-if="bottleCustomerInfo == null"
+                                    variant="primary"
+                                    @click="addBottleCustomerInfo(0)"
+                                    :disabled=isBottleCustomerDisabled
+                                >
+                                    顧客選択
+                                </b-button>
+                                <b-button
+                                    v-else
+                                    variant="danger"
+                                    @click="bottleCustomerInfo = null"
+                                >
+                                    選択解除
+                                </b-button>
                             </b-col>
-                            <b-col align="center" class="no_margin_no_padding">
-                                <b-card-sub-title>商品を追加する</b-card-sub-title>
-                                <b-icon
-                                    icon="plus-square"
-                                    font-scale="1.5"
-                                    variant="success"
-                                    class="mt-2 add_sales_detail_add_product_btn"
-                                    @click="addStack"
-                                ></b-icon>
+                            <b-col class="no_margin_no_padding">
+                                <div>
+                                    <b-card-sub-title>ボトル登録会員</b-card-sub-title>
+                                    <div v-if="bottleCustomerInfo != null">{{ bottleCustomerInfo.name | truncate(15) }}</div>
+                                    <div v-else>-</div>
+                                </div>
                             </b-col>
                         </b-row>
                     </b-col>
@@ -274,6 +287,7 @@
                                         <th>数量</th>
                                         <th>課税</th>
                                         <th>ボトル登録</th>
+                                        <th>ボトル登録会員</th>
                                         <!-- <th>備考</th> -->
                                         <th></th>
                                     </tr>
@@ -309,14 +323,28 @@
                                             ></v-checkbox>
                                         </td>
                                         <td>
-                                            <!-- <span v-if="item.bottle">有</span>
-                                            <span v-else>無</span> -->
-                                            <v-checkbox
+                                            <!-- <v-checkbox
                                                 class="mt-3"
                                                 v-model="item.bottle"
-                                            ></v-checkbox>
+                                            ></v-checkbox> -->
+                                            <b-button
+                                                v-if="item.customer == null"
+                                                variant="primary"
+                                                @click="addBottleCustomerInfo(1, id)"
+                                                :disabled=isBottleCustomerDisabledRow(item)
+                                            >
+                                                顧客選択
+                                            </b-button>
+                                            <b-button
+                                                v-else
+                                                variant="danger"
+                                                @click="deleteCustomerSelectedProductList(id)"
+                                            >
+                                                選択解除
+                                            </b-button>
                                         </td>
-                                        <!-- <td>{{ item.remarks }}</td> -->
+                                        <td v-if="item.customer != null">{{ item.customer.name }}</td>
+                                        <td v-else>-</td>
                                         <td>
                                             <b-icon
                                                 icon="dash-square"
@@ -369,6 +397,16 @@
                 </b-row>
             </b-container>
         </template>
+
+        <InputSalesSelectCustomerDialog
+            ref="inputSalesSelectCustomerDialog"
+            :customerList="customerList"
+            @selectCustomer="selectCustomer"
+            @selectCustomerProductList="selectCustomerProductList"
+            msg="ボトル登録を行う会員を選択してください。"
+            title="ボトル登録会員選択"
+        />
+
     </b-modal>
 </template>
 
@@ -378,6 +416,7 @@ import { mapGetters } from 'vuex'
 import { Const } from '@/assets/js/const'
 const Con = new Const()
 import InputSalesAddDetailDialogHeader from '@/components/common/dialog/parts/InputSalesAddDetailDialogHeader'
+import InputSalesSelectCustomerDialog from '@/components/common/dialog/InputSalesSelectCustomerDialog'
 import SelectForm from '@/components/common/parts/SelectForm'
 import Decimal from 'decimal.js'
 import utilsMixin from '@/mixins/utils'
@@ -385,15 +424,24 @@ import utilsMixin from '@/mixins/utils'
 export default {
     name: 'InputSalesAddDetailDialogItem',
     props: {
+        customerList: {
+            type: Array,
+            required: true,
+            default: () => ([]),
+        },
     },
     components: {
         InputSalesAddDetailDialogHeader,
+        InputSalesSelectCustomerDialog,
         SelectForm,
     },
     data: () => ({
         dialog: false,
         selected: {},
-        isBottle: [],
+
+        // ボトル登録する会員 2022/10/23
+        bottleCustomerInfo: null,
+
         quantity: 1,
         actuallyPrice: 0,
         bottleOptions: [
@@ -430,6 +478,13 @@ export default {
             'productByCategory',
             'popularProduct',
         ]),
+        isBottleCustomerDisabled () {
+            if (this.customerList.length == 0 ||
+                !this.isDrink) {
+                return true
+            }
+            return false
+        },
         isDisabled () {
             if (this.selectedProductList.length > 0) return false
             return this.selectedProduct == null
@@ -523,11 +578,12 @@ export default {
         },
         add () {
             if (this.selectedProductList.length > 0) {
-                this.$eventHub.$emit('addSalesDetailList', this.selectedProductList)
+                // console.log('this.selectedProductList.length > 0 => addSalesDetailList')
+                // console.log('this.selectedProductList', this.selectedProductList)
+                this.$emit('addSalesDetailList', this.selectedProductList)
                 this.close()
                 return
             }
-
 
             let actuallyTaxPrice = 0
 
@@ -548,15 +604,15 @@ export default {
                 quantity: this.quantity,
                 totalPrice: this.totalPrice,
                 totalTaxPrice: this.totalTaxPrice,
-                bottle: this.isBottle.length != 0,
                 thumbnail: product.thumbnail,
                 category: product.category,
                 // remarks: this.remarks,
                 product: product,
+                bottle: this.bottleCustomerInfo != null,
+                customer: this.bottleCustomerInfo,
             }
             this.init()
-            this.$eventHub.$emit('addSalesDetail', data)
-            console.log('★', data)
+            this.$emit('addSalesDetail', data)
             this.close()
         },
         init () {
@@ -565,10 +621,11 @@ export default {
             this.selectedProduct = null
             this.selectedProductList = []
             // this.remarks = ''
-            this.actuallyPrice = 0
-            this.isBottle = []
             this.quantity = 1
             this.taxation = [1]
+            this.actuallyPrice = 0
+
+            this.bottleCustomerInfo = null
         },
         select (item) {
             if (this.isAppointed(item)) return
@@ -585,7 +642,7 @@ export default {
             // console.log('this.popularProduct.top', this.popularProduct.top)
             // console.log('this.productByCategory', this.productByCategory)
             // console.log('item.productType', item.productType)
-            console.log('item', item)
+            // console.log('item', item)
 
             // this.productByCategoryList = this.popularProduct.top[item.productType]
 
@@ -602,12 +659,9 @@ export default {
             this.selectedProductType = item.productType
         },
         selectProduct (item) {
-            console.log('selectProduct', item)
+            // console.log('selectProduct', item)
             this.selectedProduct = item
             this.actuallyPrice = item.price
-            if (!this.isDrink) {
-                this.isBottle = []
-            }
         },
 
         // filterProductCategory (data) {
@@ -639,7 +693,7 @@ export default {
                 actuallyTaxPrice = Number(this.actuallyPrice)
             }
 
-            console.log('product', product)
+            // console.log('product', product)
 
             const data = {
                 name: product.name,
@@ -651,22 +705,24 @@ export default {
                 quantity: this.quantity,
                 totalPrice: this.totalPrice,
                 totalTaxPrice: this.totalTaxPrice,
-                bottle: this.isBottle.length != 0,
                 thumbnail: product.thumbnail,
                 category: product.category,
                 // remarks: this.remarks,
                 product: product,
+                bottle: this.bottleCustomerInfo != null,
+                customer: this.bottleCustomerInfo,
             }
             this.selectedProductList.push(data)
             this.selectedProduct = null
             // this.remarks = ''
             this.quantity = 1
             this.tax = Con.SALES_TAX
-            this.isBottle = []
             this.taxation = [1]
+            this.actuallyPrice = 0
+            this.bottleCustomerInfo = null
         },
         deleteProduct (id) {
-            console.log('deleteProduct', id, this.selectedProductList)
+            // console.log('deleteProduct', id, this.selectedProductList)
             this.selectedProductList.splice(id, 1)
         },
         changePage (pageNumber) {
@@ -680,7 +736,33 @@ export default {
             this.dispItems = slicedArray[0]
             this.rows = this.productByCategoryList.length
             this.currentPage = 1
-        }
+        },
+        addBottleCustomerInfo (val, updateIdx) {
+            this.$refs.inputSalesSelectCustomerDialog.open(val, updateIdx)
+        },
+        selectCustomer (idx) {
+            this.bottleCustomerInfo = this.customerList[idx]
+        },
+        selectCustomerProductList (idx, updateIdx) {
+            this.selectedProductList[updateIdx].customer = this.customerList[idx]
+        },
+        deleteCustomerSelectedProductList (idx) {
+            // console.log('this.selectedProductList', this.selectedProductList)
+            this.selectedProductList[idx].customer = null
+        },
+        isBottleCustomerDisabledRow (item) {
+            // console.log('isBottleCustomerDisabledRow', item)
+            if (item.product.category.large_category == 1 &&
+                item.product.category.middle_category == 0)
+            {
+                if (item.product.category.small_category != 4) {
+                    return false
+                } else {
+                    return true
+                }
+            }
+            return true
+        },
     },
     mixins: [
         utilsMixin

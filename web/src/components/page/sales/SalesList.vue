@@ -453,12 +453,15 @@
                             <b v-if="data.value">有</b>
                             <b v-else>フリー</b>
                         </template>
-                        <template #cell(customer_name)="data">
-                            <b>{{ data.value | truncate(10) }}</b>
+                        <template #cell(customer_no_list)="data">
+                            <b>{{ dispCustomerInfo(data.value) }}</b>
                         </template>
-                        <template #cell(customer_name_kana)="data">
-                            <b>{{ data.value | truncate(10) }}</b>
+                        <template #cell(customer_name_list)="data">
+                            <b>{{ dispCustomerInfo(data.value) }}</b>
                         </template>
+                        <!-- <template #cell(customer_name_kana)="data">
+                            <b>{{ data.value | truncate(10) }}</b>
+                        </template> -->
                         <template #cell(douhan)="data">
                             <b v-if="data.value">有</b>
                             <b v-else>無</b>
@@ -995,20 +998,20 @@ export default {
                 sortable: true,
             },
             {
-                key: 'customer_no',
+                key: 'customer_no_list',
                 label: '会員No',
                 sortable: true,
             },
             {
-                key: 'customer_name',
+                key: 'customer_name_list',
                 label: '顧客名',
                 sortable: true,
             },
-            {
-                key: 'customer_name_kana',
-                label: '顧客名(カナ)',
-                sortable: true,
-            },
+            // {
+            //     key: 'customer_name_kana',
+            //     label: '顧客名(カナ)',
+            //     sortable: true,
+            // },
             {
                 key: 'total_visitors',
                 label: '来店人数',
@@ -1194,7 +1197,7 @@ export default {
         },
         inputSearchCustomerNo (item) {
             console.log('inputSearchCustomerNo', item)
-            this.filterIncludedField = ['customer_no']
+            this.filterIncludedField = ['customer_no_list']
             this.filter = item
         },
         inputSearchSalesNo (item) {
@@ -1206,6 +1209,12 @@ export default {
             console.log('inputSearchAccountDate', item)
             this.filterIncludedField = ['account_date']
             this.filter = item.split('-').join('/')
+        },
+        dispCustomerInfo (arr) {
+            if (arr.length <= 1) {
+                return arr[0]
+            }
+            return String(arr[0]) + '、他' + String(arr.length-1) + '人'
         },
     },
     mixins: [

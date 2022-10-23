@@ -140,7 +140,7 @@ export default {
     watch: {
         'credentials.username': function (val) {
             let reg = /^[a-zA-Z0-9]+$/
-            console.log('val', val)
+            // console.log('val', val)
             if (val == null) {
                 this.usernameError = ''
                 return
@@ -208,10 +208,10 @@ export default {
                 || !this.passState
                 || this.usernameError.length != 0
                 || this.passwordError.length != 0) {
-                    console.log('値がおかしい')
+                    // console.log('値がおかしい')
                 return
             }
-            console.log('ログイン試行')
+            // console.log('ログイン試行')
             this.checkAuthToken(this.credentials)
             .then(res => {
                 this.initState()
