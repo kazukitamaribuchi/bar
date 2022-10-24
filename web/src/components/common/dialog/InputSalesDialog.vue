@@ -1645,10 +1645,12 @@ export default {
 
             if (this.inputFixedPrice) {
                 for (const item of this.customerInfo) {
+                    let amountPaid = item.amountPaid
                     salesPayment.push({
+                        customer_pk: item.id,
                         customer_no: item.customer_no,
                         name: item.name,
-                        amount_paid: item.amountPaid,
+                        amount_paid: amountPaid,
                         payment: item.cardPayment,
                         basic_plan_card_tax: item.basicPlanCardTax,
                     })
@@ -1656,6 +1658,7 @@ export default {
             } else {
                 for (const item of this.customerInfo) {
                     salesPayment.push({
+                        customer_pk: item.id,
                         customer_no: item.customer_no,
                         name: item.name,
                         amount_paid: 0,
@@ -1781,14 +1784,16 @@ export default {
             // 入力しなければ、一番上の会員がpayment全額、他は0
             let salesPayment = []
 
-            let fixedTotalTaxSales = (this.inputFixedPrice) ? this.totalTaxPrice : this.totalAmountPaid
+            let fixedTotalTaxSales = (!this.inputFixedPrice) ? this.totalTaxPrice : this.totalAmountPaid
 
             if (this.inputFixedPrice) {
                 for (const item of this.customerInfo) {
+                    let amountPaid = item.amountPaid
                     salesPayment.push({
+                        customer_pk: item.id,
                         customer_no: item.customer_no,
                         name: item.name,
-                        amount_paid: item.amountPaid,
+                        amount_paid: amountPaid,
                         payment: item.cardPayment,
                         basic_plan_card_tax: item.basicPlanCardTax,
                     })
@@ -1796,6 +1801,7 @@ export default {
             } else {
                 for (const item of this.customerInfo) {
                     salesPayment.push({
+                        customer_pk: item.id,
                         customer_no: item.customer_no,
                         name: item.name,
                         amount_paid: 0,
@@ -1830,7 +1836,7 @@ export default {
                 sales_detail_list: salesDetailList,
                 fixed_total_tax_sales: fixedTotalTaxSales,
             }
-            console.log('data', data)
+            console.log('update sales data', data)
 
             this.waitServerResponse = true
 
@@ -2084,12 +2090,13 @@ export default {
                 for (const p of data.sales_payment) {
                     if (c.customer_no == p.customer.customer_no) {
                         c.amountPaid = p.amount_paid
-                        c.cardPayment = p.pamynet
+                        c.cardPayment = (p.payment == 1) ? true : false
                         c.basicPlanCardTax = p.basic_plan_card_tax
                     }
                 }
             }
             this.customerInfo = c_list
+            this.calcTotalAmountPaid()
             // console.log('this.customerInfo', this.customerInfo)
 
             this.inputSalesData.maleVisitors = data.male_visitors
@@ -2156,12 +2163,15 @@ export default {
                     price: salesDetailItem.product.price,
                     product: salesDetailItem.product,
                     quantity: salesDetailItem.quantity,
-                    taxation: salesDetailItem.tax_free_flg,
+                    taxation: !salesDetailItem.tax_free_flg,
                     totalPrice: salesDetailItem.total_price,
                 })
             }
             this.inputSalesDetailData = service_detail_list
+            this.inputSalesDetailData.push({})
+            this.inputSalesDetailData.pop()
             console.log('this.inputSalesDetailData', this.inputSalesDetailData)
+            console.log('this.customerInfo', this.customerInfo)
         },
         // checkCustomerNo () {
         //     const val = this.inputSalesData.customerNo
@@ -2465,6 +2475,70 @@ export default {
         //     }
         //     return false
         // },
+        // updateTotalTaxPrice () {
+        //     / 総計(税抜)
+        //     let totalPrice = 0
+        //     // 総計(税込)
+        //     let totalTaxPrice = 0
+        //
+        //     // 明細の総計
+        //     let totalDetailPrice = 0
+        //     // サービス料金総計
+        //     let totalServicePrice = 0
+        //
+        //     // 課税の明細総計
+        //     let totalTaxDetailPrice = 0
+        //     // 非課税の明細総計
+        //     let totalTaxFreeDetailPrice = 0
+        //
+        //     // console.log('this.inputSalesDetailData', this.inputSalesDetailData)
+        //
+        //     // 明細の計算
+        //     for (const item of this.inputSalesDetailData) {
+        //         if (item.taxation) {
+        //             // console.log('課税対象')
+        //             // 課税
+        //             totalTaxDetailPrice += item.actuallyPrice * item.quantity
+        //         } else {
+        //             // console.log('非課税')
+        //             // 非課税
+        //             totalTaxFreeDetailPrice += item.actuallyPrice * item.quantity
+        //         }
+        //     }
+        //     // 明細の合計(税抜)
+        //     totalDetailPrice = (totalTaxDetailPrice + totalTaxFreeDetailPrice)
+        //
+        //     // サービス料金の計算
+        //     const normal1 = this.inputSalesData.basicPlanPrice1 * this.inputSalesData.basicPlanNum1
+        //     const normal2 = this.inputSalesData.basicPlanPrice2 * this.inputSalesData.basicPlanNum2
+        //     const extention1 = this.inputSalesData.basicPlanExtentionPrice1 * this.inputSalesData.basicPlanExtentionNum1
+        //     const extention2 = this.inputSalesData.basicPlanExtentionPrice2 * this.inputSalesData.basicPlanExtentionNum2
+        //     // サービス料金の合計(税抜)
+        //     totalServicePrice += (normal1 + normal2 + extention1 + extention2)
+        //
+        //     // 非課税は単純に全て足して算出
+        //     totalPrice += (totalDetailPrice + totalServicePrice)
+        //
+        //     let cardTax = 0
+        //
+        //     // 課税分の計算
+        //     if (!this.inputFixedPrice) {
+        //         cardTax = this.inputSalesData.basicPlanCardTax
+        //     }
+        //
+        //     let taxRate = this.inputSalesData.basicPlanServiceTax + this.inputSalesData.basicPlanTax + cardTax
+        //     // 課税対象の明細と税抜のサービス料金に税をかける
+        //     let taxTargetPrice = totalTaxDetailPrice + totalServicePrice
+        //     totalTaxPrice += this.roundDown(taxTargetPrice + taxTargetPrice * (taxRate/100))
+        //     // 非課税分は単純に足す
+        //     totalTaxPrice += totalTaxFreeDetailPrice
+        //
+        //     // 諸々セット
+        //     this.setTotalPrice(totalPrice)
+        //     this.setTotalDetailPrice(totalDetailPrice)
+        //     this.setTotalSerivicePrice(totalServicePrice)
+        //     return totalTaxPrice
+        // }
     },
     mixins: [
         customerMixin,

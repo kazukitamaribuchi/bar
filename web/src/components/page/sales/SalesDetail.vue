@@ -118,7 +118,6 @@
                                 </b-card-title>
                                 <b-table
                                     dark
-
                                     striped
                                     :items="salesData.sales_payment"
                                     :fields="salesPaymentDetailFields"

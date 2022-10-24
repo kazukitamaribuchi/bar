@@ -1087,7 +1087,7 @@ class SalesViewSet(BaseModelViewSet):
 
         for sales_payment_dict in request.data['sales_payment']:
             try:
-                customer = MCustomer.objects.get(pk=sales_payment_dict['customer_no'])
+                customer = MCustomer.objects.get(pk=sales_payment_dict['customer_pk'])
             except MCustomer.DoesNotExist:
                 logger.error('sales_paymentの顧客情報取得で失敗')
             sales_payment_list.append(
@@ -1267,6 +1267,8 @@ class SalesViewSet(BaseModelViewSet):
         seat_id = request.data['seat_id']
         total_sales = request.data['total_sales']
         total_tax_sales = request.data['total_tax_sales']
+        fixed_total_tax_sales = request.data['fixed_total_tax_sales']
+
         basic_plan_service_tax = request.data['basic_plan_service_tax']
         basic_plan_tax = request.data['basic_plan_tax']
         # basic_plan_card_tax = request.data['basic_plan_card_tax']
@@ -1320,6 +1322,8 @@ class SalesViewSet(BaseModelViewSet):
         header.user = user
         header.total_sales = total_sales
         header.total_tax_sales = total_tax_sales
+        header.fixed_total_tax_sales = fixed_total_tax_sales
+
         header.close_flg = True
         # header.payment = payment
         header.basic_plan_service_tax = basic_plan_service_tax
@@ -1348,8 +1352,11 @@ class SalesViewSet(BaseModelViewSet):
         sales_payment_list = []
 
         for sales_payment_dict in request.data['sales_payment']:
+            logger.debug('sales_payment_dict')
+            logger.debug(sales_payment_dict)
+
             try:
-                customer = MCustomer.objects.get(pk=sales_payment_dict['customer_no'])
+                customer = MCustomer.objects.get(pk=sales_payment_dict['customer_pk'])
             except MCustomer.DoesNotExist:
                 logger.error('sales_paymentの顧客情報取得で失敗')
             sales_payment_list.append(
@@ -1361,6 +1368,8 @@ class SalesViewSet(BaseModelViewSet):
                     basic_plan_card_tax=sales_payment_dict['basic_plan_card_tax'],
                 )
             )
+
+        SalesPayment.objects.bulk_create(sales_payment_list)
 
         open_date = leave_time
 
