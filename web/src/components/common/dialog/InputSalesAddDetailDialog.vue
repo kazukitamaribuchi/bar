@@ -159,7 +159,7 @@
                     </b-col>
                     <b-col cols="8">
                         <b-row>
-                            <b-col cols="8" class="no_margin_no_padding">
+                            <b-col cols="7" class="no_margin_no_padding">
                                 <div>
                                     <b-card-sub-title>商品名</b-card-sub-title>
                                     <div v-if="selectedProduct != null" class="selected_product_area">
@@ -168,7 +168,7 @@
                                     <div v-else class="selected_product_area">-</div>
                                 </div>
                             </b-col>
-                            <b-col cols="2" class="no_margin_no_padding">
+                            <b-col cols="3" class="no_margin_no_padding">
                                 <div>
                                     <b-card-sub-title>定価</b-card-sub-title>
                                     <div class="selected_product_area">
@@ -179,7 +179,7 @@
                                     </div>
                                 </div>
                             </b-col>
-                            <b-col cols="2" align="center" class="no_margin_no_padding">
+                            <b-col cols="2" class="no_margin_no_padding">
                                 <b-card-sub-title>商品を追加する</b-card-sub-title>
                                 <b-icon
                                     icon="plus-square"
@@ -189,7 +189,7 @@
                                     @click="addStack"
                                 ></b-icon>
                             </b-col>
-                            <b-col cols="2" class="no_margin_no_padding">
+                            <b-col cols="3" class="no_margin_no_padding">
                                 <div>
                                     <b-card-sub-title>実価格</b-card-sub-title>
                                     <b-form-input
@@ -197,23 +197,34 @@
                                         type="number"
                                         placeholder="実価格"
                                         required
+                                        class="input_sales_detail_form_input"
                                     ></b-form-input>
                                 </div>
                             </b-col>
-                            <b-col cols="2" align="center" class="no_margin_no_padding">
+                            <b-col cols="1" class="no_margin_no_padding"/>
+                            <b-col cols="1" class="no_margin_no_padding">
                                 <b-card-sub-title>数量</b-card-sub-title>
                                 <b-form-group>
                                     <b-form-group
                                         class="add_sales_detail_quantity_wrap"
                                     >
+                                        <!-- {{ item.quantity }} -->
+                                        <!-- <b-form-spinbutton
+                                            v-model="quantity"
+                                            inline
+                                            min=1
+                                            size="sm"
+                                        ></b-form-spinbutton> -->
+
                                         <SelectForm
-                                            :optionType=99
+                                            :optionType=13
                                             v-model="quantity"
                                         />
                                     </b-form-group>
                                 </b-form-group>
                             </b-col>
-                            <b-col cols="2" align="center" class="no_margin_no_padding">
+                            <b-col cols="1" class="no_margin_no_padding"/>
+                            <b-col cols="2" class="no_margin_no_padding">
                                 <!-- <b-card-sub-title>税率</b-card-sub-title>
                                 <b-form-group>
                                     <b-form-group
@@ -235,7 +246,7 @@
                                     ></b-form-checkbox-group>
                                 </b-form-group>
                             </b-col>
-                            <b-col cols="2" align="center" class="no_margin_no_padding">
+                            <b-col cols="2" class="no_margin_no_padding">
                                 <b-card-sub-title>ボトル登録</b-card-sub-title>
                                 <b-button
                                     v-if="bottleCustomerInfo == null"
@@ -253,10 +264,10 @@
                                     選択解除
                                 </b-button>
                             </b-col>
-                            <b-col class="no_margin_no_padding">
+                            <b-col cols="2" class="no_margin_no_padding">
                                 <div>
-                                    <b-card-sub-title>ボトル登録会員</b-card-sub-title>
-                                    <div v-if="bottleCustomerInfo != null">{{ bottleCustomerInfo.name | truncate(15) }}</div>
+                                    <b-card-sub-title>登録会員</b-card-sub-title>
+                                    <div v-if="bottleCustomerInfo != null">{{ bottleCustomerInfo.name | truncate(8) }}</div>
                                     <div v-else>-</div>
                                 </div>
                             </b-col>
@@ -277,17 +288,17 @@
                     <b-card v-if="selectedProductList.length > 0">
                         <b-container fluid>
                             <b-row>
-                                <b-card-title class="mb-4">
+                                <b-card-title class="mb-4" style="padding-left: 0;">
                                     選択商品一覧
                                 </b-card-title>
-                                <table>
+                                <table >
                                     <tr>
                                         <th>商品名</th>
                                         <th>実価格</th>
                                         <th>数量</th>
                                         <th>課税</th>
                                         <th>ボトル登録</th>
-                                        <th>ボトル登録会員</th>
+                                        <th>登録会員</th>
                                         <!-- <th>備考</th> -->
                                         <th></th>
                                     </tr>
@@ -295,32 +306,42 @@
                                         v-for="(item, id) in selectedProductList"
                                         :key=id
                                     >
-                                        <td>{{ item.name }}</td>
-                                        <td>
+                                        <td width="35%">{{ item.name }}</td>
+                                        <td width="20%">
                                             <!-- {{ item.actuallyPrice | priceLocaleString }} -->
                                             <b-form-input
                                                 v-model="item.actuallyPrice"
                                                 type="number"
                                                 required
-                                                style="width: 90%;"
+                                                class="input_sales_detail_form_input"
                                             ></b-form-input>
                                         </td>
-                                        <td>
+                                        <td width="7%">
                                             <!-- {{ item.quantity }} -->
-                                            <b-form-spinbutton
+                                            <!-- <b-form-spinbutton
                                                 v-model="item.quantity"
                                                 inline
                                                 min=1
                                                 size="sm"
-                                            ></b-form-spinbutton>
+                                            ></b-form-spinbutton> -->
+                                            <SelectForm
+                                                :optionType=13
+                                                v-model="item.quantity"
+                                            />
                                         </td>
-                                        <td>
+                                        <td width="10%">
                                             <!-- <span v-if="item.taxation">課税</span>
                                             <span v-else>非課税</span> -->
-                                            <v-checkbox
+                                            <!-- <v-checkbox
                                                 class="mt-3"
                                                 v-model="item.taxation"
-                                            ></v-checkbox>
+                                            ></v-checkbox> -->
+                                            <b-form-checkbox-group
+                                                v-model="item.taxation"
+                                                :options=taxationOptions
+                                                buttons
+                                                bg-variant="success"
+                                            ></b-form-checkbox-group>
                                         </td>
                                         <td>
                                             <!-- <v-checkbox
@@ -522,7 +543,7 @@ export default {
             for (const i in this.selectedProductList) {
                 // let q = new Decimal(this.selectedProductList[i].quantity)
                 let q = this.selectedProductList[i].quantity
-                if (!this.selectedProductList[i].taxation) {
+                if (this.selectedProductList[i].taxation.length == 0) {
                     // TAX無しの場合
                     totalTaxFree += Math.ceil(q * Number(this.selectedProductList[i].actuallyPrice))
                     // total += Math.ceil(q.times(this.selectedProductList[i].actuallyPrice).toNumber())
@@ -577,6 +598,7 @@ export default {
             this.add()
         },
         add () {
+
             if (this.selectedProductList.length > 0) {
                 // console.log('this.selectedProductList.length > 0 => addSalesDetailList')
                 // console.log('this.selectedProductList', this.selectedProductList)
@@ -681,6 +703,8 @@ export default {
             this.addStack()
         },
         addStack () {
+            console.log('addStack', this.taxation)
+
             const product = this.selectedProduct
 
             if (product == null) return
@@ -701,7 +725,7 @@ export default {
                 actuallyPrice: Number(this.actuallyPrice),
                 actuallyTaxPrice: actuallyTaxPrice,
                 taxRate: this.tax,
-                taxation: this.taxation.length != 0,
+                taxation: this.taxation,
                 quantity: this.quantity,
                 totalPrice: this.totalPrice,
                 totalTaxPrice: this.totalTaxPrice,
@@ -752,6 +776,11 @@ export default {
         },
         isBottleCustomerDisabledRow (item) {
             // console.log('isBottleCustomerDisabledRow', item)
+
+            if (this.customerList.length == 0) {
+                return true
+            }
+
             if (item.product.category.large_category == 1 &&
                 item.product.category.middle_category == 0)
             {
@@ -876,5 +905,9 @@ export default {
     .no_margin_no_padding {
         margin: 0;
         padding: 0;
+    }
+
+    .input_sales_detail_form_input {
+        width: 170px;
     }
 </style>

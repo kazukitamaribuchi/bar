@@ -9,7 +9,7 @@ export default {
             baseURL: process.env.NODE_ENV !== 'production' ? 'http://localhost:8000/' : `${process.env.VUE_APP_AUTH_REDIRECT_URI}/`,
             xsrfCookieName:'csrftoken',
 			xsrfHeaderName: 'X-CSRFTOKEN',
-			timeout: 10000,
+			timeout: 30000,
             // headers: {
 			// 	common: {
 			// 		'Content-Type': 'application/json;charset=utf-8',

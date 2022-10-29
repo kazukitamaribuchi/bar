@@ -128,9 +128,9 @@
                                             {{ data.value | priceLocaleString }}
                                         </div>
                                     </template>
-                                    <template #cell(basic_plan_card_tax)="data">
-                                        <div v-if="data.value==0">-</div>
-                                        <div v-else>{{ data.value }}%</div>
+                                    <template #cell(basic_plan_card_tax)>
+                                        <div>{{ dispBasicPlanCardTax }}%</div>
+                                        <!-- <div v-else>{{ dispBasicPlanCardTax }}</div> -->
                                     </template>
                                 </b-table>
                             </b-row>
@@ -189,7 +189,6 @@
                                 </b-card-title>
                                 <b-table
                                     dark
-
                                     striped
                                     :items="salesData.sales_service_detail"
                                     :fields="salesServiceDetailFields"
@@ -447,6 +446,16 @@ export default {
         ...mapGetters([
             'sales',
         ]),
+        dispBasicPlanCardTax () {
+            if (this.salesData != null) {
+                if (this.salesData.sales_payment.length > 1) {
+                    return '-'
+                } else if (this.salesData.sales_payment.length == 1) {
+                    return this.salesData.sales_payment[0].basic_plan_card_tax
+                }
+            }
+            return '-'
+        },
     },
     created () {
         // 検索から詳細きてうまくいかせるやり方わかったら、↓の様にstoreから取得する方法に切り替え

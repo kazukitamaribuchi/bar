@@ -446,7 +446,7 @@
                                                         一般料金
                                                     </td>
                                                     <td class="width20">
-                                                        <b-input-group>
+                                                        <b-input-group class="input_sales_form_input">
                                                             <b-form-input
                                                                 v-model="inputSalesData.basicPlanPrice1"
                                                                 type="number"
@@ -454,7 +454,6 @@
                                                             ></b-form-input>
                                                         </b-input-group>
                                                     </td>
-                                                    <td class="width5"/>
                                                     <td class="width30">
                                                         <b-form-spinbutton
                                                             v-model="inputSalesData.basicPlanNum1"
@@ -469,7 +468,7 @@
                                                         割引料金
                                                     </td>
                                                     <td class="width20">
-                                                        <b-input-group>
+                                                        <b-input-group class="input_sales_form_input">
                                                             <b-form-input
                                                                 v-model="inputSalesData.basicPlanPrice2"
                                                                 type="number"
@@ -477,7 +476,6 @@
                                                             ></b-form-input>
                                                         </b-input-group>
                                                     </td>
-                                                    <td class="width5"/>
                                                     <td class="width30">
                                                         <b-form-spinbutton
                                                             v-model="inputSalesData.basicPlanNum2"
@@ -501,7 +499,7 @@
                                                         一般料金
                                                     </td>
                                                     <td class="width20">
-                                                        <b-input-group>
+                                                        <b-input-group class="input_sales_form_input">
                                                             <b-form-input
                                                                 v-model="inputSalesData.basicPlanExtentionPrice1"
                                                                 type="number"
@@ -509,7 +507,6 @@
                                                             ></b-form-input>
                                                         </b-input-group>
                                                     </td>
-                                                    <td class="width5"/>
                                                     <td class="width30">
                                                         <b-form-spinbutton
                                                             v-model="inputSalesData.basicPlanExtentionNum1"
@@ -524,7 +521,7 @@
                                                         割引料金
                                                     </td>
                                                     <td class="width20">
-                                                        <b-input-group>
+                                                        <b-input-group class="input_sales_form_input">
                                                             <b-form-input
                                                                 v-model="inputSalesData.basicPlanExtentionPrice2"
                                                                 type="number"
@@ -532,7 +529,6 @@
                                                             ></b-form-input>
                                                         </b-input-group>
                                                     </td>
-                                                    <td class="width5"/>
                                                     <td class="width30">
                                                         <b-form-spinbutton
                                                             v-model="inputSalesData.basicPlanExtentionNum2"
@@ -590,7 +586,10 @@
                             </b-col>
                         </b-row>
                     </b-form-group>
-                    <table v-if="inputSalesDetailData.length > 0">
+                    <table
+                        v-if="inputSalesDetailData.length > 0"
+                        class="input_sales_detail_table"
+                    >
                         <tr>
                             <th>商品名</th>
                             <th>定価</th>
@@ -598,12 +597,13 @@
                             <th>数量</th>
                             <th>課税</th>
                             <th>ボトル登録</th>
-                            <th>ボトル登録会員</th>
+                            <th>登録会員</th>
                             <th></th>
                         </tr>
                         <tr
                             v-for="(item, id) in inputSalesDetailData"
                             :key=id
+                            class="input_sales_detail_tr"
                         >
                             <td>
                                 <span>{{ item.name | truncate(20) }}</span>
@@ -612,7 +612,7 @@
                                 {{ item.price | priceLocaleString }}
                             </td>
 
-                            <td>
+                            <td class="input_sales_form_input">
                                 <b-form-input
                                     v-model="item.actuallyPrice"
                                     type="number"
@@ -620,18 +620,28 @@
                                 ></b-form-input>
                             </td>
                             <td>
-                                <b-form-spinbutton
+                                <SelectForm
+                                    :optionType=13
+                                    v-model="item.quantity"
+                                />
+                                <!-- <b-form-spinbutton
                                     v-model="item.quantity"
                                     inline
                                     min=1
                                     size="sm"
-                                ></b-form-spinbutton>
+                                ></b-form-spinbutton> -->
                             </td>
                             <td>
-                                <v-checkbox
+                                <!-- <v-checkbox
                                     class="mt-3"
                                     v-model="item.taxation"
-                                ></v-checkbox>
+                                ></v-checkbox> -->
+                                <b-form-checkbox-group
+                                    v-model="item.taxation"
+                                    :options=taxationOptions
+                                    buttons
+                                    bg-variant="success"
+                                ></b-form-checkbox-group>
                             </td>
                             <td>
                                 <div v-if="!isBottleCustomerDisabledRow(item)">
@@ -641,14 +651,14 @@
                                         @click="addBottleCustomerInfo(2, id)"
                                         :disabled="customerInfo == null || customerInfo.length == 0"
                                     >
-                                        顧客選択
+                                        選択
                                     </b-button>
                                     <b-button
                                         v-else
                                         variant="danger"
                                         @click="deleteCustomerSelectedProductList(id)"
                                     >
-                                        選択解除
+                                        解除
                                     </b-button>
                                 </div>
                                 <div v-else>-</div>
@@ -844,22 +854,22 @@
                             target="fixed_payment_info_icon"
                             title="実際に支払った価格を入力してください。"
                         ></b-tooltip>
-                        <b-row>
+                        <b-row class="mt-5">
                             <b-col cols="2">
-                                会員No
+                                <b-card-sub-title>会員No</b-card-sub-title>
+                            </b-col>
+                            <b-col cols="5">
+                                <b-card-sub-title>名前</b-card-sub-title>
                             </b-col>
                             <b-col cols="3">
-                                名前
-                            </b-col>
-                            <b-col cols="3">
-                                支払額
+                                <b-card-sub-title>支払額</b-card-sub-title>
                             </b-col>
                             <b-col cols="2">
-                                カード支払い
+                                <b-card-sub-title>カード支払い</b-card-sub-title>
                             </b-col>
-                            <b-col cols="2">
+                            <!-- <b-col cols="2">
                                 カード手数料
-                            </b-col>
+                            </b-col> -->
                         </b-row>
                         <!-- <b-row>
                             <b-col cols="2">
@@ -893,7 +903,7 @@
                             <b-col cols="2">
                                 No. {{ item.customer_no }}
                             </b-col>
-                            <b-col cols="3">
+                            <b-col cols="5">
                                 {{ item.name }}
                             </b-col>
                             <b-col cols="3">
@@ -903,6 +913,7 @@
                                     v-model="item.amountPaid"
                                     @change="calcTotalAmountPaid"
                                     min="0"
+                                    class="input_sales_form_input"
                                 ></b-form-input>
                             </b-col>
                             <b-col cols="2">
@@ -912,12 +923,12 @@
                                     @change="changeCardPayment(item.cardPayment, i)"
                                 ></v-checkbox>
                             </b-col>
-                            <b-col cols="2">
+                            <!-- <b-col cols="2">
                                 <SelectForm
                                     :dispOptions="basicPlanServiceTaxList"
                                     v-model="item.basicPlanCardTax"
                                 />
-                            </b-col>
+                            </b-col> -->
                         </b-row>
                         <b-row>
                             <b-col cols="7">
@@ -1249,13 +1260,11 @@ export default {
         basicPriceMenu: [
             { text: '料金種別', class: 'width20' },
             { text: '金額', class: 'width20' },
-            { text: '', class: 'width5' },
             { text: '数量', class: 'width30' },
         ],
         extentionPriceMenu: [
             { text: '延長料金', class: 'width20' },
             { text: '金額', class: 'width20' },
-            { text: '', class: 'width5' },
             { text: '数量', class: 'width30' }
         ],
         basicPlanOptions: [
@@ -1265,6 +1274,9 @@ export default {
         basicPlanServiceTaxList: [
             { text: '10%', value: 10 },
             { text: '0%', value: 0 },
+        ],
+        taxationOptions: [
+            { text: '課税', value: 1 }
         ],
         errorMsg: [],
         // customerNoError: '',
@@ -1356,7 +1368,7 @@ export default {
 
             // 明細の計算
             for (const item of this.inputSalesDetailData) {
-                if (item.taxation) {
+                if (item.taxation.length != 0) {
                     // console.log('課税対象')
                     // 課税
                     totalTaxDetailPrice += item.actuallyPrice * item.quantity
@@ -1526,7 +1538,11 @@ export default {
                 if (oldValue > 0 && newValue == 0) {
                     this.totalVisitorsError = '来店客数を入力してください'
                 } else if (newValue > 0) {
-                    this.totalVisitorsError = ''
+                    if (this.customerInfo.length > newValue) {
+                        this.totalVisitorsError = '選択されている会員数以上を入力してください'
+                    } else {
+                        this.totalVisitorsError = ''
+                    }
                 }
                 this.calcBasicPlanDetail()
             }
@@ -1588,7 +1604,8 @@ export default {
                     id: item.product.id,
                     quantity: item.quantity,
                     fixed_price: item.actuallyPrice,
-                    tax_free_flg: item.taxation == false,
+                    // tax_free_flg: item.taxation == false,
+                    tax_free_flg: item.taxation.length == 0,
                     bottle: item.customer != null,
                     customer: item.customer,
                 })
@@ -1732,7 +1749,8 @@ export default {
                     id: item.product.id,
                     quantity: item.quantity,
                     fixed_price: item.actuallyPrice,
-                    tax_free_flg: item.taxation == false,
+                    // tax_free_flg: item.taxation == false,
+                    tax_free_flg: item.taxation.length == 0,
                     bottle: item.customer != null,
                     customer: item.customer,
                 })
@@ -2033,6 +2051,7 @@ export default {
             console.log('addCustomer', data)
             this.customerInfo.push(data)
             this.updateBottleInfo()
+            this.checkTotalVisitors()
         },
         updateCustomer (data, index) {
             console.log('updateCustomer', data)
@@ -2062,6 +2081,7 @@ export default {
             }
             this.updateBottleInfo()
             this.updateSelectedProductList()
+            this.checkTotalVisitors()
         },
         deleteSalesDetail (index) {
             this.inputSalesDetailData.splice(index, 1)
@@ -2163,7 +2183,7 @@ export default {
                     price: salesDetailItem.product.price,
                     product: salesDetailItem.product,
                     quantity: salesDetailItem.quantity,
-                    taxation: !salesDetailItem.tax_free_flg,
+                    taxation: (!salesDetailItem.tax_free_flg) ? [1] : [],
                     totalPrice: salesDetailItem.total_price,
                 })
             }
@@ -2469,6 +2489,13 @@ export default {
             }
             return true
         },
+        checkTotalVisitors () {
+            if (this.totalVisitors < this.customerInfo.length) {
+                this.totalVisitorsError = '選択されている会員数以上を入力してください'
+            } else {
+                this.totalVisitorsError = ''
+            }
+        },
         // isSalesDetailBottleCustomerDisabled () {
         //     if (this.customerInfo == null || this.customerInfo.length == 0) {
         //         return true
@@ -2697,6 +2724,16 @@ export default {
 
     .input_sales_delete_product_btn {
         cursor: pointer;
+    }
+
+    .input_sales_detail_table {
+        .input_sales_detail_tr td{
+            padding-right: 20px;
+        }
+    }
+
+    .input_sales_form_input {
+        width: 170px;
     }
 
 </style>
