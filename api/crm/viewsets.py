@@ -18,7 +18,7 @@ from django.db.models.functions import (
 
 from django.db.models.functions import (
     Concat,
-    Lower,
+    # Lower,
 )
 
 from datetime import (
@@ -407,7 +407,8 @@ class CustomerViewSet(BaseModelViewSet):
             Q(close_flg=True) &
             Q(visit_time__range=[two_month_ago, today])
         ).values(
-            customer=Lower('sales_payment_sales_header__customer')
+            # customer=Lower('sales_payment_sales_header__customer')
+            customer=F('sales_payment_sales_header__customer') # 20221030検証up時lowerで落ちた・・・そもそもいらんかも
         ))
 
         activeCustomer = SalesHeader.objects.filter(
@@ -416,7 +417,8 @@ class CustomerViewSet(BaseModelViewSet):
             Q(close_flg=True) &
             Q(visit_time__range=[two_month_ago, today])
         ).values(
-            customer=Lower('sales_payment_sales_header__customer')
+            # customer=Lower('sales_payment_sales_header__customer')
+            customer=F('sales_payment_sales_header__customer')
         ).annotate(
             cnt=models.Count(F('sales_payment_sales_header__customer'))
         ).order_by('-cnt')
@@ -442,6 +444,7 @@ class CustomerViewSet(BaseModelViewSet):
         try:
             customer = MCustomer.objects.get(
                 card__customer_no=request.query_params['customer_no'],
+                delete_flg=False,
                 # 削除されていたらどうする？
             )
             return Response({
@@ -1689,7 +1692,8 @@ class SalesViewSet(BaseModelViewSet):
             Q(close_flg=True) &
             Q(leave_time__range=[start_time, end_time])
         ).values(
-            customer=Lower('sales_payment_sales_header__customer')
+            # customer=Lower('sales_payment_sales_header__customer')
+            customer=F('sales_payment_sales_header__customer')
         ).annotate(
             total=models.Sum(F('sales_payment_sales_header__amount_paid')),
             total_visit=models.Count(F('sales_payment_sales_header__amount_paid'))
@@ -1824,7 +1828,8 @@ class SalesViewSet(BaseModelViewSet):
                 logger.error('顧客情報の取得に失敗しました。')
 
         data = queryset.values(
-            customer=Lower('sales_payment_sales_header__customer')
+            # customer=Lower('sales_payment_sales_header__customer')
+            customer=F('sales_payment_sales_header__customer')
         ).annotate(
             models.Count(F('customer'))
         ).values(
@@ -1940,21 +1945,35 @@ class SalesViewSet(BaseModelViewSet):
                 int(sales_separate_time_m),
             ).astimezone(timezone('Asia/Tokyo'))
 
+            # logger.debug('★target_dateの24時間分取得')
+
             for hour in range(0, 24):
 
                 end_time = start_time + timedelta(hours=1)
+                # logger.debug(start_time)
+                # logger.debug(end_time)
 
-                data = SalesDetail.objects.filter(
-                    # Q(header__sales_payment_sales_header__customer__delete_flg=False) &
-                    Q(header__delete_flg=False) &
-                    Q(header__close_flg=True) &
+                data = SalesHeader.objects.filter(
                     Q(delete_flg=False) &
-                    Q(order_time__gte=start_time) &
-                    Q(order_time__lte=end_time)
+                    Q(close_flg=True) &
+                    Q(leave_time__gte=start_time) &
+                    Q(leave_time__lt=end_time)
                 ).aggregate(
-                    total=Coalesce(models.Sum(F('fixed_price')), 0),
-                    total_visit=models.Count(F('header__sales_payment_sales_header__customer'))
+                    total=Coalesce(models.Sum(F('fixed_total_tax_sales')), 0),
+                    total_visit=models.Count(F('sales_payment_sales_header__customer'))
                 )
+
+                # data = SalesDetail.objects.filter(
+                #     # Q(header__sales_payment_sales_header__customer__delete_flg=False) &
+                #     Q(header__delete_flg=False) &
+                #     Q(header__close_flg=True) &
+                #     Q(delete_flg=False) &
+                #     Q(order_time__gte=start_time) &
+                #     Q(order_time__lte=end_time)
+                # ).aggregate(
+                #     total=Coalesce(models.Sum(F('fixed_price')), 0),
+                #     total_visit=models.Count(F('header__sales_payment_sales_header__customer'))
+                # )
                 data['time'] = start_time.strftime('%H:%M') + ' ~ ' + end_time.strftime('%H:%M')
                 res.append(data)
                 start_time = start_time + timedelta(hours=1)
@@ -2074,7 +2093,8 @@ class SalesViewSet(BaseModelViewSet):
                 Q(close_flg=True) &
                 Q(delete_flg=False)
             ).values(
-                customer=Lower('sales_payment_sales_header__customer')
+                # customer=Lower('sales_payment_sales_header__customer')
+                customer=F('sales_payment_sales_header__customer')
             ).annotate(
                 total=models.Sum(F('sales_payment_sales_header__amount_paid')),
                 total_visit=models.Count(F('sales_payment_sales_header__amount_paid'))

@@ -22,6 +22,7 @@ const salesMutations = {
     },
     deleteSalesList (state, payload) {
         if (state.sales != undefined) {
+            console.log('deleteSalesList', payload)
             const index = state.sales.findIndex(s => s.id === payload.id)
             if (index !== -1) state.sales = state.sales.filter((_, i) => i !== index)
         }

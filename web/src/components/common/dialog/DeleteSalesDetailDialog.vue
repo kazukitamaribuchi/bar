@@ -37,9 +37,15 @@ export default {
         },
         deleteSalesDetail () {
             this.deleteSalesListAction(this.salesDetail)
-            this.dialog = false
-            this.$router.push('/sales')
-            this.salesDetail = {}
+            .then(res => {
+                this.dialog = false
+                this.$router.push('/sales')
+                this.salesDetail = {}
+            })
+            .catch(e => {
+                console.log(e)
+                this.dialog = false
+            })
         }
     }
 }

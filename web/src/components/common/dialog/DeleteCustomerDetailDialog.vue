@@ -37,9 +37,15 @@ export default {
         },
         deleteCustomerDetail () {
             this.deleteCustomerListAction(this.customerDetail)
-            this.dialog = false
-            this.$router.push('/customer')
-            this.customerDetail = {}
+            .then(res => {
+                this.dialog = false
+                this.$router.push('/customer')
+                this.customerDetail = {}
+            })
+            .catch(e => {
+                console.log(e)
+                this.dialog = false
+            })
         }
     }
 }

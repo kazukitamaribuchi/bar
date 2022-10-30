@@ -226,7 +226,7 @@
                                     >商品情報</label>
                                     <b-container>
                                         <b-row>
-                                            <b-col cols="7">
+                                            <b-col cols="6">
                                                 <div style="display: flex;">
                                                     <div>
                                                         <img
@@ -245,7 +245,7 @@
                                                             {{ selectedBottle.name }}
                                                         </b-card-title>
                                                         <b-card-sub-title style="font-size: 12px;">
-                                                            {{ selectedBottle.price }}
+                                                            定価: {{ selectedBottle.price | priceLocaleString }}
                                                         </b-card-sub-title>
                                                     </div>
                                                     <div class="mt-2" style="margin-left: 15px;" v-else>
@@ -258,7 +258,7 @@
                                                     </div>
                                                 </div>
                                             </b-col>
-                                            <b-col cols="3">
+                                            <b-col cols="4">
                                                 <b-card-sub-title>
                                                     開封日
                                                 </b-card-sub-title>

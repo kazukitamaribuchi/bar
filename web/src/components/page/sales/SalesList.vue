@@ -1179,7 +1179,7 @@ export default {
                 url: '/api/sales/get_all_sales/',
             })
             .then(res => {
-                // console.log(res.data)
+                console.log('getAllSales res', res.data)
                 this.setSalesList(res.data.sales)
                 const count = res.data.count
                 this.totalRows = count

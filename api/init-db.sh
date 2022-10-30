@@ -18,4 +18,4 @@ python manage.py loaddata fixture-product.json
 python manage.py loaddata fixture-service.json
 
 python manage.py create_admin
-python manage.py runserver 0.0.0.0:8000
+# python manage.py runserver 0.0.0.0:8000

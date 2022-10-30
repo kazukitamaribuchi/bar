@@ -50,4 +50,3 @@ urllib3==1.26.9
 uWSGI==2.0.20
 whitenoise==5.2.0
 zope.interface==5.4.0
-python-dev-tools==2022.5.27

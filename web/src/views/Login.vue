@@ -1,7 +1,7 @@
 <template>
     <div id="login_wrap">
         <b-card
-            title="Login Test"
+            title="Login"
             class="login_card"
         >
             <b-form>
