@@ -113,7 +113,7 @@
         created () {
 
             // データ取得の基準日/開始日（オープンの9/1以降にする
-            const open = dayjs('2022-08-01')
+            const open = dayjs('2022-09-01')
 
             const now = dayjs()
 

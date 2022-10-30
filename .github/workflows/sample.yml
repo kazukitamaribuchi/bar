@@ -2,17 +2,12 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "master" ]
-
-# env:
-#   SECRET_KEY: ${{ secrets.SECRET_KEY }}
-#   NODE_ENV: production
-#   VUE_APP_AUTH_REDIRECT_URI: ${{ secrets.VUE_APP_AUTH_REDIRECT_URI }}
+    branches: [ "release" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 15
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -38,21 +33,14 @@ jobs:
           rm -rf node_modules package-lock.json && npm install
           yarn build
           docker ps
-      - name: check dist
-        run: | #
-          cd web/dist
-          ls
-      - name: check dist static
-        run: | #
-          cd web/dist/static
-          ls
       - name: move files
         run: | #
+          ls
           mv web/dist/templates/index.html api/templates
-          mv web/dist/static/css api/staticfiles/
-          mv web/dist/static/fonts api/staticfiles/
-          mv web/dist/static/img api/staticfiles/
-          mv web/dist/static/js api/staticfiles/
+          rm -r api/staticfiles
+          rm -r api/static
+          mv web/dist/static api/.
+          mv api/static api/staticfiles
           cd api
           ls
       - name: check static
@@ -67,36 +55,32 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           python3 manage.py collectstatic
+      # - name: move Dockerfile
+      #   run: | #
+      #     mv api/Dockerfile_actions ./
+      #     ls
+      #     mv ./Dockerfile_actions ./Dockerfile
+      #     mv api/requirements.txt ./
       - name: heroku release
-        run : | #
-          ls
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          # heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          # heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          heroku_app_name: "alphapos-test"
+          heroku_email: "kazuki.tamaribuchi2@gmail.com"
+          docker_heroku_process_type: "web"
+          appdir: "api"
+          usedocker: true
 
-  # test:
-  # deploy:
-  #   needs:
-  #     - build
-  #     # - test
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 7
-  #   steps:
-  #     - name: checkout
-  #       uses: actions/checkout@v3
-  #     - name: heroku deploy
-  #       uses: akhileshns/heroku-deploy@v3.12.12
-  #       with:
-  #         heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-  #         heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-  #         heroku_email: ${{ secrets.HEROKU_EMAIL }}
-  #         usedocker: true
-  #         docker_build_args: |
-  #           NODE_ENV
-  #       env:
-  #         NODE_ENV: production
-  #         # SECRET_KEY: ${{ secrets.MY_SECRET_KEY }}
-  #     - name: deploy
-  #       runs: | #
-  #         ls
-  #         cd web
-  #         ls
-  #         cd dist
-  #         ls
+
+      # - name: heroku release2
+      #   uses: gonuit/heroku-docker-deploy@v1.3.3
+      #   with:
+      #     email: ${{ secrets.HEROKU_EMAIL }}
+      #     heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+      #     heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+      #     dockerfile_directory: api/
+      #     dockerfile_name: Dockerfile_actions
+      #     docker_options: "--no-cache"
+      #     process_type: web

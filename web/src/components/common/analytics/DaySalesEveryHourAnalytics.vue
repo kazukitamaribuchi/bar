@@ -53,45 +53,10 @@
         },
         data: () => ({
             daySalesEveryHourChartOptions: {
-                // title: {
-                //     text: '顧客別売上',
-                //     align: 'left',
-                //     style: {
-                //         fontSize:  '14px',
-                //         fontWeight:  'bold',
-                //         fontFamily:  undefined,
-                //         color:  '#ffffff'
-                //     },
-                // },
                 chart: {
                   type: 'line',
                   height: 270,
-                  // toolbar: {
-                  //     show: false,
-                  // },
-                  // zoom: {
-                  //   enabled: false
-                  // }
                 },
-                // responsive: [{
-                //   breakpoint: 480,
-                //   options: {
-                //     legend: {
-                //       position: 'bottom',
-                //       offsetX: -10,
-                //       offsetY: 0
-                //     }
-                //   }
-                // }],
-                // plotOptions: {
-                //     bar: {
-                //         horizontal: false,
-                //         borderRadius: 10,
-                //         dataLabels: {
-                //             position: 'bottom', // top, center, bottom
-                //         },
-                //     },
-                // },
                 xaxis: {
                     type: 'category',
                     // position: 'top',
@@ -116,31 +81,58 @@
                     // tooltip: {
                     //     enabled: true,
                     // },
-                    // labels: {
-                    //     style: {
-                    //         fontSize: '12px',
-                    //         colors: ["#ffffff"]
-                    //     },
-                    //     datetimeFormatter: {
-                    //         year: 'yyyy年',
-                    //         month: "M月",
-                    //         day: 'M月dd日',
-                    //         hour: 'HH:mm',
-                    //     },
-                    //     datetimeUTC: false,
-                    // }
+                    labels: {
+                        style: {
+                            fontSize: '12px',
+                            colors: ["#ffffff"]
+                        },
+                        // datetimeFormatter: {
+                        //     year: 'yyyy年',
+                        //     month: "M月",
+                        //     day: 'M月dd日',
+                        //     hour: 'HH:mm',
+                        // },
+                        // datetimeUTC: false,
+                    }
                 },
                 yaxis: [
                     {
                         title: {
                             text: '売上',
+                            style: {
+                                color: '#fff',
+                            }
+                        },
+                        labels: {
+                            style: {
+                                colors: ['#fff'],
+                            }
                         },
                     },
                     {
                         opposite: true,
                         title: {
-                            text: '来店数'
-                        }
+                            text: '来店数',
+                            style: {
+                                color: '#fff',
+                            }
+                        },
+                        labels: {
+                            style: {
+                                colors: ['#fff'],
+                            }
+                        },
+                        // axisBorder: {
+                        //     color: '#fff',
+                        // },
+                        // axisTicks: {
+                        //     color: '#fff',
+                        // },
+                        // crosshairs: {
+                        //     stroke: {
+                        //         color: '#b6b6b6',
+                        //     }
+                        // }
                     }
                 ],
                 // dataLabels: {
@@ -190,7 +182,10 @@
                 legend: {
                     position: 'right',
                     offsetX: 0,
-                    offsetY: 50
+                    offsetY: 50,
+                    labels: {
+                        colors: ['#ffffff', '#ffffff']
+                    }
                 },
                 fill: {
                     opacity: 0.9
@@ -231,7 +226,7 @@
         beforeCreate () {
         },
         created () {
-            // console.log('★get_sales_by_every_time_analytics')
+            // console.log('★get_sales_by_every_time_analytics this.targetDate', this.targetDate)
             this.$axios({
                 method: 'GET',
                 url: '/api/sales/get_sales_by_every_time_analytics/',
@@ -241,7 +236,7 @@
                 }
             })
             .then(res => {
-                // console.log('res',res)
+                // console.log('sales_by_every_time_analytics res',res)
                 this.setDaySalesEveryHourData(res.data)
             })
             .catch(e => {

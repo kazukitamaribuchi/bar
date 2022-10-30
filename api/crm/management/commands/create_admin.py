@@ -15,9 +15,9 @@ class Command(createsuperuser.Command):
 
     def handle(self, *args, **options):
         options.setdefault('interactive', False)
-        username = 'admin'
-        email = 'admin@gmail.com'
-        password = 'admin'
+        username = 'adnakamuramin'
+        email = 'adnakamuramin@gmail.com'
+        password = 'adnakamuramin'
         database = options.get('database')
 
         try:

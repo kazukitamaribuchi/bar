@@ -18,16 +18,20 @@ const salesActions = {
         })
     },
     deleteSalesListAction (ctx, kwargs) {
-        Vue.prototype.$axios({
-            url: `/api/sales/${kwargs.id}/`,
-            method: 'DELETE',
-        })
-        .then(res => {
-            console.log(res)
-            this.commit('deleteSalesList', kwargs)
-        })
-        .catch(e => {
-            console.log(e)
+        return new Promise((resolve, reject) => {
+            Vue.prototype.$axios({
+                url: `/api/sales/${kwargs.id}/`,
+                method: 'DELETE',
+            })
+            .then(res => {
+                console.log('deleteSalesListAction res', res, ' kwargs', kwargs)
+                this.commit('deleteSalesList', kwargs)
+                resolve(res)
+            })
+            .catch(e => {
+                console.log(e)
+                reject(e)
+            })
         })
     }
 }

@@ -201,15 +201,16 @@
                 const data = item.data
                 let categories = []
                 let series = []
+                console.log('item', item)
                 for (const i in data) {
-                    categories.push(data[i].customer.name)
+                    categories.push(data[i].sales_payment[0].customer.name)
                     let visitTime = dayjs(data[i].visit_time).valueOf()
                     let leaveTime = dayjs(data[i].leave_time).valueOf()
                     if (visitTime == leaveTime) {
                         leaveTime += 60000
                     }
                     series.push({
-                        x: data[i].customer.name,
+                        x: data[i].sales_payment[0].customer.name,
                         y: [
                             visitTime,
                             leaveTime,

@@ -138,10 +138,14 @@
                     <b-card-text v-else>{{ data.value }}</b-card-text>
                 </template>
 
-                <template #cell(end_flg)="data">
+                <template #cell(product_name)="data">
+                    <b-card-text>{{ data.value }}</b-card-text>
+                </template>
+
+                <!-- <template #cell(end_flg)="data">
                     <b-card-text v-if="data.value">消込</b-card-text>
                     <b-card-text v-else>-</b-card-text>
-                </template>
+                </template> -->
 
                 <template #cell(actions)="row">
                     <!-- <b-button size="sm" @click="row.toggleDetails">
@@ -286,21 +290,21 @@ export default {
                 sortable: true,
                 label: '顧客名',
             },
-            {
-                key: 'customer_name_kana',
-                sortable: true,
-                label: '顧客名(カナ)',
-            },
+            // {
+            //     key: 'customer_name_kana',
+            //     sortable: true,
+            //     label: '顧客名(カナ)',
+            // },
             {
                 key: 'open_date',
                 sortable: true,
                 label: '開封日',
             },
-            {
-                key: 'end_flg',
-                sortable: true,
-                label: '消込',
-            },
+            // {
+            //     key: 'end_flg',
+            //     sortable: true,
+            //     label: '消込',
+            // },
             {
                 key: 'end_date',
                 sortable: true,
@@ -416,7 +420,8 @@ export default {
             this.filter = item
         },
         inputSearchCustomerName (item) {
-            this.filterIncludedField = ['customer_name', 'customer_name_kana']
+            // this.filterIncludedField = ['customer_name', 'customer_name_kana']
+            this.filterIncludedField = ['customer_name']
             this.filter = item
         },
         initFilterParams () {

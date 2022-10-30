@@ -19,102 +19,10 @@
                     >
                         <b-container fluid>
                             <b-row>
-                                <b-col cols="4">
+                                <div style="display: flex; justify-content: space-between;">
                                     <b-card-title>
-                                        売上詳細
+                                        伝票情報
                                     </b-card-title>
-                                    <b-card-sub-title>
-                                        伝票No{{ salesData.id }}
-                                    </b-card-sub-title>
-                                    <div
-                                        @click="toCustomerDetail"
-                                        style="display: flex; margin-left: 30px; margin-top: 20px; cursor: pointer;"
-                                    >
-                                        <div>
-                                            <img
-                                                src="@/static/img/男性3.jpg"
-                                                class="sales_detail_customer"
-                                                style="position: relative; top: -8px; left: -5px;"
-                                            >
-                                        </div>
-                                        <div class="mt-3" style="margin-left: 15px;">
-                                            <b>
-                                                {{ salesData.customer.name }}
-                                            </b>
-                                            <b-card-sub-title>
-                                                {{ getStrInData(salesData.customer.name_kana) }}
-                                            </b-card-sub-title>
-                                        </div>
-                                    </div>
-                                </b-col>
-                                <b-col cols="2">
-                                    <b-card-sub-title>
-                                        年齢
-                                    </b-card-sub-title>
-                                    <b-card-text>
-                                        {{ getStrInData(salesData.customer.age) }} 歳
-                                    </b-card-text>
-                                    <b-card-sub-title>
-                                        誕生日
-                                    </b-card-sub-title>
-                                    <b-card-text>
-                                        {{ getStrInData(salesData.customer.birthday) }}
-                                        <span
-                                            v-if="salesData.customer.birthday == salesData.account_date"
-                                        >
-                                            <img
-                                                src="@/static/img/ケーキ.png"
-                                                class="sales_detail_customer_birthday">
-                                        </span>
-                                    </b-card-text>
-                                    <b-card-sub-title>
-                                        ランク
-                                    </b-card-sub-title>
-                                    <b-card-text>
-                                        {{ salesData.customer.rank_name }}
-                                    </b-card-text>
-                                </b-col>
-                                <b-col cols="2">
-                                    <b-card-sub-title>
-                                        会社
-                                    </b-card-sub-title>
-                                    <b-card-text>
-                                        {{ getStrInData(salesData.customer.company) | truncate(20) }}
-                                    </b-card-text>
-                                    <b-card-sub-title>
-                                        職業
-                                    </b-card-sub-title>
-                                    <b-card-text>
-                                        {{ getStrInData(salesData.customer.job) | truncate(20) }}
-                                    </b-card-text>
-                                    <b-card-sub-title>
-                                        電話番号
-                                    </b-card-sub-title>
-                                    <b-card-text>
-                                        {{ getStrInData(salesData.customer.phone) | truncate(20) }}
-                                    </b-card-text>
-                                </b-col>
-                                <b-col cols="2">
-                                    <b-card-sub-title>
-                                        メールアドレス
-                                    </b-card-sub-title>
-                                    <b-card-text>
-                                        {{ getStrInData(salesData.customer.mail) | truncate(20) }}
-                                    </b-card-text>
-                                    <b-card-sub-title>
-                                        来店時間
-                                    </b-card-sub-title>
-                                    <b-card-text>
-                                        {{ salesData.visit_time }}
-                                    </b-card-text>
-                                    <b-card-sub-title>
-                                        退店時間
-                                    </b-card-sub-title>
-                                    <b-card-text>
-                                        {{ salesData.leave_time }}
-                                    </b-card-text>
-                                </b-col>
-                                <b-col cols="2">
                                     <div style="height: 55px;">
                                         <b-button
                                             size="sm"
@@ -136,15 +44,114 @@
                                             ></b-icon> 削除
                                         </b-button>
                                     </div>
+                                </div>
+
+                                <b-col cols="2">
+                                    <b-card-sub-title>
+                                        伝票No
+                                    </b-card-sub-title>
+                                    <b-card-text>
+                                        {{ salesData.id }}
+                                    </b-card-text>
+                                </b-col>
+                                <b-col cols="2">
+                                    <b-card-sub-title>
+                                        来店人数
+                                    </b-card-sub-title>
+                                    <b-card-text>
+                                        {{ salesData.total_visitors }} 人 (男:{{ salesData.male_visitors }} 女:{{ salesData.female_visitors }})
+                                    </b-card-text>
+                                </b-col>
+                                <b-col cols="2">
+                                    <b-card-sub-title>
+                                        来店時間
+                                    </b-card-sub-title>
+                                    <b-card-text>
+                                        {{ salesData.visit_time }}
+                                    </b-card-text>
+                                </b-col>
+                                <b-col cols="2">
+                                    <b-card-sub-title>
+                                        退店時間
+                                    </b-card-sub-title>
+                                    <b-card-text>
+                                        {{ salesData.leave_time }}
+                                    </b-card-text>
+                                </b-col>
+                                <b-col cols="2">
+                                    <b-card-sub-title>
+                                        座席
+                                    </b-card-sub-title>
+                                    <b-card-text>
+                                        {{ salesData.disp_seat_name }}
+                                    </b-card-text>
+                                </b-col>
+                                <b-col cols="2">
+                                    <b-card-sub-title>
+                                        料金プラン
+                                    </b-card-sub-title>
+                                    <b-card-text>
+                                        {{ salesData.basic_plan_type.name }}
+                                    </b-card-text>
                                 </b-col>
                             </b-row>
                             <b-row class="sales_detail_top_total_sales">
+                                <b-card-title>
+                                    来店会員
+                                </b-card-title>
+                                <b-table
+                                    dark
+
+                                    striped
+                                    :items="salesData.customer_list"
+                                    :fields="salesCustomerDetailFields"
+                                    class="mb-0 pb-0"
+                                >
+                                    <template #cell(age)="data">
+                                        <div>{{ getStrInData(data.value) }}</div>
+                                    </template>
+                                </b-table>
+                            </b-row>
+                            <b-row class="sales_detail_top_total_sales">
+                                <b-card-title>
+                                    支払情報
+                                </b-card-title>
+                                <b-table
+                                    dark
+                                    striped
+                                    :items="salesData.sales_payment"
+                                    :fields="salesPaymentDetailFields"
+                                    class="mb-0 pb-0"
+                                >
+                                    <template #cell(amount_paid)="data">
+                                        <div>
+                                            {{ data.value | priceLocaleString }}
+                                        </div>
+                                    </template>
+                                    <template #cell(basic_plan_card_tax)>
+                                        <div>{{ dispBasicPlanCardTax }}%</div>
+                                        <!-- <div v-else>{{ dispBasicPlanCardTax }}</div> -->
+                                    </template>
+                                </b-table>
+                            </b-row>
+                            <b-row class="sales_detail_top_total_sales">
+                                <b-card-title>
+                                    総計
+                                </b-card-title>
                                 <b-col cols="2">
                                     <b-card-sub-title>
-                                        総計（税込）
+                                        消費税
                                     </b-card-sub-title>
                                     <b-card-title>
-                                        <b-icon icon="currency-yen"></b-icon> {{ getNumInData(salesData.total_tax_sales) | priceLocaleString }}
+                                        {{ salesData.basic_plan_tax }}%
+                                    </b-card-title>
+                                </b-col>
+                                <b-col cols="2">
+                                    <b-card-sub-title>
+                                        サービス税
+                                    </b-card-sub-title>
+                                    <b-card-title>
+                                        {{ salesData.basic_plan_service_tax }}%
                                     </b-card-title>
                                 </b-col>
                                 <b-col cols="2">
@@ -157,49 +164,19 @@
                                 </b-col>
                                 <b-col cols="2">
                                     <b-card-sub-title>
-                                        料金プラン
+                                        総計（税込）
                                     </b-card-sub-title>
-                                    <b-card-text>
-                                        {{ salesData.basic_plan_type.name }}
-                                    </b-card-text>
+                                    <b-card-title>
+                                        <b-icon icon="currency-yen"></b-icon> {{ getNumInData(salesData.total_tax_sales) | priceLocaleString }}
+                                    </b-card-title>
                                 </b-col>
                                 <b-col cols="2">
                                     <b-card-sub-title>
-                                        来店人数
+                                        支払価格
                                     </b-card-sub-title>
-                                    <b-card-text>
-                                        {{ salesData.total_visitors }} 人 (男:{{ salesData.male_visitors }} 女:{{ salesData.female_visitors }})
-                                    </b-card-text>
-                                </b-col>
-                                <b-col cols="1">
-                                    <b-card-sub-title>
-                                        座席名
-                                    </b-card-sub-title>
-                                    <b-card-text v-if="salesData.seat != null">
-                                        {{ salesData.seat.seat_name }}
-                                    </b-card-text>
-                                    <b-card-text v-else>
-                                        -
-                                    </b-card-text>
-                                </b-col>
-                                <b-col cols="1">
-                                    <b-card-sub-title>
-                                        支払い
-                                    </b-card-sub-title>
-                                    <b-card-text v-if="salesData.payment == 0">
-                                        現金
-                                    </b-card-text>
-                                    <b-card-text v-else>
-                                        カード
-                                    </b-card-text>
-                                </b-col>
-                                <b-col cols="2">
-                                    <b-card-sub-title>
-                                        税率
-                                    </b-card-sub-title>
-                                    <b-card-text>
-                                        {{ salesData.total_tax }}%
-                                    </b-card-text>
+                                    <b-card-title>
+                                        <b-icon icon="currency-yen"></b-icon> {{ getNumInData(salesData.fixed_total_tax_sales) | priceLocaleString }}
+                                    </b-card-title>
                                 </b-col>
                             </b-row>
                         </b-container>
@@ -212,28 +189,35 @@
                                 </b-card-title>
                                 <b-table
                                     dark
-                                    borderless
                                     striped
                                     :items="salesData.sales_service_detail"
                                     :fields="salesServiceDetailFields"
                                     class="mb-0 pb-0"
                                 >
-                                    <template #cell(discount_flg)="data">
+                                    <!-- <template #cell(discount_flg)="data">
                                         <div v-if="data.value">割引</div>
+                                    </template> -->
+
+                                    <template #cell(fixed_price)="data">
+                                        <div>{{ data.value | priceLocaleString }}</div>
+                                    </template>
+
+                                    <template #cell(quantity)="data">
+                                        <div>{{ data.value | priceLocaleString }}</div>
                                     </template>
 
                                     <template #cell(total_price)="data">
-                                        <div align="right">{{ data.value }}</div>
+                                        <div align="right">{{ data.value | priceLocaleString }}</div>
                                     </template>
 
                                 </b-table>
                                 <b-col cols="7" class="mt-0 pt-0">
                                 </b-col>
                                 <b-col cols="2" class="mt-2 pt-2">
-                                    総計（税抜）
+                                    小計（税抜）
                                 </b-col>
                                 <b-col cols="3" class="mt-2 pt-2" align="right">
-                                    <b-icon icon="currency-yen"></b-icon> {{ getNumInData(salesData.sales_service_detail_total_price) }}
+                                    <b-icon icon="currency-yen"></b-icon> {{ getNumInData(salesData.sales_service_detail_total_price) | priceLocaleString }}
                                 </b-col>
                                 <!-- <b-col cols="7" class="mt-0 pt-0">
                                 </b-col>
@@ -250,12 +234,17 @@
                                 </b-card-title>
                                 <b-table
                                     dark
-                                    borderless
+
                                     striped
                                     :items="salesData.sales_detail"
                                     :fields="salesDetailFields"
                                     class="mb-0 pb-0"
+                                    show-empty
+                                    empty-text="明細情報は0件です"
                                 >
+                                    <template #empty="scope">
+                                        <h6>{{ scope.emptyText }}</h6>
+                                    </template>
                                     <!-- <template #cell(cast)="data">
                                         <span v-if="data.value.icon == null">
                                             <img
@@ -272,12 +261,21 @@
                                         <span style="position: relative; left: 20px;">{{ data.value.name }}</span>
                                     </template> -->
 
-                                    <template #cell(bottle_register)="data">
+                                    <!-- <template #cell(bottle_register)="data">
                                         <div v-if="data.value">有</div>
+                                        <div v-else>-</div>
+                                    </template> -->
+
+                                    <template #cell(fixed_price)="data">
+                                        <div>{{ data.value | priceLocaleString }}</div>
+                                    </template>
+
+                                    <template #cell(quantity)="data">
+                                        <div>{{ data.value | priceLocaleString }}</div>
                                     </template>
 
                                     <template #cell(total_price)="data">
-                                        <div align="right">{{ data.value }}</div>
+                                        <div align="right">{{ data.value | priceLocaleString }}</div>
                                     </template>
 
 
@@ -285,19 +283,22 @@
                                 <b-col cols="7" class="mt-0 pt-0">
                                 </b-col>
                                 <b-col cols="2" class="mt-2 pt-2">
-                                    総計（税抜）
+                                    小計（税抜）
                                 </b-col>
                                 <b-col cols="3" class="mt-2 pt-2" align="right">
-                                    <b-icon icon="currency-yen"></b-icon> {{ getNumInData(salesData.sales_detail_total_price) }}
+                                    <b-icon icon="currency-yen"></b-icon> {{ getNumInData(salesData.sales_detail_total_price) | priceLocaleString }}
                                 </b-col>
                             </b-row>
                             <b-row class="mt-3 pt-3 sales_detail_separate">
-                                <b-card-text>
+                                <b-card-title>
                                     備考
-                                </b-card-text>
+                                </b-card-title>
                                 <b-col cols="12" class="mt-0 pt-0">
-                                    <b-card-text style="font-size: 20px; white-space: pre-line;">
+                                    <b-card-text v-if="salesData.remarks != null && salesData.remarks.length > 0" style="font-size: 20px; white-space: pre-line;">
                                         {{ salesData.remarks }}
+                                    </b-card-text>
+                                    <b-card-text v-else>
+                                        なし
                                     </b-card-text>
                                     <!-- <b-form-textarea
                                         rows="2"
@@ -344,40 +345,54 @@ export default {
         loading: false,
         salesData: {},
         editSalesData: {},
+        salesCustomerDetailFields: [
+            {
+                key: 'customer_no',
+                label: '会員No',
+            },
+            {
+                key: 'name',
+                label: '会員名',
+            },
+            {
+                key: 'age',
+                label: '年齢',
+            },
+            {
+                key: 'birthday',
+                label: '誕生日',
+            },
+            {
+                key: 'rank_name',
+                label: 'ランク',
+            },
+        ],
+        salesPaymentDetailFields: [
+            {
+                key: 'customer.customer_no',
+                label: '会員No',
+            },
+            {
+                key: 'customer.name',
+                label: '会員名',
+            },
+            {
+                key: 'amount_paid',
+                label: '支払金額',
+            },
+            {
+                key: 'disp_payment',
+                label: '支払方法',
+            },
+            {
+                key: 'basic_plan_card_tax',
+                label: 'カード手数料',
+            },
+        ],
         salesServiceDetailFields: [
             {
                 key: 'service.name',
                 label: '名称'
-            },
-            {
-                key: 'fixed_price',
-                label: '料金'
-            },
-            {
-                key: 'discount_flg',
-                label: '割引料金'
-            },
-            {
-                key: 'quantity',
-                label: '数量'
-            },
-            {
-                key: 'total_price',
-                label: '合計'
-            },
-        ],
-        salesAppointDetailFields: [
-            {
-                key: 'cast',
-                label: 'キャスト'
-            },
-            {
-                key: 'service.name',
-                label: '名称'
-            },
-            {
-                key: 'service.basic_plan_type',
-                label: '料金プラン'
             },
             {
                 key: 'fixed_price',
@@ -409,10 +424,10 @@ export default {
                 key: 'product.category.small_category_label',
                 label: '小カテゴリ'
             },
-            {
-                key: 'bottle_register',
-                label: 'ボトル登録'
-            },
+            // {
+            //     key: 'bottle_register',
+            //     label: 'ボトル登録'
+            // },
             {
                 key: 'fixed_price',
                 label: '料金'
@@ -431,6 +446,16 @@ export default {
         ...mapGetters([
             'sales',
         ]),
+        dispBasicPlanCardTax () {
+            if (this.salesData != null) {
+                if (this.salesData.sales_payment.length > 1) {
+                    return '-'
+                } else if (this.salesData.sales_payment.length == 1) {
+                    return this.salesData.sales_payment[0].basic_plan_card_tax
+                }
+            }
+            return '-'
+        },
     },
     created () {
         // 検索から詳細きてうまくいかせるやり方わかったら、↓の様にstoreから取得する方法に切り替え

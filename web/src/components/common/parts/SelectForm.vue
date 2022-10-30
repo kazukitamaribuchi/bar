@@ -7,6 +7,7 @@
             text-field="text"
             class="basic_select"
             :class="{'full_size': fullSize}"
+            :disabled="formDisabled"
         >
             <template #first v-if="initValue != ''">
                 <b-form-select-option :value="firstValue" :disabled="disabled">{{ initValue }}</b-form-select-option>
@@ -76,6 +77,11 @@ export default {
             required: false,
             default: true,
         },
+        formDisabled: {
+            type: Boolean,
+            required: false,
+            default: false,
+        },
         firstValue: {
             type: Number,
             required: false,
@@ -122,6 +128,7 @@ export default {
                 Con.MONTH, // 10
                 this.birthdayYearMonthDay, // 11
                 Con.OPTIONS_BASIC_PLAN_TYPE_LIST2, // 12
+                Con.OPTIONS_NUM_NO_ZERO, // 13
             ]
             if (this.optionType != 99) return OPT[this.optionType]
 
@@ -153,6 +160,7 @@ export default {
                 '月',
                 '日',
                 '',
+                '',
             ]
 
             if (this.optionType != 99) return val[this.optionType]
@@ -172,10 +180,11 @@ export default {
         .basic_select {
             background: white;
             border-radius: 3px;
-            border: 1px solid rgba(125, 125, 125, 0.6);
-            padding: 3px 20px 3px 7px;
+            border: 1px solid rgba(175, 175, 175, 0.6);
+            padding: 6px 20px 6px 7px;
             font-size: 16px;
             font-weight: 200;
+
         }
     }
 

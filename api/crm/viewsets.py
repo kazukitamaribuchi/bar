@@ -16,7 +16,10 @@ from django.db.models.functions import (
     TruncMonth,
 )
 
-from django.db.models.functions import Concat
+from django.db.models.functions import (
+    Concat,
+    # Lower,
+)
 
 from datetime import (
     datetime,
@@ -73,6 +76,7 @@ from .sub_models import (
     # AttendanceManagement,
     BookingManagement,
     # QuestionAnswer,
+    SalesPayment,
 )
 
 from .exceptions import (
@@ -399,22 +403,24 @@ class CustomerViewSet(BaseModelViewSet):
 
         logger.debug(SalesHeader.objects.filter(
             Q(delete_flg=False) &
-            Q(customer__delete_flg=False) &
+            # Q(sales_payment_sales_header__customer__delete_flg=False) &
             Q(close_flg=True) &
             Q(visit_time__range=[two_month_ago, today])
         ).values(
-            'customer'
+            # customer=Lower('sales_payment_sales_header__customer')
+            customer=F('sales_payment_sales_header__customer') # 20221030検証up時lowerで落ちた・・・そもそもいらんかも
         ))
 
         activeCustomer = SalesHeader.objects.filter(
             Q(delete_flg=False) &
-            Q(customer__delete_flg=False) &
+            # Q(sales_payment_sales_header__customer__delete_flg=False) &
             Q(close_flg=True) &
             Q(visit_time__range=[two_month_ago, today])
         ).values(
-            'customer'
+            # customer=Lower('sales_payment_sales_header__customer')
+            customer=F('sales_payment_sales_header__customer')
         ).annotate(
-            cnt=models.Count(F('customer'))
+            cnt=models.Count(F('sales_payment_sales_header__customer'))
         ).order_by('-cnt')
 
         logger.debug('activeCustomer')
@@ -438,6 +444,7 @@ class CustomerViewSet(BaseModelViewSet):
         try:
             customer = MCustomer.objects.get(
                 card__customer_no=request.query_params['customer_no'],
+                delete_flg=False,
                 # 削除されていたらどうする？
             )
             return Response({
@@ -974,7 +981,7 @@ class SalesViewSet(BaseModelViewSet):
     def get_all_sales(self, request):
 
         sales = self.get_queryset().filter(
-            Q(customer__delete_flg=False) &
+            # Q(sales_payment_sales_header__customer__delete_flg=False) &
             Q(close_flg=True) &
             Q(delete_flg=False)
         ).order_by('-leave_time')
@@ -998,18 +1005,20 @@ class SalesViewSet(BaseModelViewSet):
 
         user = mUser.objects.get(pk=1)
 
-        customer_no = request.data['customer_no']
-        customer = None
-        if customer_no != None and customer_no != '':
-            try:
-                customer = MCustomer.objects.get(card__customer_no=customer_no)
+        sales_payment_list = []
 
-            except MCustomer.DoesNotExist:
-                logger.error('顧客情報が取得出来ません。')
-                return Response(status=status.HTTP_400_BAD_REQUEST)
-        else:
-            logger.error('会員IDが正しくありません')
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        # customer_no = request.data['customer_no']
+        # customer = None
+        # if customer_no != None and customer_no != '':
+        #     try:
+        #         customer = MCustomer.objects.get(card__customer_no=customer_no)
+        #
+        #     except MCustomer.DoesNotExist:
+        #         logger.error('顧客情報が取得出来ません。')
+        #         return Response(status=status.HTTP_400_BAD_REQUEST)
+        # else:
+        #     logger.error('会員IDが正しくありません')
+        #     return Response(status=status.HTTP_400_BAD_REQUEST)
 
         male_visitors = request.data['male_visitors']
         female_visitors = request.data['female_visitors']
@@ -1020,6 +1029,7 @@ class SalesViewSet(BaseModelViewSet):
         basic_plan_service_tax = request.data['basic_plan_service_tax']
         basic_plan_tax = request.data['basic_plan_tax']
         basic_plan_card_tax = request.data['basic_plan_card_tax']
+        fixed_total_tax_sales = request.data['fixed_total_tax_sales']
         remarks = request.data['remarks']
 
         try:
@@ -1046,18 +1056,20 @@ class SalesViewSet(BaseModelViewSet):
                 return Response(status=status.HTTP_400_BAD_REQUEST)
 
         # 支払い方法は必要？★
-        payment = request.data['payment']
-
-        try:
-            payment = MPayment.objects.get(pk=payment)
-        except MPayment.DoesNotExist:
-            logger.error('支払い方法が取得出来ません')
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        # payment = request.data['payment']
+        #
+        # try:
+        #     payment = MPayment.objects.get(pk=payment)
+        # except MPayment.DoesNotExist:
+        #     logger.error('支払い方法が取得出来ません')
+        #     return Response(status=status.HTTP_400_BAD_REQUEST)
 
         logger.debug('★★★★★★★★header作成するよーーーーーー')
 
+        # SalesPayment作成
+
         header = SalesHeader.objects.create(
-            customer=customer,
+            # customer=customer, 2022/10/17 顧客事の会計が複数紐づく様に変更
             male_visitors=male_visitors,
             female_visitors=female_visitors,
             seat=seat,
@@ -1069,13 +1081,31 @@ class SalesViewSet(BaseModelViewSet):
             total_sales=total_sales,
             total_tax_sales=total_tax_sales,
             close_flg=True,
-            payment=payment,
+            # payment=payment,
             basic_plan_service_tax=basic_plan_service_tax,
             basic_plan_tax=basic_plan_tax,
-            basic_plan_card_tax=basic_plan_card_tax,
+            # basic_plan_card_tax=basic_plan_card_tax,
+            fixed_total_tax_sales=fixed_total_tax_sales,
         )
 
-        logger.debug('ヘッダー作れた～～～～～～～～～～～～')
+        for sales_payment_dict in request.data['sales_payment']:
+            try:
+                customer = MCustomer.objects.get(pk=sales_payment_dict['customer_pk'])
+            except MCustomer.DoesNotExist:
+                logger.error('sales_paymentの顧客情報取得で失敗')
+            sales_payment_list.append(
+                SalesPayment(
+                    sales_header=header,
+                    customer=customer,
+                    amount_paid=sales_payment_dict['amount_paid'],
+                    payment=sales_payment_dict['payment'],
+                    basic_plan_card_tax=sales_payment_dict['basic_plan_card_tax'],
+                )
+            )
+
+        SalesPayment.objects.bulk_create(sales_payment_list)
+
+        logger.debug('SalesHeader, SalesPayment生成完了')
 
         # bulk_create用
         sales_service_detail_list = []
@@ -1142,24 +1172,32 @@ class SalesViewSet(BaseModelViewSet):
 
             if 'bottle' in item and item['bottle'] == True:
                 if item['id'] not in registered_bottle_product_list:
-                    bottle_list.append(
-                        BottleManagement(
-                            customer=customer,
-                            open_date=leave_time,
-                            product=product,
-                        )
-                    )
-                    disp_bottle_list.append(
-                        BottleSerializer(
+                    if 'customer' in item and item['customer'] != None:
+                        logger.debug('★ボトル登録')
+                        try:
+                            bottleCustomer = MCustomer.objects.get(pk=item['customer']['customer_no'])
+                        except MCustomer.DoesNotExist:
+                            logger.error('sales_detailのボトル登録の顧客情報取得で失敗')
+                            continue
+
+                        bottle_list.append(
                             BottleManagement(
-                                customer=customer,
+                                customer=bottleCustomer,
                                 open_date=leave_time,
                                 product=product,
                             )
-                        ).data
-                    )
-                    salesDetailInstance.bottle_register = True
-                    registered_bottle_product_list.append(item['id'])
+                        )
+                        # disp_bottle_list.append(
+                        #     BottleSerializer(
+                        #         BottleManagement(
+                        #             customer=bottleCustomer,
+                        #             open_date=leave_time,
+                        #             product=product,
+                        #         )
+                        #     ).data
+                        # )
+                        salesDetailInstance.bottle_register = True
+                        registered_bottle_product_list.append(item['id'])
 
             logger.debug('＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿')
 
@@ -1175,13 +1213,18 @@ class SalesViewSet(BaseModelViewSet):
             SalesDetail.objects.bulk_create(sales_detail_list)
 
         # 顧客のランク更新
-        total_sales_for_rank = SalesHeader.objects.filter(
-            customer=customer
-        ).aggregate(total=Coalesce(models.Sum(F('total_tax_sales')), 0))['total']
-        update_customer_rank(customer, total_sales_for_rank)
+        logger.debug('顧客毎のランク更新')
+        for sales_payment in sales_payment_list:
+            logger.debug(sales_payment)
+            customer = sales_payment.customer
+            total_sales_for_rank = SalesHeader.objects.filter(
+                sales_payment_sales_header__customer=customer
+            ).aggregate(total=Coalesce(models.Sum(F('sales_payment_sales_header__amount_paid')), 0))['total']
+            update_customer_rank(customer, total_sales_for_rank)
 
         return Response({
             'data': SalesSerializer(header).data,
+            # 'bottle': disp_bottle_list,
             'bottle': disp_bottle_list,
         }, status=status.HTTP_201_CREATED)
 
@@ -1206,17 +1249,19 @@ class SalesViewSet(BaseModelViewSet):
             logger.error('売上ヘッダーを取得出来ません')
             return Response(status.status.HTTP_400_BAD_REQUEST)
 
-        customer_no = request.data['customer_no']
-        customer = None
-        if customer_no != None and customer_no != '':
-            try:
-                customer = MCustomer.objects.get(card__customer_no=customer_no)
-            except MCustomer.DoesNotExist:
-                logger.error('顧客情報が取得出来ません。')
-                return Response(status.status.HTTP_400_BAD_REQUEST)
-        else:
-            logger.error('会員IDが正しくありません')
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        # SalesPayment作成
+
+        # customer_no = request.data['customer_no']
+        # customer = None
+        # if customer_no != None and customer_no != '':
+        #     try:
+        #         customer = MCustomer.objects.get(card__customer_no=customer_no)
+        #     except MCustomer.DoesNotExist:
+        #         logger.error('顧客情報が取得出来ません。')
+        #         return Response(status.status.HTTP_400_BAD_REQUEST)
+        # else:
+        #     logger.error('会員IDが正しくありません')
+        #     return Response(status=status.HTTP_400_BAD_REQUEST)
 
         male_visitors = request.data['male_visitors']
         female_visitors = request.data['female_visitors']
@@ -1225,9 +1270,11 @@ class SalesViewSet(BaseModelViewSet):
         seat_id = request.data['seat_id']
         total_sales = request.data['total_sales']
         total_tax_sales = request.data['total_tax_sales']
+        fixed_total_tax_sales = request.data['fixed_total_tax_sales']
+
         basic_plan_service_tax = request.data['basic_plan_service_tax']
         basic_plan_tax = request.data['basic_plan_tax']
-        basic_plan_card_tax = request.data['basic_plan_card_tax']
+        # basic_plan_card_tax = request.data['basic_plan_card_tax']
         remarks = request.data['remarks']
 
         try:
@@ -1254,17 +1301,20 @@ class SalesViewSet(BaseModelViewSet):
                 return Response(status=status.HTTP_400_BAD_REQUEST)
 
         # 支払い方法は必要？★
-        payment = request.data['payment']
-
-        try:
-            payment = MPayment.objects.get(pk=payment)
-        except MPayment.DoesNotExist:
-            logger.error('支払い方法が取得出来ません')
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        # payment = request.data['payment']
+        #
+        # try:
+        #     payment = MPayment.objects.get(pk=payment)
+        # except MPayment.DoesNotExist:
+        #     logger.error('支払い方法が取得出来ません')
+        #     return Response(status=status.HTTP_400_BAD_REQUEST)
 
         logger.debug('★★★★★★★★header作成するよーーーーーー')
 
-        header.customer = customer
+        # SalesPayment作成
+
+        # header.customer = customer
+
         header.male_visitors = male_visitors
         header.female_visitors = female_visitors
         header.seat = seat
@@ -1275,17 +1325,20 @@ class SalesViewSet(BaseModelViewSet):
         header.user = user
         header.total_sales = total_sales
         header.total_tax_sales = total_tax_sales
+        header.fixed_total_tax_sales = fixed_total_tax_sales
+
         header.close_flg = True
-        header.payment = payment
+        # header.payment = payment
         header.basic_plan_service_tax = basic_plan_service_tax
         header.basic_plan_tax = basic_plan_tax
-        header.basic_plan_card_tax = basic_plan_card_tax
+        # header.basic_plan_card_tax = basic_plan_card_tax
 
         logger.debug('明細の削除')
 
         # 一旦。deleteだとパフォーマンス悪いかもだから見直し必要★
         header.sales_service_detail.all().delete()
         header.sales_detail.all().delete()
+        header.sales_payment_sales_header.all().delete()
 
         # bulk_create用
         sales_service_detail_list = []
@@ -1298,6 +1351,28 @@ class SalesViewSet(BaseModelViewSet):
                 bottle.delete()
             except BottleManagement.DoesNotExist:
                 logger.error('ボトル情報の取得に失敗しました。')
+
+        sales_payment_list = []
+
+        for sales_payment_dict in request.data['sales_payment']:
+            logger.debug('sales_payment_dict')
+            logger.debug(sales_payment_dict)
+
+            try:
+                customer = MCustomer.objects.get(pk=sales_payment_dict['customer_pk'])
+            except MCustomer.DoesNotExist:
+                logger.error('sales_paymentの顧客情報取得で失敗')
+            sales_payment_list.append(
+                SalesPayment(
+                    sales_header=header,
+                    customer=customer,
+                    amount_paid=sales_payment_dict['amount_paid'],
+                    payment=sales_payment_dict['payment'],
+                    basic_plan_card_tax=sales_payment_dict['basic_plan_card_tax'],
+                )
+            )
+
+        SalesPayment.objects.bulk_create(sales_payment_list)
 
         open_date = leave_time
 
@@ -1347,24 +1422,31 @@ class SalesViewSet(BaseModelViewSet):
 
             if 'bottle' in item and item['bottle'] == True:
                 if item['id'] not in registered_bottle_product_list:
-                    bottle_list.append(
-                        BottleManagement(
-                            customer=customer,
-                            open_date=leave_time,
-                            product=product,
-                        )
-                    )
-                    disp_bottle_list.append(
-                        BottleSerializer(
+                    if 'customer' in item and item['customer'] != None:
+                        logger.debug('★ボトル登録')
+                        try:
+                            bottleCustomer = MCustomer.objects.get(pk=item['customer']['customer_no'])
+                        except MCustomer.DoesNotExist:
+                            logger.error('sales_detailのボトル登録の顧客情報取得で失敗')
+                            continue
+                        bottle_list.append(
                             BottleManagement(
-                                customer=customer,
+                                customer=bottleCustomer,
                                 open_date=leave_time,
                                 product=product,
                             )
-                        ).data
-                    )
-                    salesDetailInstance.bottle_register = True
-                    registered_bottle_product_list.append(item['id'])
+                        )
+                        disp_bottle_list.append(
+                            BottleSerializer(
+                                BottleManagement(
+                                    customer=bottleCustomer,
+                                    open_date=leave_time,
+                                    product=product,
+                                )
+                            ).data
+                        )
+                        salesDetailInstance.bottle_register = True
+                        registered_bottle_product_list.append(item['id'])
 
             sales_detail_list.append(salesDetailInstance)
 
@@ -1380,10 +1462,18 @@ class SalesViewSet(BaseModelViewSet):
         header.save()
 
         # 顧客のランク更新
-        total_sales_for_rank = SalesHeader.objects.filter(
-            customer=customer
-        ).aggregate(total=Coalesce(models.Sum(F('total_tax_sales')), 0))['total']
-        update_customer_rank(customer, total_sales_for_rank)
+        logger.debug('顧客毎のランク更新')
+        for sales_payment in sales_payment_list:
+            logger.debug(sales_payment)
+            customer = sales_payment.customer
+            total_sales_for_rank = SalesHeader.objects.filter(
+                sales_payment_sales_header__customer=customer
+            ).aggregate(total=Coalesce(models.Sum(F('sales_payment_sales_header__amount_paid')), 0))['total']
+            update_customer_rank(customer, total_sales_for_rank)
+        # total_sales_for_rank = SalesHeader.objects.filter(
+        #     customer=customer
+        # ).aggregate(total=Coalesce(models.Sum(F('total_tax_sales')), 0))['total']
+        # update_customer_rank(customer, total_sales_for_rank)
 
         return Response({
             'data': SalesSerializer(header).data,
@@ -1404,7 +1494,7 @@ class SalesViewSet(BaseModelViewSet):
 
         else:
             queryset = SalesHeader.objects.filter(
-                Q(customer__delete_flg=False) &
+                # Q(sales_payment_sales_header__customer__delete_flg=False) &
                 Q(delete_flg=False) &
                 Q(close_flg=True))
 
@@ -1412,7 +1502,7 @@ class SalesViewSet(BaseModelViewSet):
         if 'customer_no' in request.query_params:
             try:
                 customer = MCustomer.objects.get(card__customer_no=request.query_params['customer_no'])
-                queryset = queryset.filter(customer=customer)
+                queryset = queryset.filter(sales_payment_sales_header__customer=customer)
             except MCustomer.DoesNotExist:
                 logger.error('顧客情報の取得に失敗しました。')
                 return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -1482,7 +1572,7 @@ class SalesViewSet(BaseModelViewSet):
             logger.debug(end_time)
 
             data = SalesHeader.objects.filter(
-                Q(customer__delete_flg=False) &
+                # Q(sales_payment_sales_header__customer__delete_flg=False) &
                 Q(delete_flg=False) &
                 Q(close_flg=True) &
                 Q(leave_time__range=[start_time, end_time])
@@ -1546,11 +1636,11 @@ class SalesViewSet(BaseModelViewSet):
                                               minutes=59)
 
             data = SalesHeader.objects.filter(
-                Q(customer__delete_flg=False) &
+                # Q(sales_payment_sales_header__customer__delete_flg=False) &
                 Q(delete_flg=False) &
                 Q(close_flg=True) &
                 Q(leave_time__range=[start_time,end_time])
-            ).aggregate(total=models.Count(F('customer')))
+            ).aggregate(total=models.Count(F('sales_payment_sales_header__customer')))
 
             res.append({
                 'date': start_time.strftime('%Y-%m-%d'),
@@ -1597,15 +1687,16 @@ class SalesViewSet(BaseModelViewSet):
                                           minutes=59)
 
         data = SalesHeader.objects.filter(
-            Q(customer__delete_flg=False) &
+            # Q(sales_payment_sales_header__customer__delete_flg=False) &
             Q(delete_flg=False) &
             Q(close_flg=True) &
             Q(leave_time__range=[start_time, end_time])
         ).values(
-            'customer'
+            # customer=Lower('sales_payment_sales_header__customer')
+            customer=F('sales_payment_sales_header__customer')
         ).annotate(
-            total=models.Sum(F('total_tax_sales')),
-            total_visit=models.Count(F('total_tax_sales'))
+            total=models.Sum(F('sales_payment_sales_header__amount_paid')),
+            total_visit=models.Count(F('sales_payment_sales_header__amount_paid'))
         ).order_by('-total')
 
         serializer = CustomerSalesSerializer(data, many=True)
@@ -1656,21 +1747,21 @@ class SalesViewSet(BaseModelViewSet):
                                               minutes=59)
 
             queryset = SalesHeader.objects.filter(
-                Q(customer__delete_flg=False) &
+                # Q(sales_payment_sales_header__customer__delete_flg=False) &
                 Q(delete_flg=False) &
                 Q(close_flg=True) &
                 Q(leave_time__range=[start_time, end_time]))
 
         else:
             queryset = SalesHeader.objects.filter(
-                Q(customer__delete_flg=False) &
+                # Q(sales_payment_sales_header__customer__delete_flg=False) &
                 Q(delete_flg=False) &
                 Q(close_flg=True))
 
         if 'customer_no' in request.query_params:
             try:
                 customer = MCustomer.objects.get(pk=request.query_params['customer_no'])
-                queryset = queryset.filter(customer=customer)
+                queryset = queryset.filter(sales_payment_sales_header__customer=customer)
             except MCustomer.DoesNotExist:
                 logger.error('顧客情報の取得に失敗しました。')
 
@@ -1718,29 +1809,32 @@ class SalesViewSet(BaseModelViewSet):
                                               minutes=59)
 
             queryset = SalesHeader.objects.filter(
-                Q(customer__delete_flg=False) &
+                # Q(sales_payment_sales_header__customer__delete_flg=False) &
                 Q(delete_flg=False) &
                 Q(close_flg=True) &
                 Q(leave_time__range=[start_time, end_time]))
 
         else:
             queryset = SalesHeader.objects.filter(
-                Q(customer__delete_flg=False) &
+                # Q(sales_payment_sales_header__customer__delete_flg=False) &
                 Q(delete_flg=False) &
                 Q(close_flg=True))
 
         if 'customer_no' in request.query_params:
             try:
                 customer = MCustomer.objects.get(pk=request.query_params['customer_no'])
-                queryset = queryset.filter(customer=customer)
+                queryset = queryset.filter(sales_payment_sales_header__customer=customer)
             except MCustomer.DoesNotExist:
                 logger.error('顧客情報の取得に失敗しました。')
 
         data = queryset.values(
-            'customer'
+            # customer=Lower('sales_payment_sales_header__customer')
+            customer=F('sales_payment_sales_header__customer')
         ).annotate(
             models.Count(F('customer'))
-        ).values('customer').count()
+        ).values(
+            'customer'
+        ).count()
 
         return Response({
             'status': 'success',
@@ -1791,7 +1885,7 @@ class SalesViewSet(BaseModelViewSet):
             logger.debug('end : ' + end_time.strftime('%Y-%m-%d %H:%M'))
 
             data = SalesHeader.objects.filter(
-                Q(customer__delete_flg=False) &
+                # Q(sales_payment_sales_header__customer__delete_flg=False) &
                 Q(delete_flg=False) &
                 Q(close_flg=True) &
                 Q(leave_time__range=[start_time,end_time])
@@ -1851,21 +1945,35 @@ class SalesViewSet(BaseModelViewSet):
                 int(sales_separate_time_m),
             ).astimezone(timezone('Asia/Tokyo'))
 
+            # logger.debug('★target_dateの24時間分取得')
+
             for hour in range(0, 24):
 
                 end_time = start_time + timedelta(hours=1)
+                # logger.debug(start_time)
+                # logger.debug(end_time)
 
-                data = SalesDetail.objects.filter(
-                    Q(header__customer__delete_flg=False) &
-                    Q(header__delete_flg=False) &
-                    Q(header__close_flg=True) &
+                data = SalesHeader.objects.filter(
                     Q(delete_flg=False) &
-                    Q(order_time__gte=start_time) &
-                    Q(order_time__lte=end_time)
+                    Q(close_flg=True) &
+                    Q(leave_time__gte=start_time) &
+                    Q(leave_time__lt=end_time)
                 ).aggregate(
-                    total=Coalesce(models.Sum(F('fixed_price')), 0),
-                    total_visit=models.Count(F('header__customer'))
+                    total=Coalesce(models.Sum(F('fixed_total_tax_sales')), 0),
+                    total_visit=models.Count(F('sales_payment_sales_header__customer'))
                 )
+
+                # data = SalesDetail.objects.filter(
+                #     # Q(header__sales_payment_sales_header__customer__delete_flg=False) &
+                #     Q(header__delete_flg=False) &
+                #     Q(header__close_flg=True) &
+                #     Q(delete_flg=False) &
+                #     Q(order_time__gte=start_time) &
+                #     Q(order_time__lte=end_time)
+                # ).aggregate(
+                #     total=Coalesce(models.Sum(F('fixed_price')), 0),
+                #     total_visit=models.Count(F('header__sales_payment_sales_header__customer'))
+                # )
                 data['time'] = start_time.strftime('%H:%M') + ' ~ ' + end_time.strftime('%H:%M')
                 res.append(data)
                 start_time = start_time + timedelta(hours=1)
@@ -1901,7 +2009,7 @@ class SalesViewSet(BaseModelViewSet):
                                           minutes=59)
 
         data = SalesHeader.objects.filter(
-            Q(customer__delete_flg=False) &
+            # Q(sales_payment_sales_header__customer__delete_flg=False) &
             Q(delete_flg=False) &
             Q(close_flg=True) &
             Q(leave_time__range=[start_time,end_time]))
@@ -1912,7 +2020,7 @@ class SalesViewSet(BaseModelViewSet):
             'data': SalesSerializer(
                 data,
                 many=True,
-                fields=['id', 'customer', 'visit_time', 'leave_time']).data
+                fields=['id', 'sales_payment', 'visit_time', 'leave_time']).data
             })
 
 
@@ -1946,7 +2054,7 @@ class SalesViewSet(BaseModelViewSet):
                                           minutes=59)
 
         data = SalesHeader.objects.filter(
-            Q(customer__delete_flg=False) &
+            # Q(sales_payment_sales_header__customer__delete_flg=False) &
             Q(delete_flg=False) &
             Q(close_flg=True) &
             Q(leave_time__range=[start_time, end_time]) &
@@ -1981,14 +2089,15 @@ class SalesViewSet(BaseModelViewSet):
         else:
             res = SalesHeader.objects.filter(
                 Q(delete_flg=False) &
-                Q(customer__delete_flg=False) &
+                # Q(sales_payment_sales_header__customer__delete_flg=False) &
                 Q(close_flg=True) &
                 Q(delete_flg=False)
             ).values(
-                'customer'
+                # customer=Lower('sales_payment_sales_header__customer')
+                customer=F('sales_payment_sales_header__customer')
             ).annotate(
-                total=models.Sum(F('total_tax_sales')),
-                total_visit=models.Count(F('total_tax_sales'))
+                total=models.Sum(F('sales_payment_sales_header__amount_paid')),
+                total_visit=models.Count(F('sales_payment_sales_header__amount_paid'))
             ).order_by('-total')[:length]
 
             rank = {
@@ -2002,7 +2111,7 @@ class SalesViewSet(BaseModelViewSet):
     @transaction.atomic
     @action(methods=['post'], detail=False)
     def create_sales_header(self, request):
-        logger.debug('★create_sales_data')
+        logger.debug('★create_sales_header')
         logger.debug(request.data)
 
         user = mUser.objects.get(pk=1)
@@ -2021,7 +2130,7 @@ class SalesViewSet(BaseModelViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         not_end_sales_header_list = SalesHeader.objects.filter(
-            customer=customer,
+            sales_payment_sales_header__customer=customer,
             close_flg=False,
             delete_flg=False,
         )
@@ -2085,7 +2194,7 @@ class SalesViewSet(BaseModelViewSet):
 
 
         header = SalesHeader.objects.create(
-            customer=customer,
+            sales_payment_sales_header__customer=customer,
             male_visitors=male_visitors,
             female_visitors=female_visitors,
             seat=seat,
@@ -2451,7 +2560,7 @@ class SalesViewSet(BaseModelViewSet):
 
         # 顧客のランク更新
         total_sales_for_rank = SalesHeader.objects.filter(
-            customer=customer
+            sales_payment_sales_header__customer=customer
         ).aggregate(total=Coalesce(models.Sum(F('total_tax_sales')), 0))['total']
         update_customer_rank(customer, total_sales_for_rank)
 

@@ -19,8 +19,6 @@ env.read_env('.env')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -96,7 +94,7 @@ INSTALLED_APPS = [
     # 'corsheaders',
     # 'webpack_loader',
     'ws.apps.WsConfig',
-    'channels',
+    # 'channels',
 ]
 
 REST_FRAMEWORK = {
@@ -134,25 +132,25 @@ JWT_AUTH = {
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=1),
 }
 
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('redis', 6379)],
-        },
-        # 'CONFIG': {
-        #     'hosts':[os.environ.get('REDIS_URL', 'redis://localhost:6379')],
-        # },
-    },
-}
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('redis', 6379)],
+#         },
+#         # 'CONFIG': {
+#         #     'hosts':[os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+#         # },
+#     },
+# }
 
 
-if not DEBUG:
-    CHANNEL_LAYERS['default'].update({
-        'CONFIG': {
-            'hosts':[os.environ.get('REDIS_URL', ('redis', 6379))],
-        },
-    })
+# if not DEBUG:
+#     CHANNEL_LAYERS['default'].update({
+#         'CONFIG': {
+#             'hosts':[os.environ.get('REDIS_URL', ('redis', 6379))],
+#         },
+#     })
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

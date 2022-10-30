@@ -18,18 +18,22 @@ const customerActions = {
         })
     },
     deleteCustomerListAction (ctx, kwargs) {
-        Vue.prototype.$axios({
-            url: `/api/customer/${kwargs.id}/`,
-            method: 'DELETE',
+        return new Promise((resolve, reject) => {
+            Vue.prototype.$axios({
+                url: `/api/customer/${kwargs.id}/`,
+                method: 'DELETE',
+            })
+            .then(res => {
+                console.log('deleteCustomerListAction', res, ' kwargs', kwargs)
+                this.commit('deleteCustomerList', kwargs)
+                resolve(res)
+            })
+            .catch(e => {
+                console.log(e)
+                reject(e)
+            })
         })
-        .then(res => {
-            console.log(res)
-            this.commit('deleteCustomerList', kwargs)
-        })
-        .catch(e => {
-            console.log(e)
-        })
-    }
+    },
 }
 
 export default customerActions
