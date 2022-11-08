@@ -622,7 +622,7 @@ export default {
                 actuallyPrice: Number(this.actuallyPrice),
                 actuallyTaxPrice: actuallyTaxPrice,
                 taxRate: this.tax,
-                taxation: this.taxation.length != 0,
+                taxation: this.taxation,
                 quantity: this.quantity,
                 totalPrice: this.totalPrice,
                 totalTaxPrice: this.totalTaxPrice,
@@ -703,7 +703,7 @@ export default {
             this.addStack()
         },
         addStack () {
-            console.log('addStack', this.taxation)
+            // console.log('addStack', this.taxation)
 
             const product = this.selectedProduct
 
