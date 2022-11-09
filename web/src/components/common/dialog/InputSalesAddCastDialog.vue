@@ -322,7 +322,7 @@ export default {
             }
         },
         convertData (data) {
-            console.log('convertData', data)
+            // console.log('convertData', data)
         }
     },
 }

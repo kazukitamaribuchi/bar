@@ -1576,7 +1576,7 @@ export default {
         ]),
         registerOrUpdate () {
             if (this.waitServerResponse) {
-                console.log('サーバー応答待ち')
+                // console.log('サーバー応答待ち')
                 return
             }
             if (this.customerInfo.length >= 2 &&
@@ -2048,13 +2048,13 @@ export default {
             this.$refs.inputSalesAddCustomerDialog.open(data, index)
         },
         addCustomer (data) {
-            console.log('addCustomer', data)
+            // console.log('addCustomer', data)
             this.customerInfo.push(data)
             this.updateBottleInfo()
             this.checkTotalVisitors()
         },
         updateCustomer (data, index) {
-            console.log('updateCustomer', data)
+            // console.log('updateCustomer', data)
             Vue.set(this.customerInfo, index, data)
             // this.customerInfo.push(data)
             this.updateBottleInfo()
@@ -2101,7 +2101,7 @@ export default {
         },
         convertData (data) {
             // 編集用にデータを置き換える処理
-            console.log('convertData', data)
+            // console.log('convertData', data)
 
             this.inputSalesData.basicPlanType = data.basic_plan_type.id
             let c_list = data.customer_list
@@ -2169,10 +2169,11 @@ export default {
                 }
             }
 
-            let service_detail_list = []
+            // let service_detail_list = []
             for (const i in data.sales_detail) {
                 const salesDetailItem = data.sales_detail[i]
-                service_detail_list.push({
+                this.inputSalesDetailData.push({
+                // service_detail_list.push({
                     actuallyPrice: salesDetailItem.fixed_price,
                     // bottle: salesDetailItem.bottle_register,
                     // 2022/09/10 編集時のボトル登録フラグは折っておく。
@@ -2186,12 +2187,18 @@ export default {
                     taxation: (!salesDetailItem.tax_free_flg) ? [1] : [],
                     totalPrice: salesDetailItem.total_price,
                 })
+
             }
-            this.inputSalesDetailData = service_detail_list
-            this.inputSalesDetailData.push({})
-            this.inputSalesDetailData.pop()
-            console.log('this.inputSalesDetailData', this.inputSalesDetailData)
-            console.log('this.customerInfo', this.customerInfo)
+            // console.log('this.inputSalesDetailData0 ', this.inputSalesDetailData)
+            // this.inputSalesDetailData = service_detail_list
+
+            // console.log('this.inputSalesDetailData1 ', this.inputSalesDetailData)
+
+            // this.inputSalesDetailData.push({})
+            // this.inputSalesDetailData.pop()
+            // this.inputSalesDetailData.splice()
+            // console.log('this.inputSalesDetailData2 ', this.inputSalesDetailData)
+            // console.log('this.customerInfo', this.customerInfo)
         },
         // checkCustomerNo () {
         //     const val = this.inputSalesData.customerNo
@@ -2372,13 +2379,13 @@ export default {
             this.totalServicePrice = val
         },
         updateBottleDelete (item) {
-            console.log('updateBottleDelete', item)
+            // console.log('updateBottleDelete', item)
             if (item.bottleDelete) {
                 this.bottleDeleteList.push(item)
             } else {
                 this.bottleDeleteList = this.bottleDeleteList.filter(e => e.id !== item.id)
             }
-            console.log('this.bottleDeleteList', this.bottleDeleteList)
+            // console.log('this.bottleDeleteList', this.bottleDeleteList)
         },
         checkError () {
             // if (this.inputSalesData.customerNo == null ||
@@ -2470,9 +2477,9 @@ export default {
             this.$refs.inputSalesBottleSelectCustomerDialog.open(val, updateIdx)
         },
         selectBottleCustomerProductList (idx, updateIdx) {
-            console.log('before ', this.inputSalesDetailData)
+            // console.log('before ', this.inputSalesDetailData)
             this.inputSalesDetailData[updateIdx].customer = this.customerInfo[idx]
-            console.log('after ', this.inputSalesDetailData)
+            // console.log('after ', this.inputSalesDetailData)
         },
         deleteCustomerSelectedProductList (idx) {
             this.inputSalesDetailData[idx].customer = null
