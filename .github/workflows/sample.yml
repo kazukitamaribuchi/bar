@@ -1,86 +1,86 @@
-name: Docker Image CI
-
-on:
-  push:
-    branches: [ "release" ]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - name: create env
-        run: | #
-          touch web/.env
-          echo "NODE_ENV=production" >> web/.env
-          echo "VUE_APP_AUTH_REDIRECT_URI=${{ secrets.VUE_APP_AUTH_REDIRECT_URI }}" >> web/.env
-          echo "VUE_APP_DEV_REDIS_URL=${{ secrets.VUE_APP_DEV_REDIS_URL }}" >> web/.env
-          touch api/.env
-          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> api/.env
-          echo "DJANGO_ENV=production" >> api/.env
-          echo "CLOUD_NAME=${{ secrets.CLOUD_NAME }}" >> api/.env
-          echo "CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}" >> api/.env
-          echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> api/.env
-          cat web/.env
-          cat api/.env
-      - name: yarn build
-        run: | #
-          ls
-          cd web
-          docker build .
-          rm -rf node_modules package-lock.json && npm install
-          yarn build
-          docker ps
-      - name: move files
-        run: | #
-          ls
-          mv web/dist/templates/index.html api/templates
-          rm -r api/staticfiles
-          rm -r api/static
-          mv web/dist/static api/.
-          mv api/static api/staticfiles
-          cd api
-          ls
-      - name: check static
-        run: | #
-          cd api/staticfiles
-          ls
-      - name: collect static
-        run: | #
-          cd api
-          docker build -f Dockerfile_actions .
-          ls
-          pip install --upgrade pip
-          pip install -r requirements.txt
-          python3 manage.py collectstatic
-      # - name: move Dockerfile
-      #   run: | #
-      #     mv api/Dockerfile_actions ./
-      #     ls
-      #     mv ./Dockerfile_actions ./Dockerfile
-      #     mv api/requirements.txt ./
-      - name: heroku release
-        uses: akhileshns/heroku-deploy@v3.12.12
-        with:
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          # heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-          # heroku_email: ${{ secrets.HEROKU_EMAIL }}
-          heroku_app_name: "alphapos-test"
-          heroku_email: "kazuki.tamaribuchi2@gmail.com"
-          docker_heroku_process_type: "web"
-          appdir: "api"
-          usedocker: true
-
-
-      # - name: heroku release2
-      #   uses: gonuit/heroku-docker-deploy@v1.3.3
-      #   with:
-      #     email: ${{ secrets.HEROKU_EMAIL }}
-      #     heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-      #     heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-      #     dockerfile_directory: api/
-      #     dockerfile_name: Dockerfile_actions
-      #     docker_options: "--no-cache"
-      #     process_type: web
+# name: Docker Image CI
+#
+# on:
+#   push:
+#     branches: [ "release" ]
+#
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 15
+#     steps:
+#       - name: checkout
+#         uses: actions/checkout@v3
+#       - name: create env
+#         run: | #
+#           touch web/.env
+#           echo "NODE_ENV=production" >> web/.env
+#           echo "VUE_APP_AUTH_REDIRECT_URI=${{ secrets.VUE_APP_AUTH_REDIRECT_URI }}" >> web/.env
+#           echo "VUE_APP_DEV_REDIS_URL=${{ secrets.VUE_APP_DEV_REDIS_URL }}" >> web/.env
+#           touch api/.env
+#           echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> api/.env
+#           echo "DJANGO_ENV=production" >> api/.env
+#           echo "CLOUD_NAME=${{ secrets.CLOUD_NAME }}" >> api/.env
+#           echo "CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}" >> api/.env
+#           echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> api/.env
+#           cat web/.env
+#           cat api/.env
+#       - name: yarn build
+#         run: | #
+#           ls
+#           cd web
+#           docker build .
+#           rm -rf node_modules package-lock.json && npm install
+#           yarn build
+#           docker ps
+#       - name: move files
+#         run: | #
+#           ls
+#           mv web/dist/templates/index.html api/templates
+#           rm -r api/staticfiles
+#           rm -r api/static
+#           mv web/dist/static api/.
+#           mv api/static api/staticfiles
+#           cd api
+#           ls
+#       - name: check static
+#         run: | #
+#           cd api/staticfiles
+#           ls
+#       - name: collect static
+#         run: | #
+#           cd api
+#           docker build -f Dockerfile_actions .
+#           ls
+#           pip install --upgrade pip
+#           pip install -r requirements.txt
+#           python3 manage.py collectstatic
+#       # - name: move Dockerfile
+#       #   run: | #
+#       #     mv api/Dockerfile_actions ./
+#       #     ls
+#       #     mv ./Dockerfile_actions ./Dockerfile
+#       #     mv api/requirements.txt ./
+#       - name: heroku release
+#         uses: akhileshns/heroku-deploy@v3.12.12
+#         with:
+#           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+#           # heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+#           # heroku_email: ${{ secrets.HEROKU_EMAIL }}
+#           heroku_app_name: "alphapos-test"
+#           heroku_email: "kazuki.tamaribuchi2@gmail.com"
+#           docker_heroku_process_type: "web"
+#           appdir: "api"
+#           usedocker: true
+#
+#
+#       # - name: heroku release2
+#       #   uses: gonuit/heroku-docker-deploy@v1.3.3
+#       #   with:
+#       #     email: ${{ secrets.HEROKU_EMAIL }}
+#       #     heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+#       #     heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+#       #     dockerfile_directory: api/
+#       #     dockerfile_name: Dockerfile_actions
+#       #     docker_options: "--no-cache"
+#       #     process_type: web
