@@ -7,6 +7,9 @@ dist
 # api
 __pycache__
 migrations
+/api/static/
+/api/staticfiles/
+/api/templates/
 *.sqlite3
 
 # db

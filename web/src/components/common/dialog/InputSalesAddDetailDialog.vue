@@ -48,9 +48,9 @@
                         <b-card
                             class="productCard"
                             @click="selectProduct(item)"
-                            @dblclick="directAddStack(item)"
                             body-class="productCardBody"
                         >
+                        <!-- @dblclick="directAddStack(item)" -->
                             <img
                                 v-if="item.thumbnail != null"
                                 class="product_item_thumbnail"
@@ -96,9 +96,9 @@
                         <b-card
                             class="productCard"
                             @click="selectProduct(item)"
-                            @dblclick="directAddStack(item)"
                             body-class="productCardBody"
                         >
+                        <!-- @dblclick="directAddStack(item)" -->
                             <img
                                 v-if="item.thumbnail != null"
                                 class="product_item_thumbnail"
@@ -139,7 +139,7 @@
         </b-row>
         <template #modal-footer>
             <b-container fluid>
-                <b-row>
+                <!-- <b-row>
                     <b-col cols="4">
                         <b-card-title>選択商品</b-card-title>
                         <div class="selected_product_area">
@@ -173,7 +173,7 @@
                                     <b-card-sub-title>定価</b-card-sub-title>
                                     <div class="selected_product_area">
                                         <div v-if="selectedProduct != null">
-                                            ￥{{ selectedProduct.price | priceLocaleString }}
+                                            <b-icon icon="currency-yen"></b-icon> {{ selectedProduct.price | priceLocaleString }}
                                         </div>
                                         <div v-else> - </div>
                                     </div>
@@ -208,14 +208,6 @@
                                     <b-form-group
                                         class="add_sales_detail_quantity_wrap"
                                     >
-                                        <!-- {{ item.quantity }} -->
-                                        <!-- <b-form-spinbutton
-                                            v-model="quantity"
-                                            inline
-                                            min=1
-                                            size="sm"
-                                        ></b-form-spinbutton> -->
-
                                         <SelectForm
                                             :optionType=13
                                             v-model="quantity"
@@ -225,17 +217,6 @@
                             </b-col>
                             <b-col cols="1" class="no_margin_no_padding"/>
                             <b-col cols="2" class="no_margin_no_padding">
-                                <!-- <b-card-sub-title>税率</b-card-sub-title>
-                                <b-form-group>
-                                    <b-form-group
-                                        class="add_sales_detail_tax_wrap"
-                                    >
-                                        <SelectForm
-                                            :optionType=3
-                                            v-model="tax"
-                                        />%
-                                    </b-form-group>
-                                </b-form-group> -->
                                 <b-card-sub-title>課税</b-card-sub-title>
                                 <b-form-group>
                                     <b-form-checkbox-group
@@ -273,7 +254,7 @@
                             </b-col>
                         </b-row>
                     </b-col>
-                </b-row>
+                </b-row> -->
                 <!-- <b-row class="pt-3">
                     <b-col cols="5" class="add_sales_detail_footer_col">
                         <b-card-sub-title>備考</b-card-sub-title>
@@ -285,101 +266,99 @@
                     </b-col>
                 </b-row> -->
                 <b-row class="mt-3">
-                    <b-card v-if="selectedProductList.length > 0">
-                        <b-container fluid>
-                            <b-row>
-                                <b-card-title class="mb-4" style="padding-left: 0;">
-                                    選択商品一覧
-                                </b-card-title>
-                                <table >
-                                    <tr>
-                                        <th>商品名</th>
-                                        <th>実価格</th>
-                                        <th>数量</th>
-                                        <th>課税</th>
-                                        <th>ボトル登録</th>
-                                        <th>登録会員</th>
-                                        <!-- <th>備考</th> -->
-                                        <th></th>
-                                    </tr>
-                                    <tr
-                                        v-for="(item, id) in selectedProductList"
-                                        :key=id
-                                    >
-                                        <td width="35%">{{ item.name }}</td>
-                                        <td width="20%">
-                                            <!-- {{ item.actuallyPrice | priceLocaleString }} -->
-                                            <b-form-input
-                                                v-model="item.actuallyPrice"
-                                                type="number"
-                                                required
-                                                class="input_sales_detail_form_input"
-                                            ></b-form-input>
-                                        </td>
-                                        <td width="7%">
-                                            <!-- {{ item.quantity }} -->
-                                            <!-- <b-form-spinbutton
-                                                v-model="item.quantity"
-                                                inline
-                                                min=1
-                                                size="sm"
-                                            ></b-form-spinbutton> -->
-                                            <SelectForm
-                                                :optionType=13
-                                                v-model="item.quantity"
-                                            />
-                                        </td>
-                                        <td width="10%">
-                                            <!-- <span v-if="item.taxation">課税</span>
-                                            <span v-else>非課税</span> -->
-                                            <!-- <v-checkbox
-                                                class="mt-3"
-                                                v-model="item.taxation"
-                                            ></v-checkbox> -->
-                                            <b-form-checkbox-group
-                                                v-model="item.taxation"
-                                                :options=taxationOptions
-                                                buttons
-                                                bg-variant="success"
-                                            ></b-form-checkbox-group>
-                                        </td>
-                                        <td>
-                                            <!-- <v-checkbox
-                                                class="mt-3"
-                                                v-model="item.bottle"
-                                            ></v-checkbox> -->
-                                            <b-button
-                                                v-if="item.customer == null"
-                                                variant="primary"
-                                                @click="addBottleCustomerInfo(1, id)"
-                                                :disabled=isBottleCustomerDisabledRow(item)
-                                            >
-                                                顧客選択
-                                            </b-button>
-                                            <b-button
-                                                v-else
-                                                variant="danger"
-                                                @click="deleteCustomerSelectedProductList(id)"
-                                            >
-                                                選択解除
-                                            </b-button>
-                                        </td>
-                                        <td v-if="item.customer != null">{{ item.customer.name }}</td>
-                                        <td v-else>-</td>
-                                        <td>
-                                            <b-icon
-                                                icon="dash-square"
-                                                font-scale="1.5"
-                                                variant="danger"
-                                                class="mt-2 add_sales_detail_delete_product_btn"
-                                                @click="deleteProduct(id)"
-                                            ></b-icon>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </b-row>
-                        </b-container>
-                    </b-card>
+                    <b-container fluid>
+                        <b-row>
+                            <b-card-title class="mb-4" style="padding-left: 0;">
+                                選択商品一覧
+                            </b-card-title>
+                            <table >
+                                <tr>
+                                    <th>商品名</th>
+                                    <th>実価格</th>
+                                    <th>数量</th>
+                                    <th>課税</th>
+                                    <th>ボトル登録</th>
+                                    <th>登録会員</th>
+                                    <!-- <th>備考</th> -->
+                                    <th></th>
+                                </tr>
+                                <tr
+                                    v-for="(item, id) in selectedProductList"
+                                    :key=id
+                                >
+                                    <td width="35%">{{ item.name }}</td>
+                                    <td width="20%">
+                                        <!-- {{ item.actuallyPrice | priceLocaleString }} -->
+                                        <b-form-input
+                                            v-model="item.actuallyPrice"
+                                            type="number"
+                                            required
+                                            class="input_sales_detail_form_input"
+                                        ></b-form-input>
+                                    </td>
+                                    <td width="7%">
+                                        <!-- {{ item.quantity }} -->
+                                        <!-- <b-form-spinbutton
+                                            v-model="item.quantity"
+                                            inline
+                                            min=1
+                                            size="sm"
+                                        ></b-form-spinbutton> -->
+                                        <SelectForm
+                                            :optionType=13
+                                            v-model="item.quantity"
+                                        />
+                                    </td>
+                                    <td width="10%">
+                                        <!-- <span v-if="item.taxation">課税</span>
+                                        <span v-else>非課税</span> -->
+                                        <!-- <v-checkbox
+                                            class="mt-3"
+                                            v-model="item.taxation"
+                                        ></v-checkbox> -->
+                                        <b-form-checkbox-group
+                                            v-model="item.taxation"
+                                            :options=taxationOptions
+                                            buttons
+                                            bg-variant="success"
+                                        ></b-form-checkbox-group>
+                                    </td>
+                                    <td>
+                                        <!-- <v-checkbox
+                                            class="mt-3"
+                                            v-model="item.bottle"
+                                        ></v-checkbox> -->
+                                        <b-button
+                                            v-if="item.customer == null"
+                                            variant="primary"
+                                            @click="addBottleCustomerInfo(1, id)"
+                                            :disabled=isBottleCustomerDisabledRow(item)
+                                        >
+                                            顧客選択
+                                        </b-button>
+                                        <b-button
+                                            v-else
+                                            variant="danger"
+                                            @click="deleteCustomerSelectedProductList(id)"
+                                        >
+                                            選択解除
+                                        </b-button>
+                                    </td>
+                                    <td v-if="item.customer != null">{{ item.customer.name }}</td>
+                                    <td v-else>-</td>
+                                    <td>
+                                        <b-icon
+                                            icon="dash-square"
+                                            font-scale="1.5"
+                                            variant="danger"
+                                            class="mt-2 add_sales_detail_delete_product_btn"
+                                            @click="deleteProduct(id)"
+                                        ></b-icon>
+                                    </td>
+                                </tr>
+                            </table>
+                        </b-row>
+                    </b-container>
                 </b-row>
                 <b-row class="add_cast_footer_bottom_area mt-5">
                     <b-col cols="3">
@@ -387,7 +366,7 @@
                             総計(税抜)
                         </b-card-sub-title>
                         <b-card-title class="mb-0">
-                            ￥ {{ totalPrice | priceLocaleString }}
+                            <b-icon icon="currency-yen"></b-icon> {{ totalPrice | priceLocaleString }}
                         </b-card-title>
                     </b-col>
                     <b-col cols="3">
@@ -395,7 +374,7 @@
                             総計(税込)
                         </b-card-sub-title>
                         <b-card-title class="mb-0">
-                            ￥ {{ totalTaxPrice | priceLocaleString }}
+                            <b-icon icon="currency-yen"></b-icon> {{ totalTaxPrice | priceLocaleString }}
                         </b-card-title>
                     </b-col>
                     <b-col align="right" class="add_sales_detail_footer_col">
@@ -428,6 +407,11 @@
             title="ボトル登録会員選択"
         />
 
+        <InputSalesAddDetailProductDialog
+            ref="inputSalesAddDetailProductDialog"
+            @addStack="addStack"
+        />
+
     </b-modal>
 </template>
 
@@ -438,6 +422,7 @@ import { Const } from '@/assets/js/const'
 const Con = new Const()
 import InputSalesAddDetailDialogHeader from '@/components/common/dialog/parts/InputSalesAddDetailDialogHeader'
 import InputSalesSelectCustomerDialog from '@/components/common/dialog/InputSalesSelectCustomerDialog'
+import InputSalesAddDetailProductDialog from '@/components/common/dialog/InputSalesAddDetailProductDialog'
 import SelectForm from '@/components/common/parts/SelectForm'
 import Decimal from 'decimal.js'
 import utilsMixin from '@/mixins/utils'
@@ -454,6 +439,7 @@ export default {
     components: {
         InputSalesAddDetailDialogHeader,
         InputSalesSelectCustomerDialog,
+        InputSalesAddDetailProductDialog,
         SelectForm,
     },
     data: () => ({
@@ -682,8 +668,10 @@ export default {
         },
         selectProduct (item) {
             // console.log('selectProduct', item)
-            this.selectedProduct = item
-            this.actuallyPrice = item.price
+            // this.selectedProduct = item // 2022/11/13 ダイアログに変更
+            // this.actuallyPrice = item.price // 2022/11/13 ダイアログに変更
+
+            this.$refs.inputSalesAddDetailProductDialog.open(item)
         },
 
         // filterProductCategory (data) {
@@ -700,33 +688,33 @@ export default {
         },
         directAddStack (item) {
             this.selectProduct(item)
-            this.addStack()
+            // this.addStack()
         },
-        addStack () {
+        addStack (item, quantity) {
             // console.log('addStack', this.taxation)
 
-            const product = this.selectedProduct
+            const product = item
 
             if (product == null) return
 
             let actuallyTaxPrice = 0
 
-            if (this.taxation.length != 0) {
-                actuallyTaxPrice = this.calcAddTaxPrice(Number(this.actuallyPrice), this.tax)
-            } else {
-                actuallyTaxPrice = Number(this.actuallyPrice)
-            }
+            // if (this.taxation.length != 0) {
+                actuallyTaxPrice = this.calcAddTaxPrice(Number(product.price), this.tax)
+            // } else {
+            //     actuallyTaxPrice = Number(this.actuallyPrice)
+            // }
 
             // console.log('product', product)
 
             const data = {
                 name: product.name,
                 price: product.price,
-                actuallyPrice: Number(this.actuallyPrice),
+                actuallyPrice: product.price,
                 actuallyTaxPrice: actuallyTaxPrice,
                 taxRate: this.tax,
                 taxation: this.taxation,
-                quantity: this.quantity,
+                quantity: quantity,
                 totalPrice: this.totalPrice,
                 totalTaxPrice: this.totalTaxPrice,
                 thumbnail: product.thumbnail,
