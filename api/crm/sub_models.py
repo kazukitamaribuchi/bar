@@ -580,7 +580,12 @@ class SalesPayment(AbstractBaseModel):
     )
 
     amount_paid = models.IntegerField(
-        _('支払い総額'),
+        _('現金支払い'),
+        default=0,
+    )
+
+    amount_card_paid = models.IntegerField(
+        _('カード支払い総額'),
         default=0,
     )
 

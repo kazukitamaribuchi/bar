@@ -289,7 +289,13 @@ class CustomerSerializer(DynamicFieldsModelSerializer):
             Q(sales_payment_sales_header__customer__delete_flg=False) &
             Q(delete_flg=False) &
             Q(close_flg=True)
-        ).aggregate(total=Coalesce(models.Sum(F('sales_payment_sales_header__amount_paid')), 0))['total']
+        ).aggregate(
+            total=Coalesce(
+                models.Sum(F('sales_payment_sales_header__amount_paid')), 0
+            ) + Coalesce(
+                models.Sum(F('sales_payment_sales_header__amount_card_paid')), 0
+            )
+        )['total']
 
     # def get_rank(self, obj):
     #
@@ -1277,6 +1283,7 @@ class SalesPaymentSerializer(DynamicFieldsModelSerializer):
     )
 
     disp_payment = serializers.SerializerMethodField()
+    irregular_payment = serializers.SerializerMethodField()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1284,17 +1291,26 @@ class SalesPaymentSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = SalesPayment
         fields = [
+            'id',
             'sales_header',
             'customer',
             'amount_paid',
+            'amount_card_paid',
             'payment',
             'disp_payment',
             'basic_plan_card_tax',
+            'irregular_payment',
         ]
 
-    def get_disp_payment(self, obj):
-        return '現金払い' if obj.payment == 0 else 'カード払い'
+    def get_irregular_payment(self, obj):
+        if obj.amount_paid > 0 and obj.amount_card_paid > 0:
+            return True
+        return False
 
+    def get_disp_payment(self, obj):
+        if obj.amount_paid > 0 and obj.amount_card_paid > 0:
+            return '併用払い'
+        return '通常払い'
 
 
 class CustomerSalesSerializer(serializers.Serializer):

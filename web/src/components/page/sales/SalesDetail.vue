@@ -128,8 +128,13 @@
                                             {{ data.value | priceLocaleString }}
                                         </div>
                                     </template>
-                                    <template #cell(basic_plan_card_tax)>
-                                        <div>{{ dispBasicPlanCardTax }}%</div>
+                                    <template #cell(amount_card_paid)="data">
+                                        <div>
+                                            {{ data.value | priceLocaleString }}
+                                        </div>
+                                    </template>
+                                    <template #cell(basic_plan_card_tax)="data">
+                                        <div>{{ dispBasicPlanCardTax(data) }}%</div>
                                         <!-- <div v-else>{{ dispBasicPlanCardTax }}</div> -->
                                     </template>
                                 </b-table>
@@ -377,12 +382,16 @@ export default {
                 label: '会員名',
             },
             {
-                key: 'amount_paid',
-                label: '支払金額',
-            },
-            {
                 key: 'disp_payment',
                 label: '支払方法',
+            },
+            {
+                key: 'amount_paid',
+                label: '現金支払金額',
+            },
+            {
+                key: 'amount_card_paid',
+                label: 'カード支払金額',
             },
             {
                 key: 'basic_plan_card_tax',
@@ -446,16 +455,16 @@ export default {
         ...mapGetters([
             'sales',
         ]),
-        dispBasicPlanCardTax () {
-            if (this.salesData != null) {
-                if (this.salesData.sales_payment.length > 1) {
-                    return '-'
-                } else if (this.salesData.sales_payment.length == 1) {
-                    return this.salesData.sales_payment[0].basic_plan_card_tax
-                }
-            }
-            return '-'
-        },
+        // dispBasicPlanCardTax () {
+        //     if (this.salesData != null) {
+        //         if (this.salesData.sales_payment.length > 1) {
+        //             return '-'
+        //         } else if (this.salesData.sales_payment.length == 1) {
+        //             return this.salesData.sales_payment[0].basic_plan_card_tax
+        //         }
+        //     }
+        //     return '-'
+        // },
     },
     created () {
         // 検索から詳細きてうまくいかせるやり方わかったら、↓の様にstoreから取得する方法に切り替え
@@ -499,6 +508,22 @@ export default {
                     id: this.salesData.customer.customer_no
                 }
             })
+        },
+        dispBasicPlanCardTax (data) {
+            // console.log('dispBasicPlanCardTax', data)
+            if (this.salesData != null) {
+                let salesPayment = this.salesData.sales_payment
+                if (salesPayment.length > 1) {
+                    let i = data.index
+                    if (salesPayment[i].amount_card_paid > 0) {
+                        return '10'
+                    }
+                    return '-'
+                } else if (salesPayment.length == 1) {
+                    return salesPayment[0].basic_plan_card_tax
+                }
+            }
+            return '-'
         }
     },
     mixins: [

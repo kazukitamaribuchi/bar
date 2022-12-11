@@ -448,6 +448,7 @@
                                                     <td class="width20">
                                                         <b-input-group class="input_sales_form_input">
                                                             <b-form-input
+                                                                class="input_number"
                                                                 v-model="inputSalesData.basicPlanPrice1"
                                                                 type="number"
                                                                 required
@@ -470,6 +471,7 @@
                                                     <td class="width20">
                                                         <b-input-group class="input_sales_form_input">
                                                             <b-form-input
+                                                                class="input_number"
                                                                 v-model="inputSalesData.basicPlanPrice2"
                                                                 type="number"
                                                                 required
@@ -501,6 +503,7 @@
                                                     <td class="width20">
                                                         <b-input-group class="input_sales_form_input">
                                                             <b-form-input
+                                                                class="input_number"
                                                                 v-model="inputSalesData.basicPlanExtentionPrice1"
                                                                 type="number"
                                                                 required
@@ -523,6 +526,7 @@
                                                     <td class="width20">
                                                         <b-input-group class="input_sales_form_input">
                                                             <b-form-input
+                                                                class="input_number"
                                                                 v-model="inputSalesData.basicPlanExtentionPrice2"
                                                                 type="number"
                                                                 required
@@ -720,7 +724,7 @@
                             <b-card-text>{{ totalServicePrice | priceLocaleString }}円</b-card-text>
                         </b-col>
                         <b-col cols="2">
-                            <small class="text-muted">カード支払い</small>
+                            <small class="text-muted">カード支払</small>
                             <b-card-text>
                                 <v-checkbox
                                     class="mt-0"
@@ -858,14 +862,17 @@
                             <b-col cols="2">
                                 <b-card-sub-title>会員No</b-card-sub-title>
                             </b-col>
-                            <b-col cols="5">
+                            <b-col cols="4">
                                 <b-card-sub-title>名前</b-card-sub-title>
                             </b-col>
-                            <b-col cols="3">
-                                <b-card-sub-title>支払額</b-card-sub-title>
+                            <b-col cols="1">
+                                <b-card-sub-title>支払方法</b-card-sub-title>
                             </b-col>
                             <b-col cols="2">
-                                <b-card-sub-title>カード支払い</b-card-sub-title>
+                                <b-card-sub-title>現金支払額</b-card-sub-title>
+                            </b-col>
+                            <b-col cols="2">
+                                <b-card-sub-title>カード支払額</b-card-sub-title>
                             </b-col>
                             <!-- <b-col cols="2">
                                 カード手数料
@@ -903,25 +910,53 @@
                             <b-col cols="2">
                                 No. {{ item.customer_no }}
                             </b-col>
-                            <b-col cols="5">
-                                {{ item.name }}
+                            <b-col cols="4">
+                                {{ item.name | truncate(20) }}
                             </b-col>
-                            <b-col cols="3">
+                            <b-col cols="1">
+                                <span class="basic_select_wrap">
+                                    <b-form-select
+                                        class="basic_select"
+                                        value-field="value"
+                                        text-field="text"
+                                        :options="fixedPricePayment"
+                                        v-model="item.fixedPriceIrregular"
+                                        @change="changeFixedPriceIrregular(item, i)"
+                                    >
+                                    </b-form-select>
+
+                                    <!-- <SelectForm
+                                        :dispOptions="fixedPricePayment"
+                                        v-model="item.fixedPriceIrregular"
+                                    /> -->
+                                </span>
+                            </b-col>
+                            <b-col cols="2">
                                 <b-form-input
+                                    style="text-align: right;"
                                     type="number"
                                     required
                                     v-model="item.amountPaid"
                                     @change="calcTotalAmountPaid"
                                     min="0"
-                                    class="input_sales_form_input"
+                                    class="input_sales_form_input input_number"
                                 ></b-form-input>
                             </b-col>
                             <b-col cols="2">
-                                <v-checkbox
+                                <b-form-input
+                                    type="number"
+                                    required
+                                    v-model="item.amountCardPaid"
+                                    @change="calcTotalAmountPaid"
+                                    :disabled="!item.fixedPriceIrregular"
+                                    min="0"
+                                    class="input_sales_form_input input_number"
+                                ></b-form-input>
+                                <!-- <v-checkbox
                                     class="mt-0"
                                     v-model="item.cardPayment"
                                     @change="changeCardPayment(item.cardPayment, i)"
-                                ></v-checkbox>
+                                ></v-checkbox> -->
                             </b-col>
                             <!-- <b-col cols="2">
                                 <SelectForm
@@ -1274,6 +1309,10 @@ export default {
         basicPlanServiceTaxList: [
             { text: '10%', value: 10 },
             { text: '0%', value: 0 },
+        ],
+        fixedPricePayment: [
+            { text: '通常', value: false },
+            { text: '併用', value: true },
         ],
         taxationOptions: [
             { text: '課税', value: 1 }
@@ -1663,11 +1702,13 @@ export default {
             if (this.inputFixedPrice) {
                 for (const item of this.customerInfo) {
                     let amountPaid = item.amountPaid
+                    let amountCardPaid = item.amountCardPaid
                     salesPayment.push({
                         customer_pk: item.id,
                         customer_no: item.customer_no,
                         name: item.name,
                         amount_paid: amountPaid,
+                        amount_card_paid: amountCardPaid,
                         payment: item.cardPayment,
                         basic_plan_card_tax: item.basicPlanCardTax,
                     })
@@ -1679,11 +1720,17 @@ export default {
                         customer_no: item.customer_no,
                         name: item.name,
                         amount_paid: 0,
+                        amount_card_paid: 0,
                         payment: false,
                         basic_plan_card_tax: 0,
                     })
                 }
-                salesPayment[0].amount_paid = this.totalTaxPrice
+                if (!this.inputSalesData.cardPayment) {
+                    salesPayment[0].amount_paid = this.totalTaxPrice
+                } else {
+                    salesPayment[0].amount_card_paid = this.totalTaxPrice
+                }
+                
                 salesPayment[0].payment = this.inputSalesData.cardPayment
                 salesPayment[0].basic_plan_card_tax = this.inputSalesData.basicPlanCardTax
             }
@@ -1807,11 +1854,13 @@ export default {
             if (this.inputFixedPrice) {
                 for (const item of this.customerInfo) {
                     let amountPaid = item.amountPaid
+                    let amountCardPaid = item.amountCardPaid
                     salesPayment.push({
                         customer_pk: item.id,
                         customer_no: item.customer_no,
                         name: item.name,
                         amount_paid: amountPaid,
+                        amount_card_paid: amountCardPaid,
                         payment: item.cardPayment,
                         basic_plan_card_tax: item.basicPlanCardTax,
                     })
@@ -1823,11 +1872,16 @@ export default {
                         customer_no: item.customer_no,
                         name: item.name,
                         amount_paid: 0,
+                        amount_card_paid: 0,
                         payment: false,
                         basic_plan_card_tax: 0,
                     })
                 }
-                salesPayment[0].amount_paid = this.totalTaxPrice
+                if (!this.inputSalesData.cardPayment) {
+                    salesPayment[0].amount_paid = this.totalTaxPrice
+                } else {
+                    salesPayment[0].amount_card_paid = this.totalTaxPrice
+                }
                 salesPayment[0].payment = this.inputSalesData.cardPayment
                 salesPayment[0].basic_plan_card_tax = this.inputSalesData.basicPlanCardTax
             }
@@ -2048,13 +2102,13 @@ export default {
             this.$refs.inputSalesAddCustomerDialog.open(data, index)
         },
         addCustomer (data) {
-            // console.log('addCustomer', data)
+            console.log('addCustomer', data)
             this.customerInfo.push(data)
             this.updateBottleInfo()
             this.checkTotalVisitors()
         },
         updateCustomer (data, index) {
-            // console.log('updateCustomer', data)
+            console.log('updateCustomer', data)
             Vue.set(this.customerInfo, index, data)
             // this.customerInfo.push(data)
             this.updateBottleInfo()
@@ -2065,9 +2119,15 @@ export default {
             // console.log('selectCustomer', idx, this.customerInfo)
             this.inputFixedPrice = true
             this.customerInfo.map(val => val.amountPaid = 0)
+            this.customerInfo.map(val => val.amountCardPaid = 0)
             this.customerInfo.map(val => val.cardPayment = false)
             this.customerInfo.map(val => val.basicPlanCardTax = 0)
-            this.customerInfo[idx].amountPaid = this.totalTaxPrice
+            if (!this.inputSalesData.cardPayment) {
+                this.customerInfo[idx].amountPaid = this.totalTaxPrice
+            } else {
+                this.customerInfo[idx].amountCardPaid = this.totalTaxPrice
+            }
+            
             this.customerInfo[idx].cardPayment = this.inputSalesData.cardPayment
             this.customerInfo[idx].basicPlanCardTax = this.inputSalesData.basicPlanCardTax
             this.calcTotalAmountPaid()
@@ -2110,6 +2170,8 @@ export default {
                 for (const p of data.sales_payment) {
                     if (c.customer_no == p.customer.customer_no) {
                         c.amountPaid = p.amount_paid
+                        c.amountCardPaid = p.amount_card_paid
+                        c.fixedPriceIrregular = p.irregular_payment
                         c.cardPayment = (p.payment == 1) ? true : false
                         c.basicPlanCardTax = p.basic_plan_card_tax
                     }
@@ -2433,6 +2495,7 @@ export default {
             let result = 0
             for (const item of this.customerInfo) {
                 result += Number(item.amountPaid)
+                result += Number(item.amountCardPaid)
             }
             this.totalAmountPaid = result
         },
@@ -2502,6 +2565,12 @@ export default {
             } else {
                 this.totalVisitorsError = ''
             }
+        },
+        changeFixedPriceIrregular (item, i) {
+            this.$set(item, 'amountCardPaid', 0)
+            this.customerInfo.splice()
+            this.calcTotalAmountPaid()
+            // console.log('this.customerInfo', this.customerInfo)
         },
         // isSalesDetailBottleCustomerDisabled () {
         //     if (this.customerInfo == null || this.customerInfo.length == 0) {
@@ -2584,6 +2653,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+    .input_number {
+        text-align: right;
+    }
 
     .input_sales_form {
         padding: 20px;
@@ -2741,6 +2814,28 @@ export default {
 
     .input_sales_form_input {
         width: 170px;
+    }
+
+    .basic_select_wrap {
+        .basic_select {
+            background: white;
+            border-radius: 3px;
+            border: 1px solid rgba(175, 175, 175, 0.6);
+            padding: 6px 20px 6px 7px;
+            font-size: 16px;
+            font-weight: 200;
+        }
+    }
+
+    .basic_select_wrap::after {
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-top: 4.5px solid rgba(50, 50, 50, 1);
+        content: "";
+        position: relative;
+        right: 12px;
+        top: 13px;
+        width: 0;
     }
 
 </style>
