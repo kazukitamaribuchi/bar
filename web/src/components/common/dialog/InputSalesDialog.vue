@@ -97,7 +97,7 @@
                                     </div>
                                     <b-container>
                                         <b-row>
-                                            <b-col cols="6" class="mt-0 pt-0">
+                                            <b-col cols="5" class="mt-0 pt-0">
                                                 <div style="display: flex;">
                                                     <div>
                                                         <img
@@ -131,7 +131,7 @@
                                                     </div>
                                                 </div>
                                             </b-col>
-                                            <b-col cols="2" class="mt-0 pt-0">
+                                            <b-col cols="1" class="mt-0 pt-0">
                                                 <b-card-sub-title>
                                                     年齢
                                                 </b-card-sub-title>
@@ -159,6 +159,17 @@
                                                 </b-card-sub-title>
                                                 <b-card-text v-if="customerInfo != null && customerInfo.length > 0">
                                                     {{ getStrInData(customerInfo[0].rank_name) }}
+                                                </b-card-text>
+                                                <b-card-text v-else>
+                                                    -
+                                                </b-card-text>
+                                            </b-col>
+                                            <b-col cols="2" class="mt-0 pt-0">
+                                                <b-card-sub-title>
+                                                    来店数
+                                                </b-card-sub-title>
+                                                <b-card-text v-if="customerInfo != null && customerInfo.length > 0">
+                                                    {{ customerInfo[0].total_visit }}
                                                 </b-card-text>
                                                 <b-card-text v-else>
                                                     -
@@ -218,27 +229,41 @@
                                                                 class="customer_detail_customer_icon"
                                                             >
                                                         </div>
-                                                        <b-card-sub-title style="font-size: 12px; margin-top: 10px;">
+                                                        <b-card-sub-title style="font-size: 15px; margin-top: 1px;">
                                                             会員No
                                                         </b-card-sub-title>
-                                                        <b-card-text style="font-size: 13px;">
+                                                        <b-card-text style="font-size: 15px;">
                                                             {{ item.customer_no }}
                                                         </b-card-text>
                                                     </b-col>
                                                     <b-col cols="8">
                                                         <div style="margin-left: 15px;">
-                                                            <b-card-sub-title>
-                                                                名前
-                                                            </b-card-sub-title>
-                                                            <b-card-text style="font-size: 15px;">
-                                                                {{ item.name }}
-                                                            </b-card-text>
-                                                            <b-card-sub-title>
-                                                                ランク
-                                                            </b-card-sub-title>
-                                                            <b-card-text style="font-size: 15px;">
-                                                                {{ getStrInData(item.rank_name) }}
-                                                            </b-card-text>
+                                                            <b-row>
+                                                                <b-card-sub-title>
+                                                                    名前
+                                                                </b-card-sub-title>
+                                                                <b-card-text style="font-size: 15px;">
+                                                                    {{ item.name }}
+                                                                </b-card-text>
+                                                            </b-row>
+                                                            <b-row>
+                                                                <b-col cols="6">
+                                                                    <b-card-sub-title>
+                                                                        ランク
+                                                                    </b-card-sub-title>
+                                                                    <b-card-text style="font-size: 15px;">
+                                                                        {{ getStrInData(item.rank_name) }}
+                                                                    </b-card-text>
+                                                                </b-col>
+                                                                <b-col cols="6">
+                                                                    <b-card-sub-title>
+                                                                        来店数
+                                                                    </b-card-sub-title>
+                                                                    <b-card-text style="font-size: 15px;">
+                                                                        {{ item.total_visit }}
+                                                                    </b-card-text>
+                                                                </b-col>
+                                                            </b-row>
                                                         </div>
                                                     </b-col>
                                                 </b-row>
@@ -448,6 +473,7 @@
                                                     <td class="width20">
                                                         <b-input-group class="input_sales_form_input">
                                                             <b-form-input
+                                                                class="input_number"
                                                                 v-model="inputSalesData.basicPlanPrice1"
                                                                 type="number"
                                                                 required
@@ -470,6 +496,7 @@
                                                     <td class="width20">
                                                         <b-input-group class="input_sales_form_input">
                                                             <b-form-input
+                                                                class="input_number"
                                                                 v-model="inputSalesData.basicPlanPrice2"
                                                                 type="number"
                                                                 required
@@ -501,6 +528,7 @@
                                                     <td class="width20">
                                                         <b-input-group class="input_sales_form_input">
                                                             <b-form-input
+                                                                class="input_number"
                                                                 v-model="inputSalesData.basicPlanExtentionPrice1"
                                                                 type="number"
                                                                 required
@@ -523,6 +551,7 @@
                                                     <td class="width20">
                                                         <b-input-group class="input_sales_form_input">
                                                             <b-form-input
+                                                                class="input_number"
                                                                 v-model="inputSalesData.basicPlanExtentionPrice2"
                                                                 type="number"
                                                                 required
@@ -532,6 +561,38 @@
                                                     <td class="width30">
                                                         <b-form-spinbutton
                                                             v-model="inputSalesData.basicPlanExtentionNum2"
+                                                            inline
+                                                            min=0
+                                                            size="sm"
+                                                        ></b-form-spinbutton>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <table class="mt-3">
+                                                <tr>
+                                                    <th
+                                                        v-for="(menuItem, id) in createCardPriceMenu"
+                                                        :key=id
+                                                        :class=menuItem.class
+                                                    >{{ menuItem.text }}</th>
+                                                </tr>
+                                                <tr>
+                                                    <td class="width20">
+                                                        カード作成料
+                                                    </td>
+                                                    <td class="width20">
+                                                        <b-input-group class="input_sales_form_input">
+                                                            <b-form-input
+                                                                class="input_number"
+                                                                v-model="inputSalesData.CreateCardFee"
+                                                                type="number"
+                                                                required
+                                                            ></b-form-input>
+                                                        </b-input-group>
+                                                    </td>
+                                                    <td class="width30">
+                                                        <b-form-spinbutton
+                                                            v-model="inputSalesData.CreateCardNum"
                                                             inline
                                                             min=0
                                                             size="sm"
@@ -720,7 +781,7 @@
                             <b-card-text>{{ totalServicePrice | priceLocaleString }}円</b-card-text>
                         </b-col>
                         <b-col cols="2">
-                            <small class="text-muted">カード支払い</small>
+                            <small class="text-muted">カード支払</small>
                             <b-card-text>
                                 <v-checkbox
                                     class="mt-0"
@@ -858,14 +919,17 @@
                             <b-col cols="2">
                                 <b-card-sub-title>会員No</b-card-sub-title>
                             </b-col>
-                            <b-col cols="5">
+                            <b-col cols="4">
                                 <b-card-sub-title>名前</b-card-sub-title>
                             </b-col>
-                            <b-col cols="3">
-                                <b-card-sub-title>支払額</b-card-sub-title>
+                            <b-col cols="1">
+                                <b-card-sub-title>支払方法</b-card-sub-title>
                             </b-col>
                             <b-col cols="2">
-                                <b-card-sub-title>カード支払い</b-card-sub-title>
+                                <b-card-sub-title>現金支払額</b-card-sub-title>
+                            </b-col>
+                            <b-col cols="2">
+                                <b-card-sub-title>カード支払額</b-card-sub-title>
                             </b-col>
                             <!-- <b-col cols="2">
                                 カード手数料
@@ -903,25 +967,53 @@
                             <b-col cols="2">
                                 No. {{ item.customer_no }}
                             </b-col>
-                            <b-col cols="5">
-                                {{ item.name }}
+                            <b-col cols="4">
+                                {{ item.name | truncate(20) }}
                             </b-col>
-                            <b-col cols="3">
+                            <b-col cols="1">
+                                <span class="basic_select_wrap">
+                                    <b-form-select
+                                        class="basic_select"
+                                        value-field="value"
+                                        text-field="text"
+                                        :options="fixedPricePayment"
+                                        v-model="item.fixedPriceIrregular"
+                                        @change="changeFixedPriceIrregular(item, i)"
+                                    >
+                                    </b-form-select>
+
+                                    <!-- <SelectForm
+                                        :dispOptions="fixedPricePayment"
+                                        v-model="item.fixedPriceIrregular"
+                                    /> -->
+                                </span>
+                            </b-col>
+                            <b-col cols="2">
                                 <b-form-input
+                                    style="text-align: right;"
                                     type="number"
                                     required
                                     v-model="item.amountPaid"
                                     @change="calcTotalAmountPaid"
                                     min="0"
-                                    class="input_sales_form_input"
+                                    class="input_sales_form_input input_number"
                                 ></b-form-input>
                             </b-col>
                             <b-col cols="2">
-                                <v-checkbox
+                                <b-form-input
+                                    type="number"
+                                    required
+                                    v-model="item.amountCardPaid"
+                                    @change="calcTotalAmountPaid"
+                                    :disabled="!item.fixedPriceIrregular"
+                                    min="0"
+                                    class="input_sales_form_input input_number"
+                                ></b-form-input>
+                                <!-- <v-checkbox
                                     class="mt-0"
                                     v-model="item.cardPayment"
                                     @change="changeCardPayment(item.cardPayment, i)"
-                                ></v-checkbox>
+                                ></v-checkbox> -->
                             </b-col>
                             <!-- <b-col cols="2">
                                 <SelectForm
@@ -1227,6 +1319,9 @@ export default {
             basicPlanExtentionNum1: 0,
             basicPlanExtentionPrice2: 0,
             basicPlanExtentionNum2: 0,
+            
+            CreateCardFee: 0,
+            CreateCardNum: 0,
 
             basicPlanServiceTax: 10,
             basicPlanTax: 10,
@@ -1267,6 +1362,11 @@ export default {
             { text: '金額', class: 'width20' },
             { text: '数量', class: 'width30' }
         ],
+        createCardPriceMenu: [
+            { text: '事務手数料', class: 'width20' },
+            { text: '金額', class: 'width20' },
+            { text: '数量', class: 'width30' }
+        ],
         basicPlanOptions: [
             { text: '通常', value: 0 },
             { text: '貸切', value: 1 },
@@ -1274,6 +1374,10 @@ export default {
         basicPlanServiceTaxList: [
             { text: '10%', value: 10 },
             { text: '0%', value: 0 },
+        ],
+        fixedPricePayment: [
+            { text: '通常', value: false },
+            { text: '併用', value: true },
         ],
         taxationOptions: [
             { text: '課税', value: 1 }
@@ -1386,8 +1490,11 @@ export default {
             const normal2 = this.inputSalesData.basicPlanPrice2 * this.inputSalesData.basicPlanNum2
             const extention1 = this.inputSalesData.basicPlanExtentionPrice1 * this.inputSalesData.basicPlanExtentionNum1
             const extention2 = this.inputSalesData.basicPlanExtentionPrice2 * this.inputSalesData.basicPlanExtentionNum2
+            
+            const createCardFee = this.inputSalesData.CreateCardFee * this.inputSalesData.CreateCardNum
+
             // サービス料金の合計(税抜)
-            totalServicePrice += (normal1 + normal2 + extention1 + extention2)
+            totalServicePrice += (normal1 + normal2 + extention1 + extention2 + createCardFee)
 
             // 非課税は単純に全て足して算出
             totalPrice += (totalDetailPrice + totalServicePrice)
@@ -1652,6 +1759,18 @@ export default {
                     fixed_price: this.inputSalesData.basicPlanExtentionPrice2,
                 })
             }
+            if (this.inputSalesData.CreateCardNum > 0) {
+                salesServiceDetailList.push({
+                    service: {
+                        'large_category': 2,
+                        'middle_category': 0,
+                        'small_category': 0,
+                    },
+                    discount_flg: false,
+                    quantity: this.inputSalesData.CreateCardNum,
+                    fixed_price: this.inputSalesData.CreateCardFee,
+                })
+            }
 
             // 20221016 会員情報複数入力
             // 実価格入力（paymentが会員分）
@@ -1663,11 +1782,13 @@ export default {
             if (this.inputFixedPrice) {
                 for (const item of this.customerInfo) {
                     let amountPaid = item.amountPaid
+                    let amountCardPaid = item.amountCardPaid
                     salesPayment.push({
                         customer_pk: item.id,
                         customer_no: item.customer_no,
                         name: item.name,
                         amount_paid: amountPaid,
+                        amount_card_paid: amountCardPaid,
                         payment: item.cardPayment,
                         basic_plan_card_tax: item.basicPlanCardTax,
                     })
@@ -1679,11 +1800,17 @@ export default {
                         customer_no: item.customer_no,
                         name: item.name,
                         amount_paid: 0,
+                        amount_card_paid: 0,
                         payment: false,
                         basic_plan_card_tax: 0,
                     })
                 }
-                salesPayment[0].amount_paid = this.totalTaxPrice
+                if (!this.inputSalesData.cardPayment) {
+                    salesPayment[0].amount_paid = this.totalTaxPrice
+                } else {
+                    salesPayment[0].amount_card_paid = this.totalTaxPrice
+                }
+                
                 salesPayment[0].payment = this.inputSalesData.cardPayment
                 salesPayment[0].basic_plan_card_tax = this.inputSalesData.basicPlanCardTax
             }
@@ -1796,6 +1923,18 @@ export default {
                     fixed_price: this.inputSalesData.basicPlanExtentionPrice2,
                 })
             }
+            if (this.inputSalesData.CreateCardNum > 0) {
+                salesServiceDetailList.push({
+                    service: {
+                        'large_category': 2,
+                        'middle_category': 0,
+                        'small_category': 0,
+                    },
+                    discount_flg: false,
+                    quantity: this.inputSalesData.CreateCardNum,
+                    fixed_price: this.inputSalesData.CreateCardFee,
+                })
+            }
 
             // 20221016 会員情報複数入力
             // 実価格入力（paymentが会員分）
@@ -1807,11 +1946,13 @@ export default {
             if (this.inputFixedPrice) {
                 for (const item of this.customerInfo) {
                     let amountPaid = item.amountPaid
+                    let amountCardPaid = item.amountCardPaid
                     salesPayment.push({
                         customer_pk: item.id,
                         customer_no: item.customer_no,
                         name: item.name,
                         amount_paid: amountPaid,
+                        amount_card_paid: amountCardPaid,
                         payment: item.cardPayment,
                         basic_plan_card_tax: item.basicPlanCardTax,
                     })
@@ -1823,11 +1964,16 @@ export default {
                         customer_no: item.customer_no,
                         name: item.name,
                         amount_paid: 0,
+                        amount_card_paid: 0,
                         payment: false,
                         basic_plan_card_tax: 0,
                     })
                 }
-                salesPayment[0].amount_paid = this.totalTaxPrice
+                if (!this.inputSalesData.cardPayment) {
+                    salesPayment[0].amount_paid = this.totalTaxPrice
+                } else {
+                    salesPayment[0].amount_card_paid = this.totalTaxPrice
+                }
                 salesPayment[0].payment = this.inputSalesData.cardPayment
                 salesPayment[0].basic_plan_card_tax = this.inputSalesData.basicPlanCardTax
             }
@@ -1923,6 +2069,9 @@ export default {
                 basicPlanExtentionPrice2: 0,
                 basicPlanExtentionNum2: 0,
 
+                CreateCardFee: 0,
+                CreateCardNum: 0,
+
                 basicPlanServiceTax: 10,
                 basicPlanTax: 10,
                 basicPlanCardTax: 0,
@@ -1995,6 +2144,9 @@ export default {
                 basicPlanExtentionPrice2: 0,
                 basicPlanExtentionNum2: 0,
 
+                CreateCardFee: 0,
+                CreateCardNum: 0,
+
                 basicPlanServiceTax: 10,
                 basicPlanTax: 10,
                 basicPlanCardTax: 0,
@@ -2048,26 +2200,51 @@ export default {
             this.$refs.inputSalesAddCustomerDialog.open(data, index)
         },
         addCustomer (data) {
-            // console.log('addCustomer', data)
+            console.log('addCustomer', data)
             this.customerInfo.push(data)
             this.updateBottleInfo()
             this.checkTotalVisitors()
+            this.checkNewVisitCustomer()
         },
         updateCustomer (data, index) {
-            // console.log('updateCustomer', data)
+            console.log('updateCustomer', data)
             Vue.set(this.customerInfo, index, data)
             // this.customerInfo.push(data)
             this.updateBottleInfo()
             this.updateSelectedProductList()
+            this.checkNewVisitCustomer()
+        },
+        checkNewVisitCustomer () {
+            // 初回来店の会員がいるかチェックする。
+            // 初回来店会員の人数分、数量を更新
+            let cnt = 0
+            for (const customer of this.customerInfo) {
+                if (customer.total_visit == 0) {
+                    cnt++
+                }
+            }
+            if (cnt == 0) {
+                this.inputSalesData.CreateCardFee = 0
+                this.inputSalesData.CreateCardNum = 0
+            } else if (cnt > 0) {
+                this.inputSalesData.CreateCardFee = Con.CREATE_CARD_FEE
+                this.inputSalesData.CreateCardNum = cnt
+            }
         },
         selectCustomer (idx) {
             // 複数顧客選択時に支払った会員を選択するモーダルから選択した際のメソッド
             // console.log('selectCustomer', idx, this.customerInfo)
             this.inputFixedPrice = true
             this.customerInfo.map(val => val.amountPaid = 0)
+            this.customerInfo.map(val => val.amountCardPaid = 0)
             this.customerInfo.map(val => val.cardPayment = false)
             this.customerInfo.map(val => val.basicPlanCardTax = 0)
-            this.customerInfo[idx].amountPaid = this.totalTaxPrice
+            if (!this.inputSalesData.cardPayment) {
+                this.customerInfo[idx].amountPaid = this.totalTaxPrice
+            } else {
+                this.customerInfo[idx].amountCardPaid = this.totalTaxPrice
+            }
+            
             this.customerInfo[idx].cardPayment = this.inputSalesData.cardPayment
             this.customerInfo[idx].basicPlanCardTax = this.inputSalesData.basicPlanCardTax
             this.calcTotalAmountPaid()
@@ -2082,6 +2259,8 @@ export default {
             this.updateBottleInfo()
             this.updateSelectedProductList()
             this.checkTotalVisitors()
+            console.log('delete')
+            this.checkNewVisitCustomer()
         },
         deleteSalesDetail (index) {
             this.inputSalesDetailData.splice(index, 1)
@@ -2105,11 +2284,14 @@ export default {
 
             this.inputSalesData.basicPlanType = data.basic_plan_type.id
             let c_list = data.customer_list
+            console.log('c_list', c_list)
             // this.customerInfo = data.customer_list
             for (const c of c_list) {
                 for (const p of data.sales_payment) {
                     if (c.customer_no == p.customer.customer_no) {
                         c.amountPaid = p.amount_paid
+                        c.amountCardPaid = p.amount_card_paid
+                        c.fixedPriceIrregular = p.irregular_payment
                         c.cardPayment = (p.payment == 1) ? true : false
                         c.basicPlanCardTax = p.basic_plan_card_tax
                     }
@@ -2151,10 +2333,14 @@ export default {
                         // 通常
                         this.inputSalesData.basicPlanPrice1 = salesServiceDetailItem.fixed_price
                         this.inputSalesData.basicPlanNum1 = salesServiceDetailItem.quantity
-                    } else {
+                    } else if (salesServiceDetailItem.service.large_category == 1) {
                         // 延長
                         this.inputSalesData.basicPlanExtentionPrice1 = salesServiceDetailItem.fixed_price
                         this.inputSalesData.basicPlanExtentionNum1 = salesServiceDetailItem.quantity
+                    } else if (salesServiceDetailItem.service.large_category == 2) {
+                        // カード作成料
+                        this.inputSalesData.CreateCardFee = salesServiceDetailItem.fixed_price
+                        this.inputSalesData.CreateCardNum = salesServiceDetailItem.quantity
                     }
                 } else {
                     if (salesServiceDetailItem.service.large_category == 0) {
@@ -2199,6 +2385,7 @@ export default {
             // this.inputSalesDetailData.splice()
             // console.log('this.inputSalesDetailData2 ', this.inputSalesDetailData)
             // console.log('this.customerInfo', this.customerInfo)
+            console.log('inputSalesData', this.inputSalesData)
         },
         // checkCustomerNo () {
         //     const val = this.inputSalesData.customerNo
@@ -2273,6 +2460,12 @@ export default {
             this.inputSalesData.basicPlanExtentionPrice1 = basicPlanExtentionPrice1
             this.inputSalesData.basicPlanExtentionPrice2 = basicPlanExtentionPrice1 / 2
 
+            console.log('calc')
+
+            if (!this.editMode) {
+                this.checkNewVisitCustomer()
+            }
+
             if (this.inputSalesData.visitTime == null ||
                 this.inputSalesData.leaveTime == null) {
                 // console.log(this.inputSalesData.visitTime, this.inputSalesData.leaveTime)
@@ -2313,6 +2506,8 @@ export default {
             this.inputSalesData.basicPlanExtentionNum1 = 0
             this.inputSalesData.basicPlanExtentionPrice2 = 0
             this.inputSalesData.basicPlanExtentionNum2 = 0
+            this.inputSalesData.CreateCardFee = 0
+            this.inputSalesData.CreateCardNum = 0
         },
         initExtentionNum () {
             this.inputSalesData.basicPlanExtentionNum1 = 0
@@ -2433,6 +2628,7 @@ export default {
             let result = 0
             for (const item of this.customerInfo) {
                 result += Number(item.amountPaid)
+                result += Number(item.amountCardPaid)
             }
             this.totalAmountPaid = result
         },
@@ -2502,6 +2698,12 @@ export default {
             } else {
                 this.totalVisitorsError = ''
             }
+        },
+        changeFixedPriceIrregular (item, i) {
+            this.$set(item, 'amountCardPaid', 0)
+            this.customerInfo.splice()
+            this.calcTotalAmountPaid()
+            // console.log('this.customerInfo', this.customerInfo)
         },
         // isSalesDetailBottleCustomerDisabled () {
         //     if (this.customerInfo == null || this.customerInfo.length == 0) {
@@ -2584,6 +2786,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+    .input_number {
+        text-align: right;
+    }
 
     .input_sales_form {
         padding: 20px;
@@ -2741,6 +2947,28 @@ export default {
 
     .input_sales_form_input {
         width: 170px;
+    }
+
+    .basic_select_wrap {
+        .basic_select {
+            background: white;
+            border-radius: 3px;
+            border: 1px solid rgba(175, 175, 175, 0.6);
+            padding: 6px 20px 6px 7px;
+            font-size: 16px;
+            font-weight: 200;
+        }
+    }
+
+    .basic_select_wrap::after {
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-top: 4.5px solid rgba(50, 50, 50, 1);
+        content: "";
+        position: relative;
+        right: 12px;
+        top: 13px;
+        width: 0;
     }
 
 </style>

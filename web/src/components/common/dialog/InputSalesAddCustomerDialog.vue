@@ -305,6 +305,8 @@ export default {
         },
         addCustomer () {
             this.customerInfo.amountPaid = 0
+            this.customerInfo.amountCardPaid = 0
+            this.customerInfo.fixedPriceIrregular = false
             this.customerInfo.cardPayment = false
             this.customerInfo.basicPlanCardTax = 0
 
@@ -313,6 +315,8 @@ export default {
         },
         updateCustomer () {
             this.customerInfo.amountPaid = 0
+            this.customerInfo.amountCardPaid = 0
+            this.customerInfo.fixedPriceIrregular = false
             this.customerInfo.cardPayment = false
             this.customerInfo.basicPlanCardTax = 0
 

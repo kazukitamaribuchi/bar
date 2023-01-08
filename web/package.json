@@ -23,9 +23,9 @@
     "vue-axios": "^3.4.1",
     "vue-router": "3.4.9",
     "vue-session": "^1.0.0",
-    "vue-template-compiler": "^2.6.12",
+    "vue-template-compiler": "2.6.12",
     "vuesax": "^4.0.1-alpha.25",
-    "vuetify": "^2.6.5",
+    "vuetify": "^2.6.12",
     "vuex": "3.6.0",
     "vuex-persistedstate": "^3.0.1"
   },

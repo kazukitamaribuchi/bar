@@ -346,6 +346,8 @@ class MSetting(AbstractBaseModel):
         default='1800',
     )
 
+    class Meta:
+        verbose_name_plural = '設定マスタ'
 
 
 class MProductCategory(AbstractBaseModel):
@@ -429,6 +431,9 @@ class MPayment(AbstractBaseModel):
         related_name='payment',
     )
 
+    class Meta:
+        verbose_name_plural = '支払方法マスタ'
+
 
 
 class MServiceCategory(AbstractBaseModel):
@@ -455,6 +460,9 @@ class MServiceCategory(AbstractBaseModel):
         _('小カテゴリー'),
     )
 
+    class Meta:
+        verbose_name_plural = 'サービスカテゴリ'
+
 
 class MService(AbstractServiceModel):
     """
@@ -468,11 +476,14 @@ class MService(AbstractServiceModel):
                 1(延長)
                     0:延長（通常）
                     1:延長（貸切）
+                2(その他)
+                    0:カード作成料
 
             large0, middle0 [0, 1, 2]
             large0, middle1 [0, 1, 2]
             large1, middle0 0
             large1, middle1 0
+            large2, middle0 0
     """
 
     large_category = models.SmallIntegerField(_('大カテゴリ'), default=0)

@@ -1098,6 +1098,7 @@ class SalesViewSet(BaseModelViewSet):
                     sales_header=header,
                     customer=customer,
                     amount_paid=sales_payment_dict['amount_paid'],
+                    amount_card_paid=sales_payment_dict['amount_card_paid'],
                     payment=sales_payment_dict['payment'],
                     basic_plan_card_tax=sales_payment_dict['basic_plan_card_tax'],
                 )
@@ -1219,7 +1220,12 @@ class SalesViewSet(BaseModelViewSet):
             customer = sales_payment.customer
             total_sales_for_rank = SalesHeader.objects.filter(
                 sales_payment_sales_header__customer=customer
-            ).aggregate(total=Coalesce(models.Sum(F('sales_payment_sales_header__amount_paid')), 0))['total']
+            ).aggregate(total=Coalesce(
+                    models.Sum(F('sales_payment_sales_header__amount_paid')), 0
+                ) + Coalesce(
+                    models.Sum(F('sales_payment_sales_header__amount_card_paid')), 0
+                )
+            )['total']
             update_customer_rank(customer, total_sales_for_rank)
 
         return Response({
@@ -1367,6 +1373,7 @@ class SalesViewSet(BaseModelViewSet):
                     sales_header=header,
                     customer=customer,
                     amount_paid=sales_payment_dict['amount_paid'],
+                    amount_card_paid=sales_payment_dict['amount_card_paid'],
                     payment=sales_payment_dict['payment'],
                     basic_plan_card_tax=sales_payment_dict['basic_plan_card_tax'],
                 )
@@ -1468,7 +1475,12 @@ class SalesViewSet(BaseModelViewSet):
             customer = sales_payment.customer
             total_sales_for_rank = SalesHeader.objects.filter(
                 sales_payment_sales_header__customer=customer
-            ).aggregate(total=Coalesce(models.Sum(F('sales_payment_sales_header__amount_paid')), 0))['total']
+            ).aggregate(total=Coalesce(
+                    models.Sum(F('sales_payment_sales_header__amount_paid')), 0
+                ) + Coalesce(
+                    models.Sum(F('sales_payment_sales_header__amount_card_paid')), 0
+                )
+            )['total']
             update_customer_rank(customer, total_sales_for_rank)
         # total_sales_for_rank = SalesHeader.objects.filter(
         #     customer=customer
@@ -1695,7 +1707,11 @@ class SalesViewSet(BaseModelViewSet):
             # customer=Lower('sales_payment_sales_header__customer')
             customer=F('sales_payment_sales_header__customer')
         ).annotate(
-            total=models.Sum(F('sales_payment_sales_header__amount_paid')),
+            total=Coalesce(
+                    models.Sum(F('sales_payment_sales_header__amount_paid')), 0
+                ) + Coalesce(
+                    models.Sum(F('sales_payment_sales_header__amount_card_paid')), 0
+                ),
             total_visit=models.Count(F('sales_payment_sales_header__amount_paid'))
         ).order_by('-total')
 
@@ -2096,7 +2112,11 @@ class SalesViewSet(BaseModelViewSet):
                 # customer=Lower('sales_payment_sales_header__customer')
                 customer=F('sales_payment_sales_header__customer')
             ).annotate(
-                total=models.Sum(F('sales_payment_sales_header__amount_paid')),
+                total=Coalesce(
+                        models.Sum(F('sales_payment_sales_header__amount_paid')), 0
+                    ) + Coalesce(
+                        models.Sum(F('sales_payment_sales_header__amount_card_paid')), 0
+                    ),
                 total_visit=models.Count(F('sales_payment_sales_header__amount_paid'))
             ).order_by('-total')[:length]
 

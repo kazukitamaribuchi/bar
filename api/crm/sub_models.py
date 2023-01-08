@@ -291,8 +291,8 @@ class SalesHeader(AbstractBaseModel):
     def __str__(self):
         return '売上No.' + str(self.id) + ' ' + str(self.total_tax_sales) + '円'
 
-    # class Meta:
-    #     verbose_name_plural = '売上ヘッダ'
+    class Meta:
+        verbose_name_plural = '売上ヘッダ'
     #     indexes = [
     #         models.Index(fields=['customer'], name='sales_header_customer_idx'),
     #     ]
@@ -580,7 +580,12 @@ class SalesPayment(AbstractBaseModel):
     )
 
     amount_paid = models.IntegerField(
-        _('支払い総額'),
+        _('現金支払い'),
+        default=0,
+    )
+
+    amount_card_paid = models.IntegerField(
+        _('カード支払い総額'),
         default=0,
     )
 
@@ -608,6 +613,9 @@ class SalesPayment(AbstractBaseModel):
 
     def __str__(self):
         return '伝票pk: ' + str(self.sales_header.id) + ' 会員No: ' + str(self.customer.card.customer_no)
+
+    class Meta:
+        verbose_name_plural = '支払情報'
 
 # class SalesPaymentDetail(AbstractBaseModel):
 #     """
