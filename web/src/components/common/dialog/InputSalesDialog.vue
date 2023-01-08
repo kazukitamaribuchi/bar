@@ -97,7 +97,7 @@
                                     </div>
                                     <b-container>
                                         <b-row>
-                                            <b-col cols="6" class="mt-0 pt-0">
+                                            <b-col cols="5" class="mt-0 pt-0">
                                                 <div style="display: flex;">
                                                     <div>
                                                         <img
@@ -131,7 +131,7 @@
                                                     </div>
                                                 </div>
                                             </b-col>
-                                            <b-col cols="2" class="mt-0 pt-0">
+                                            <b-col cols="1" class="mt-0 pt-0">
                                                 <b-card-sub-title>
                                                     年齢
                                                 </b-card-sub-title>
@@ -159,6 +159,17 @@
                                                 </b-card-sub-title>
                                                 <b-card-text v-if="customerInfo != null && customerInfo.length > 0">
                                                     {{ getStrInData(customerInfo[0].rank_name) }}
+                                                </b-card-text>
+                                                <b-card-text v-else>
+                                                    -
+                                                </b-card-text>
+                                            </b-col>
+                                            <b-col cols="2" class="mt-0 pt-0">
+                                                <b-card-sub-title>
+                                                    来店数
+                                                </b-card-sub-title>
+                                                <b-card-text v-if="customerInfo != null && customerInfo.length > 0">
+                                                    {{ customerInfo[0].total_visit }}
                                                 </b-card-text>
                                                 <b-card-text v-else>
                                                     -
@@ -218,27 +229,41 @@
                                                                 class="customer_detail_customer_icon"
                                                             >
                                                         </div>
-                                                        <b-card-sub-title style="font-size: 12px; margin-top: 10px;">
+                                                        <b-card-sub-title style="font-size: 15px; margin-top: 1px;">
                                                             会員No
                                                         </b-card-sub-title>
-                                                        <b-card-text style="font-size: 13px;">
+                                                        <b-card-text style="font-size: 15px;">
                                                             {{ item.customer_no }}
                                                         </b-card-text>
                                                     </b-col>
                                                     <b-col cols="8">
                                                         <div style="margin-left: 15px;">
-                                                            <b-card-sub-title>
-                                                                名前
-                                                            </b-card-sub-title>
-                                                            <b-card-text style="font-size: 15px;">
-                                                                {{ item.name }}
-                                                            </b-card-text>
-                                                            <b-card-sub-title>
-                                                                ランク
-                                                            </b-card-sub-title>
-                                                            <b-card-text style="font-size: 15px;">
-                                                                {{ getStrInData(item.rank_name) }}
-                                                            </b-card-text>
+                                                            <b-row>
+                                                                <b-card-sub-title>
+                                                                    名前
+                                                                </b-card-sub-title>
+                                                                <b-card-text style="font-size: 15px;">
+                                                                    {{ item.name }}
+                                                                </b-card-text>
+                                                            </b-row>
+                                                            <b-row>
+                                                                <b-col cols="6">
+                                                                    <b-card-sub-title>
+                                                                        ランク
+                                                                    </b-card-sub-title>
+                                                                    <b-card-text style="font-size: 15px;">
+                                                                        {{ getStrInData(item.rank_name) }}
+                                                                    </b-card-text>
+                                                                </b-col>
+                                                                <b-col cols="6">
+                                                                    <b-card-sub-title>
+                                                                        来店数
+                                                                    </b-card-sub-title>
+                                                                    <b-card-text style="font-size: 15px;">
+                                                                        {{ item.total_visit }}
+                                                                    </b-card-text>
+                                                                </b-col>
+                                                            </b-row>
                                                         </div>
                                                     </b-col>
                                                 </b-row>
@@ -536,6 +561,38 @@
                                                     <td class="width30">
                                                         <b-form-spinbutton
                                                             v-model="inputSalesData.basicPlanExtentionNum2"
+                                                            inline
+                                                            min=0
+                                                            size="sm"
+                                                        ></b-form-spinbutton>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <table class="mt-3">
+                                                <tr>
+                                                    <th
+                                                        v-for="(menuItem, id) in createCardPriceMenu"
+                                                        :key=id
+                                                        :class=menuItem.class
+                                                    >{{ menuItem.text }}</th>
+                                                </tr>
+                                                <tr>
+                                                    <td class="width20">
+                                                        カード作成料
+                                                    </td>
+                                                    <td class="width20">
+                                                        <b-input-group class="input_sales_form_input">
+                                                            <b-form-input
+                                                                class="input_number"
+                                                                v-model="inputSalesData.CreateCardFee"
+                                                                type="number"
+                                                                required
+                                                            ></b-form-input>
+                                                        </b-input-group>
+                                                    </td>
+                                                    <td class="width30">
+                                                        <b-form-spinbutton
+                                                            v-model="inputSalesData.CreateCardNum"
                                                             inline
                                                             min=0
                                                             size="sm"
@@ -1262,6 +1319,9 @@ export default {
             basicPlanExtentionNum1: 0,
             basicPlanExtentionPrice2: 0,
             basicPlanExtentionNum2: 0,
+            
+            CreateCardFee: 0,
+            CreateCardNum: 0,
 
             basicPlanServiceTax: 10,
             basicPlanTax: 10,
@@ -1299,6 +1359,11 @@ export default {
         ],
         extentionPriceMenu: [
             { text: '延長料金', class: 'width20' },
+            { text: '金額', class: 'width20' },
+            { text: '数量', class: 'width30' }
+        ],
+        createCardPriceMenu: [
+            { text: '事務手数料', class: 'width20' },
             { text: '金額', class: 'width20' },
             { text: '数量', class: 'width30' }
         ],
@@ -1425,8 +1490,11 @@ export default {
             const normal2 = this.inputSalesData.basicPlanPrice2 * this.inputSalesData.basicPlanNum2
             const extention1 = this.inputSalesData.basicPlanExtentionPrice1 * this.inputSalesData.basicPlanExtentionNum1
             const extention2 = this.inputSalesData.basicPlanExtentionPrice2 * this.inputSalesData.basicPlanExtentionNum2
+            
+            const createCardFee = this.inputSalesData.CreateCardFee * this.inputSalesData.CreateCardNum
+
             // サービス料金の合計(税抜)
-            totalServicePrice += (normal1 + normal2 + extention1 + extention2)
+            totalServicePrice += (normal1 + normal2 + extention1 + extention2 + createCardFee)
 
             // 非課税は単純に全て足して算出
             totalPrice += (totalDetailPrice + totalServicePrice)
@@ -1691,6 +1759,18 @@ export default {
                     fixed_price: this.inputSalesData.basicPlanExtentionPrice2,
                 })
             }
+            if (this.inputSalesData.CreateCardNum > 0) {
+                salesServiceDetailList.push({
+                    service: {
+                        'large_category': 2,
+                        'middle_category': 0,
+                        'small_category': 0,
+                    },
+                    discount_flg: false,
+                    quantity: this.inputSalesData.CreateCardNum,
+                    fixed_price: this.inputSalesData.CreateCardFee,
+                })
+            }
 
             // 20221016 会員情報複数入力
             // 実価格入力（paymentが会員分）
@@ -1843,6 +1923,18 @@ export default {
                     fixed_price: this.inputSalesData.basicPlanExtentionPrice2,
                 })
             }
+            if (this.inputSalesData.CreateCardNum > 0) {
+                salesServiceDetailList.push({
+                    service: {
+                        'large_category': 2,
+                        'middle_category': 0,
+                        'small_category': 0,
+                    },
+                    discount_flg: false,
+                    quantity: this.inputSalesData.CreateCardNum,
+                    fixed_price: this.inputSalesData.CreateCardFee,
+                })
+            }
 
             // 20221016 会員情報複数入力
             // 実価格入力（paymentが会員分）
@@ -1977,6 +2069,9 @@ export default {
                 basicPlanExtentionPrice2: 0,
                 basicPlanExtentionNum2: 0,
 
+                CreateCardFee: 0,
+                CreateCardNum: 0,
+
                 basicPlanServiceTax: 10,
                 basicPlanTax: 10,
                 basicPlanCardTax: 0,
@@ -2049,6 +2144,9 @@ export default {
                 basicPlanExtentionPrice2: 0,
                 basicPlanExtentionNum2: 0,
 
+                CreateCardFee: 0,
+                CreateCardNum: 0,
+
                 basicPlanServiceTax: 10,
                 basicPlanTax: 10,
                 basicPlanCardTax: 0,
@@ -2106,6 +2204,7 @@ export default {
             this.customerInfo.push(data)
             this.updateBottleInfo()
             this.checkTotalVisitors()
+            this.checkNewVisitCustomer()
         },
         updateCustomer (data, index) {
             console.log('updateCustomer', data)
@@ -2113,6 +2212,24 @@ export default {
             // this.customerInfo.push(data)
             this.updateBottleInfo()
             this.updateSelectedProductList()
+            this.checkNewVisitCustomer()
+        },
+        checkNewVisitCustomer () {
+            // 初回来店の会員がいるかチェックする。
+            // 初回来店会員の人数分、数量を更新
+            let cnt = 0
+            for (const customer of this.customerInfo) {
+                if (customer.total_visit == 0) {
+                    cnt++
+                }
+            }
+            if (cnt == 0) {
+                this.inputSalesData.CreateCardFee = 0
+                this.inputSalesData.CreateCardNum = 0
+            } else if (cnt > 0) {
+                this.inputSalesData.CreateCardFee = Con.CREATE_CARD_FEE
+                this.inputSalesData.CreateCardNum = cnt
+            }
         },
         selectCustomer (idx) {
             // 複数顧客選択時に支払った会員を選択するモーダルから選択した際のメソッド
@@ -2142,6 +2259,8 @@ export default {
             this.updateBottleInfo()
             this.updateSelectedProductList()
             this.checkTotalVisitors()
+            console.log('delete')
+            this.checkNewVisitCustomer()
         },
         deleteSalesDetail (index) {
             this.inputSalesDetailData.splice(index, 1)
@@ -2165,6 +2284,7 @@ export default {
 
             this.inputSalesData.basicPlanType = data.basic_plan_type.id
             let c_list = data.customer_list
+            console.log('c_list', c_list)
             // this.customerInfo = data.customer_list
             for (const c of c_list) {
                 for (const p of data.sales_payment) {
@@ -2213,10 +2333,14 @@ export default {
                         // 通常
                         this.inputSalesData.basicPlanPrice1 = salesServiceDetailItem.fixed_price
                         this.inputSalesData.basicPlanNum1 = salesServiceDetailItem.quantity
-                    } else {
+                    } else if (salesServiceDetailItem.service.large_category == 1) {
                         // 延長
                         this.inputSalesData.basicPlanExtentionPrice1 = salesServiceDetailItem.fixed_price
                         this.inputSalesData.basicPlanExtentionNum1 = salesServiceDetailItem.quantity
+                    } else if (salesServiceDetailItem.service.large_category == 2) {
+                        // カード作成料
+                        this.inputSalesData.CreateCardFee = salesServiceDetailItem.fixed_price
+                        this.inputSalesData.CreateCardNum = salesServiceDetailItem.quantity
                     }
                 } else {
                     if (salesServiceDetailItem.service.large_category == 0) {
@@ -2261,6 +2385,7 @@ export default {
             // this.inputSalesDetailData.splice()
             // console.log('this.inputSalesDetailData2 ', this.inputSalesDetailData)
             // console.log('this.customerInfo', this.customerInfo)
+            console.log('inputSalesData', this.inputSalesData)
         },
         // checkCustomerNo () {
         //     const val = this.inputSalesData.customerNo
@@ -2335,6 +2460,12 @@ export default {
             this.inputSalesData.basicPlanExtentionPrice1 = basicPlanExtentionPrice1
             this.inputSalesData.basicPlanExtentionPrice2 = basicPlanExtentionPrice1 / 2
 
+            console.log('calc')
+
+            if (!this.editMode) {
+                this.checkNewVisitCustomer()
+            }
+
             if (this.inputSalesData.visitTime == null ||
                 this.inputSalesData.leaveTime == null) {
                 // console.log(this.inputSalesData.visitTime, this.inputSalesData.leaveTime)
@@ -2375,6 +2506,8 @@ export default {
             this.inputSalesData.basicPlanExtentionNum1 = 0
             this.inputSalesData.basicPlanExtentionPrice2 = 0
             this.inputSalesData.basicPlanExtentionNum2 = 0
+            this.inputSalesData.CreateCardFee = 0
+            this.inputSalesData.CreateCardNum = 0
         },
         initExtentionNum () {
             this.inputSalesData.basicPlanExtentionNum1 = 0

@@ -1175,6 +1175,7 @@ class SalesSerializer(DynamicFieldsModelSerializer):
                    'rank_name',
                    'customer_no',
                    'delete_flg',
+                   'total_visit',
             ]).data for sp in obj.sales_payment_sales_header.all()
         ]
 

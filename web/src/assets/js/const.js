@@ -606,6 +606,9 @@ class Const {
         5000, 10000
     ]
 
+    // カード作成料金
+    CREATE_CARD_FEE = 5000
+
     // 基本料金の区切り時間 1時間, 2時間, 3時間
     BASIC_PLAN_SEP_MINUTE = [60, 120, 180]
 
